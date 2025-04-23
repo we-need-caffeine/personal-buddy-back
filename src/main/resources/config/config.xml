@@ -6,5 +6,83 @@
     </settings>
 
     <typeAliases>
+<!--        회원 정보 관련 테이블        -->
+        <typeAlias type="com.app.personalbuddyback.domain.MemberVO" alias="MemberVO" />
+
+<!--        업적 관련 테이블       -->
+        <typeAlias type="com.app.personalbuddyback.domain.AchievementVO" alias="AchievementVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.AchievementViewDTO" alias="AchievementViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.MemberAchievementVO" alias="MemberAchievementVO" />
+
+<!--        알람 테이블       -->
+        <typeAlias type="com.app.personalbuddyback.domain.AlertVO" alias="AlertVO" />
+
+<!--        게시판 관련 테이블      -->
+        <typeAlias type="com.app.personalbuddyback.domain.BoardVO" alias="BoardVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BoardImgVO" alias="BoardImgVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BoardLikeVO" alias="BoardLikeVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BoardCommentVO" alias="BoardCommentVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BoardCommentLikeVO" alias="BoardCommentLikeVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BoardCommentViewDTO" alias="BoardCommentViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BoardViewDTO" alias="BoardViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BoardListViewDTO" alias="BoardListViewDTO" />
+
+<!--        포인트샵 관련 테이블      -->
+        <typeAlias type="com.app.personalbuddyback.domain.ItemVO" alias="ItemVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BuyItemVO" alias="BuyItemVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.CartVO" alias="CartVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.CartViewDTO" alias="CartViewDTO" />
+<!--        성장나무 관련 테이블     -->
+        <typeAlias type="com.app.personalbuddyback.domain.TreeVO" alias="TreeVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.TreeCustomizingVO" alias="TreeCustomizingVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.TreeViewDTO" alias="TreeViewDTO" />
+
+<!--        일정 관련 테이블       -->
+        <typeAlias type="com.app.personalbuddyback.domain.CalendarVO" alias="CalendarVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.CalendarMemberGroupVO" alias="CalendarMemberGroupVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.CalendarInviteGroupVO" alias="CalendarInviteGroupVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleVO" alias="ScheduleVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleMemberGroupVO" alias="ScheduleMemberGroupVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.CalendarViewDTO" alias="CalendarViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ToDoListVO" alias="ToDoListVO" />
+
+<!--        설문조사 / 추천항목 관련 테이블      -->
+        <typeAlias type="com.app.personalbuddyback.domain.InterestVO" alias="InterestVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.InterestDetailVO" alias="InterestDetailVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.InterestDataVO" alias="InterestDataVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.InterestRecommendViewDTO" alias="InterestRecommendViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleRecommendViewDTO" alias="ScheduleRecommendViewDTO" />
+
+<!--        이벤트 관련 테이블-->
+        <typeAlias type="com.app.personalbuddyback.domain.EventVO" alias="EventVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventImgVO" alias="EventImgVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventLikeVO" alias="EventLikeVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventJoinVO" alias="EventJoinVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventCommentVO" alias="EventCommentVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventComentLikeVO" alias="EventComentLikeVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventViewDTO" alias="EventViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventListViewDTO" alias="EventListViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventCommentViewDTO" alias="EventCommentViewDTO" />
+
+<!--        팔로우(친구) 관련 테이블-->
+        <typeAlias type="com.app.personalbuddyback.domain.FollowVO" alias="FollowVO" />
+
+<!--        방명록 테이블     -->
+        <typeAlias type="com.app.personalbuddyback.domain.GuestBookViewDTO" alias="GuestBookViewDTO" />
+
+<!--        포인트 이용 로그 테이블-->
+        <typeAlias type="com.app.personalbuddyback.domain.MemberPointLogVO" alias="MemberPointLogVO" />
+
+<!--        유저 신고 관리 테이블       -->
+        <typeAlias type="com.app.personalbuddyback.domain.ReportVO" alias="ReportVO" />
+
+<!--        목표 테이블      -->
+        <typeAlias type="com.app.personalbuddyback.domain.TargetVO" alias="TargetVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.TargetViewDTO" alias="TargetViewDTO" />
+
+<!--        채팅 관련 테이블       -->
+        <typeAlias type="com.app.personalbuddyback.domain.ChatVO" alias="ChatVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ChatRoomVO" alias="ChatRoomVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ChatViewDTO" alias="ChatViewDTO" />
     </typeAliases>
 </configuration>
