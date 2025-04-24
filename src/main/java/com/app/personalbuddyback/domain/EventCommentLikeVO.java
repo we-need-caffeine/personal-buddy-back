@@ -7,9 +7,9 @@ import java.util.Date;
 
 @Data
 @Component
-public class BoardLikeVO {
+public class EventCommentLikeVO {
     private Long id;
-    private Date boardLikeCreateDate;
-    private Long boardId;
+    private Date eventCommentLikeCreateDate;
+    private Long eventCommentId;
     private Long memberId;
 }
