@@ -9,8 +9,8 @@ import java.util.Date;
 @Component
 public class MemberPointLogVO {
     private Long id;
-    private int memberPointVariance;
+    private int memberPointChangeAmount;
     private String memberPointReason;
-    private Date memberPointDate;
+    private Date memberPointChangeDate;
     private Long memberId;
 }
