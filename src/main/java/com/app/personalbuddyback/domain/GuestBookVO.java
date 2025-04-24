@@ -7,9 +7,10 @@ import java.util.Date;
 
 @Data
 @Component
-public class BoardLikeVO {
+public class GuestBookVO {
     private Long id;
-    private Date boardLikeCreateDate;
-    private Long boardId;
-    private Long memberId;
+    private String guestBookContent;
+    private Date guestBookCreateDate;
+    private Long ownerMemberId;
+    private Long writerMemberId;
 }

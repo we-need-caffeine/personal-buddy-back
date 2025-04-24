@@ -59,7 +59,7 @@
         <typeAlias type="com.app.personalbuddyback.domain.EventLikeVO" alias="EventLikeVO" />
         <typeAlias type="com.app.personalbuddyback.domain.EventJoinVO" alias="EventJoinVO" />
         <typeAlias type="com.app.personalbuddyback.domain.EventCommentVO" alias="EventCommentVO" />
-        <typeAlias type="com.app.personalbuddyback.domain.EventComentLikeVO" alias="EventComentLikeVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.EventCommentLikeVO" alias="EventCommentLikeVO" />
         <typeAlias type="com.app.personalbuddyback.domain.EventViewDTO" alias="EventViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.EventListViewDTO" alias="EventListViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.EventCommentViewDTO" alias="EventCommentViewDTO" />

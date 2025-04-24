@@ -6,4 +6,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class ScheduleMemberGroupVO {
+    private Long id;
+    private Long ScheduleMemberGroupMemberId;
+    private Long scheduleId;
 }

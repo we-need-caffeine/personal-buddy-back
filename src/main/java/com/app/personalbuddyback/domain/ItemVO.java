@@ -6,4 +6,10 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class ItemVO {
+    private Long id;
+    private String itemName;
+    private int itemPrice;
+    private String itemImgPath;
+    private String itemImgName;
+    private String itemType;
 }
