@@ -10,7 +10,7 @@ import java.util.Date;
 public class GuestBookVO {
     private Long id;
     private String guestBookContent;
-    private Date guestBookCreateDate;
+    private Date guestBookCreateTime;
     private Long ownerMemberId;
     private Long writerMemberId;
 }

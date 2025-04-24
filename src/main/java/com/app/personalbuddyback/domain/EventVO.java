@@ -13,7 +13,8 @@ public class EventVO {
     private String eventDescription;
     private Date eventCreateDate;
     private int eventViews;
+    private int eventGetPoint;
     private Date eventStartDate;
     private Date eventEndDate;
-    private int eventGetPoint;
+    private Long memberId;
 }

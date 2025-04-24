@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CalendarInviteGroupVO {
     private Long id;
-    private Long calendarInviteGroupInvitedId;
+    private Long calendarInviteGroupInvitedMemberId;
     private Long calendarInviteGroupHostId;
     private Integer calendarInviteGroupIsApproved;
+    private Long calendarMemberGroupId;
 }
