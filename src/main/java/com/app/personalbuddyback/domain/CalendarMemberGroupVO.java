@@ -6,4 +6,8 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class CalendarMemberGroupVO {
+    private Long id;
+    private Long calendarMemberGroupInvitedId;
+    private Integer calendarMembreGroupIsHost;
+    private Long calendarId;
 }
