@@ -24,18 +24,22 @@
     </insert>
 
 <!--  알림 리스트  -->
-    <select id="selectAll" parameterType="Long" resultType="AlertVO">
+<!--  받는 멤버 아이디와 동적 쿼리로 알림 타입에 따른 조회결과 변경  -->
+    <select id="selectAll" parameterType="map" resultType="AlertVO">
         SELECT
             ID, ALERT_TYPE, ALERT_MESSAGE, ALERT_READ, ALERT_PARAM,
             RECEIVER_MEMBER_ID, SENDER_MEMBER_ID
         FROM TBL_ALERT
         WHERE RECEIVER_MEMBER_ID = #{receiverMemberId}
+        <if test="alertType != null">
+            AND ALERT_TYPE = #{alertType}
+        </if>
     </select>
 
 <!--  읽음 여부 처리  -->
 <!--  유저가 특정 알람을 클릭했을 때, 읽음 여부처리  -->
     <update id="update" parameterType="Long">
-        UPDATE TBL_ALERT SET ALERT_READ = 1,
+        UPDATE TBL_ALERT SET ALERT_READ = 1
         WHERE ID = #{id}
     </update>
 

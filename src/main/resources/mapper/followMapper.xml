@@ -8,13 +8,6 @@
         VALUES (SEQ_FOLLOW.NEXTVAL, #{followerMemberId}, #{followingMemberId});
     </insert>
 
-<!--  팔로워 단일 조회  -->
-    <select id="select" parameterType="FollowVO" resultType="FollowVO">
-        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
-        FROM TBL_FOLLOW
-        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
-    </select>
-
 <!--  팔로워 리스트 보기  -->
     <select id="selectFollower" parameterType="Long" resultType="FollowVO">
         SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
@@ -29,16 +22,17 @@
         WHERE FOLLOWING_MEMBER_ID = #{followingMemberId}
     </select>
 
-<!--  즐겨찾기 등록  -->
+<!--  즐겨찾기 토글  -->
     <update id="update" parameterType="FollowVO">
-        UPDATE TBL_FOLLOW SET FOLLOW_FAVORITE = 1
-        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
-    </update>
-
-<!--  즐겨찾기 취소  -->
-    <update id="update" parameterType="FollowVO">
-        UPDATE TBL_FOLLOW SET FOLLOW_FAVORITE = 0
-        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
+        UPDATE TBL_FOLLOW
+        SET FOLLOW_FAVORITE =
+            <choose>
+                <when test="followFavorite == 0">1</when>
+                <when test="followFavorite == 1">0</when>
+                <otherwise>FOLLOW_FAVORITE</otherwise>
+            </choose>
+        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId}
+        AND FOLLOWING_MEMBER_ID = #{followingMemberId}
     </update>
 
 <!--  팔로우 취소  -->
