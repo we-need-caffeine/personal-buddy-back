@@ -1,7 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.FollowMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
+<!--  팔로워 추가  -->
+<!--  followerMemberId = 팔로우를 받는사람, followingMemberId = 팔로우를 하는사람  -->
+    <insert id="insert" parameterType="FollowVO">
+        INSERT INTO TBL_FOLLOW (ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID)
+        VALUES (SEQ_FOLLOW.NEXTVAL, #{followerMemberId}, #{followingMemberId});
+    </insert>
+
+<!--  팔로워 단일 조회  -->
+    <select id="select" parameterType="FollowVO" resultType="FollowVO">
+        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
+        FROM TBL_FOLLOW
+        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
     </select>
+
+<!--  팔로워 리스트 보기  -->
+    <select id="selectFollower" parameterType="Long" resultType="FollowVO">
+        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
+        FROM TBL_FOLLOW
+        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId}
+    </select>
+
+<!--  팔로우 리스트 보기  -->
+    <select id="selectFollow" parameterType="Long" resultType="FollowVO">
+        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
+        FROM TBL_FOLLOW
+        WHERE FOLLOWING_MEMBER_ID = #{followingMemberId}
+    </select>
+
+<!--  즐겨찾기 등록  -->
+    <update id="update" parameterType="FollowVO">
+        UPDATE TBL_FOLLOW SET FOLLOW_FAVORITE = 1
+        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
+    </update>
+
+<!--  즐겨찾기 취소  -->
+    <update id="update" parameterType="FollowVO">
+        UPDATE TBL_FOLLOW SET FOLLOW_FAVORITE = 0
+        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
+    </update>
+
+<!--  팔로우 취소  -->
+<!--  받는사람의 아이디가 n이고, 한 사람의 아이디가 n인 행을 삭제  -->
+    <delete id="delete" parameterType="FollowVO">
+        DELETE FROM TBL_FOLLOW
+        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
+    </delete>
 </mapper>
