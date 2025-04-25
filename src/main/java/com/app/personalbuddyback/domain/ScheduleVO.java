@@ -17,4 +17,5 @@ public class ScheduleVO {
     private String scheduleColor;
     private String scheduleCategory;
     private Integer scheduleRepeat;
+    private Integer calendarId;
 }

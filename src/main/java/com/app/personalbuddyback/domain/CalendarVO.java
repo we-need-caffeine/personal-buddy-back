@@ -10,6 +10,6 @@ public class CalendarVO {
     private String calendarTitle;
     private Integer calendarIsGroup;
     private Integer calendarIndex;
-    private Long scheduleId;
+    private Long memberId;
     private Long todoListId;
 }

@@ -1,7 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.CalendarMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
+    <!-- 일정 등록 -->
+    <insert id="insert" parameterType="ScheduleVO">
+        INSERT INTO TBL_SCHEDULE(
+            ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
+            SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT, CALENDAR_ID
+        )
+        VALUES (
+                   SEQ_SCHEDULE.NEXTVAL, #{scheduleTitle}, #{scheduleContent}, #{scheduleStartDate}, #{scheduleEndDate},
+                   #{scheduleCreatedDate}, #{scheduleColor}, #{scheduleCategory}, #{scheduleRepeat}, #{calendarId}
+               )
+    </insert>
+
+    <!-- 일정 수정 -->
+    <update id="update" parameterType="ScheduleVO">
+        UPDATE TBL_SCHEDULE
+        SET
+            SCHEDULE_TITLE = #{scheduleTitle},
+            SCHEDULE_CONTENT = #{scheduleContent},
+            SCHEDULE_START_DATE = #{scheduleStartDate},
+            SCHEDULE_END_DATE = #{scheduleEndDate},
+            SCHEDULE_CATEGORY = #{scheduleCategory},
+            SCHEDULE_REPEAT = #{scheduleRepeat}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 일정 삭제 -->
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- 일정 전체 불러오기 -->
+    <select id="selectScheduleAll" parameterType="Long" resultType="CalendarViewDTO">
+        SELECT
+            TBS.ID,
+            TBS.SCHEDULE_TITLE,
+            TBS.SCHEDULE_CONTENT,
+            TBS.SCHEDULE_START_DATE,
+            TBS.SCHEDULE_END_DATE,
+            TBS.SCHEDULE_CREATED_DATE,
+            TBS.SCHEDULE_COLOR,
+            TBS.SCHEDULE_CATEGORY,
+            TBS.SCHEDULE_REPEAT,
+            TBS.CALENDAR_ID
+        FROM
+            TBL_SCHEDULE TBS
+                JOIN
+            TBL_CALENDAR TBC ON TBS.CALENDAR_ID = TBC.ID
+        WHERE
+            TBC.MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 일정 단일 조회 -->
+    <select id="selectSchedule" parameterType="Long" resultType="ScheduleVO">
+        SELECT
+            ID,
+            SCHEDULE_TITLE,
+            SCHEDULE_CONTENT,
+            SCHEDULE_START_DATE,
+            SCHEDULE_END_DATE,
+            SCHEDULE_CREATED_DATE,
+            SCHEDULE_COLOR,
+            SCHEDULE_CATEGORY,
+            SCHEDULE_REPEAT,
+            CALENDAR_ID
+        FROM
+            TBL_SCHEDULE
+        WHERE
+            ID = #{id}
+    </select>
+
+    <!--  팔로잉 리스트 불러오기  -->
+    <select id="selectFollowingAll" parameterType="Long" resultType="MemberVO">
+        SELECT
+            TBF1.FOLLOWING_MEMBER_ID,
+            TBM.MEMBER_NAME,
+            TBM.MEMBER_IMG_PATH
+        FROM
+            TBL_FOLLOW TBF1
+                JOIN
+            TBL_MEMBER TBM ON TBF1.FOLLOWING_MEMBER_ID = TBM.ID
+        WHERE
+            TBF1.FOLLOWER_MEMBER_ID = #{memberId}
+          AND TBF1.FOLLOWING_MEMBER_ID IN (
+            SELECT TBF2.FOLLOWER_MEMBER_ID
+            FROM TBL_FOLLOW TBF2
+            WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
+        );
     </select>
 </mapper>
