@@ -1,7 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.AlertMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
+<!--  알림 발생  -->
+<!--
+    alertType :
+        캘린더 초대장 = calendar,
+        게시판 관련 알림 = borad,
+        일정 알림 = schedule,
+        포인트 획득 = point,
+        팔로우 알림 = follow
+        방명록 알림 = guestBook
+    alertParam :
+        해당 알림의 타입에 따른 id값 없으면 null
+-->
+    <insert id="insert" parameterType="AlertVO">
+        INSERT INTO TBL_ALERT (
+            ID,
+            ALERT_TYPE,
+            ALERT_MESSAGE,
+            ALERT_READ,
+            ALERT_PARAM,
+            RECEIVER_MEMBER_ID,
+            SENDER_MEMBER_ID
+        ) VALUES (
+            SEQ_ALERT.NEXTVAL,
+            #{alertType},
+            #{alertMessage},
+            #{alertRead},
+            #{alertParam},
+            #{receiverMemberId},
+            #{senderMemberId}
+        )
+    </insert>
+
+<!--  알림 리스트  -->
+<!--  받는 멤버 아이디와 동적 쿼리로 알림 타입에 따른 조회결과 변경  -->
+    <select id="selectAll" parameterType="map" resultType="AlertVO">
+        SELECT
+            ID,
+            ALERT_TYPE,
+            ALERT_MESSAGE,
+            ALERT_READ,
+            ALERT_PARAM,
+            RECEIVER_MEMBER_ID,
+            SENDER_MEMBER_ID
+        FROM TBL_ALERT
+        WHERE RECEIVER_MEMBER_ID = #{receiverMemberId}
+        <if test="alertType != null">
+            AND ALERT_TYPE = #{alertType}
+        </if>
     </select>
+
+<!--  읽음 여부 처리  -->
+<!--  유저가 특정 알람을 클릭했을 때, 읽음 여부처리  -->
+    <update id="update" parameterType="Long">
+        UPDATE TBL_ALERT SET ALERT_READ = 1
+        WHERE ID = #{id}
+    </update>
+
+<!--  알림 삭제  -->
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_ALERT
+        WHERE ID = #{id}
+    </delete>
+
+<!--  알림 전체 삭제  -->
+<!--  해당 유저가 받은 알림을 전체 삭제  -->
+    <delete id="deleteAll" parameterType="Long">
+        DELETE FROM TBL_ALERT
+        WHERE RECEIVER_MEMBER_ID = #{receiverMemberId}
+    </delete>
+
 </mapper>
