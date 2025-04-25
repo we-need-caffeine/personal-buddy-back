@@ -64,10 +64,14 @@
         <typeAlias type="com.app.personalbuddyback.domain.EventListViewDTO" alias="EventListViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.EventCommentViewDTO" alias="EventCommentViewDTO" />
 
+<!--        프로필 카드 테이블-->
+        <typeAlias type="com.app.personalbuddyback.domain.ProfileCardDTO" alias="ProfileCardDTO" />
+
 <!--        팔로우(친구) 관련 테이블-->
         <typeAlias type="com.app.personalbuddyback.domain.FollowVO" alias="FollowVO" />
 
 <!--        방명록 테이블     -->
+        <typeAlias type="com.app.personalbuddyback.domain.GuestBookVO" alias="GuestBookVO" />
         <typeAlias type="com.app.personalbuddyback.domain.GuestBookViewDTO" alias="GuestBookViewDTO" />
 
 <!--        포인트 이용 로그 테이블-->

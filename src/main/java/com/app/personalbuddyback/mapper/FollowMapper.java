@@ -4,5 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface FollowMapper {
-    public String getTime();
+//    팔로워 추가
+//    팔롱
 }
