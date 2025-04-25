@@ -10,4 +10,5 @@ public class CalendarMemberGroupVO {
     private Long calendarMemberGroupInvitedId;
     private Integer calendarMemberGroupIsHost;
     private Long calendarId;
+    private Long memberId;
 }
