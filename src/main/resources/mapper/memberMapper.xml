@@ -4,4 +4,19 @@
     <select id="getTime" resultType="String">
         SELECT CURRENT_TIMESTAMP FROM DUAL
     </select>
+<!-- 회원가입 -->
+    <insert id="insert" parameterType="MemberVO">
+        INSERT INTO TBL_MEMBER
+        VALUES(#{id}, #{memberNickName}, #{memberStatusMessage}, #{memberName},
+               #{memberGender}, #{memberPassword}, #{memberBirth}, #{memberPhone}, #{memberEmail},
+               #{memberImgName}, #{memberImgPath}, #{memberAdmin}, #{memberCreateDate}, #{memberPoint},
+               #{memberTermServiceAgree}, #{memberTermInformationAgree}, #{memberTermLocationAgree},
+               #{memberTermPromotionAgree})
+    </insert>
+<!-- 로그인 -->
+    <select id="selectOne" parameterType="MemberVO">
+        SELECT MEMBER_EMAIL, MEMBER_PASSWORD
+        FROM TBL_MEMBER
+        WHERE MEMBER_EMAIL = ${memberEmail} AND MEMBER_PASSWORD = ${memberPassword}
+    </select>
 </mapper>
