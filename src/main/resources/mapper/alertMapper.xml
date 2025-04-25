@@ -15,11 +15,21 @@
 -->
     <insert id="insert" parameterType="AlertVO">
         INSERT INTO TBL_ALERT (
-            ID, ALERT_TYPE, ALERT_MESSAGE, ALERT_READ, ALERT_PARAM,
-            RECEIVER_MEMBER_ID, SENDER_MEMBER_ID
+            ID,
+            ALERT_TYPE,
+            ALERT_MESSAGE,
+            ALERT_READ,
+            ALERT_PARAM,
+            RECEIVER_MEMBER_ID,
+            SENDER_MEMBER_ID
         ) VALUES (
-            SEQ_ALERT.NEXTVAL, #{alertType}, #{alertMessage}, #{alertRead}, #{alertParam},
-            #{receiverMemberId}, #{senderMemberId}
+            SEQ_ALERT.NEXTVAL,
+            #{alertType},
+            #{alertMessage},
+            #{alertRead},
+            #{alertParam},
+            #{receiverMemberId},
+            #{senderMemberId}
         )
     </insert>
 
@@ -27,8 +37,13 @@
 <!--  받는 멤버 아이디와 동적 쿼리로 알림 타입에 따른 조회결과 변경  -->
     <select id="selectAll" parameterType="map" resultType="AlertVO">
         SELECT
-            ID, ALERT_TYPE, ALERT_MESSAGE, ALERT_READ, ALERT_PARAM,
-            RECEIVER_MEMBER_ID, SENDER_MEMBER_ID
+            ID,
+            ALERT_TYPE,
+            ALERT_MESSAGE,
+            ALERT_READ,
+            ALERT_PARAM,
+            RECEIVER_MEMBER_ID,
+            SENDER_MEMBER_ID
         FROM TBL_ALERT
         WHERE RECEIVER_MEMBER_ID = #{receiverMemberId}
         <if test="alertType != null">
@@ -55,5 +70,5 @@
         DELETE FROM TBL_ALERT
         WHERE RECEIVER_MEMBER_ID = #{receiverMemberId}
     </delete>
-    
+
 </mapper>

@@ -20,9 +20,19 @@
 <!--  방명록리스트  -->
 <!--  마이페이지 아이디로, 해당 유저에게 적힌 방명록 리스트를 최신순으로 받아온다.  -->
     <select id="selectAll" parameterType="Long" resultType="GuestBookVO">
-        SELECT ID, GUESTBOOK_CONTENT, GUESTBOOK_CREATE_TIME, WRITER_MEMBER_ID
+        SELECT
+            ID,
+            GUESTBOOK_CONTENT,
+            GUESTBOOK_CREATE_TIME,
+            WRITER_MEMBER_ID
         FROM TBL_GUESTBOOK
         WHERE OWNER_MEMBER_ID = #{ownerMemberId}
         ORDER BY GUESTBOOK_CREATE_TIME DESC
     </select>
+
+<!--  방명록 삭제  -->
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_GUESTBOOK
+        WHERE ID = #{id}
+    </delete>
 </mapper>
