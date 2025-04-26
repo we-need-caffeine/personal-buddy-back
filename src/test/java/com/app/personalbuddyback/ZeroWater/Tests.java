@@ -16,6 +16,18 @@ public class Tests {
 
     @Test
     public void alertInsertTest() {
+        AlertVO alertVO = new AlertVO();
+        alertVO.setAlertType("event");
+        alertVO.setAlertMessage("이벤트 획득! +300P");
+        alertVO.setAlertParam(1L);
+        alertVO.setReceiverMemberId(2L);
+        alertVO.setSenderMemberId(1L);
+
+        alertMapper.insert(alertVO);
+    }
+
+    @Test
+    public void alertViewTest() {
     }
 
 }
