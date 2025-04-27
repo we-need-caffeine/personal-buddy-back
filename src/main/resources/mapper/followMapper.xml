@@ -5,7 +5,7 @@
 <!--  followerMemberId = 팔로우를 받는사람, followingMemberId = 팔로우를 하는사람  -->
     <insert id="insert" parameterType="FollowVO">
         INSERT INTO TBL_FOLLOW (ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID)
-        VALUES (SEQ_FOLLOW.NEXTVAL, #{followerMemberId}, #{followingMemberId});
+        VALUES (SEQ_FOLLOW.NEXTVAL, #{followerMemberId}, #{followingMemberId})
     </insert>
 
 <!--  팔로워 리스트 보기  -->
