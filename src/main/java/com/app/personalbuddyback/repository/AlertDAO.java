@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,8 +19,8 @@ public class AlertDAO {
         alertMapper.insert(alertVO);
     }
 //    알림 리스트
-    public List<AlertVO> findAll() {
-        return alertMapper.selectAll();
+    public List<AlertVO> findAll(Map<String, Object> map) {
+        return alertMapper.selectAll(map);
     }
 //    알림 읽음 여부
     public void update(Long id){
