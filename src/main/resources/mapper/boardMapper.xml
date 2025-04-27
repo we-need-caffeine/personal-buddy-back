@@ -4,4 +4,10 @@
     <select id="getTime" resultType="String">
         SELECT CURRENT_TIMESTAMP FROM DUAL
     </select>
+
+<!--  Board List  -->
+    <select id="selectBoardList" resultType="BoardListViewDTO" >
+
+    </select>
+
 </mapper>
