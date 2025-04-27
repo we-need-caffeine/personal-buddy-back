@@ -13,7 +13,7 @@ public class AlertVO {
     private String alertMessage;
     private Date alertCreateTime;
     private int alertRead;
-    private String alertParam;
+    private Long alertParam;
     private Long receiverMemberId;
     private Long senderMemberId;
 }
