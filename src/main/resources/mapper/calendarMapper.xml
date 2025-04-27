@@ -90,4 +90,81 @@
             WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
         );
     </select>
+
+    <!--  캘린더 초대 그룹 등록 -->
+    <insert id="insertCalendarInviteGroup" parameterType="CalendarInviteGroupVO">
+        INSERT INTO TBL_CALENDAR_INVITE_GROUP(
+            ID, CALENDAR_INVITE_GROUP_INVITED_MEMBER_ID,CALENDAR_INVITE_GROUP_HOST_ID,CALENDAR_INVITE_GROUP_IS_APPROVED, CALENDAR_ID
+        )
+        VALUES (
+                   SEQ_SCHEDULE.NEXTVAL, #{calendarInviteGroupInvitedMemberId}, #{calendarGroupHostId}, #{calendarInviteGroupIsApproved}, #{calendarId}
+               )
+    </insert>
+
+    <!-- HOST 이름 보여줘야 하나? -->
+    <!-- 캘린더 정보 불러오기(알람) -->
+    <select id="selectCalendarDetail" parameterType="Long" resultType="CalendarViewDTO">
+        SELECT
+            TBCIG.ID,
+            TBCIG.CALENDAR_INVITE_GROUP_INVITED_MEMBER_ID,
+            TBCIG.CALENDAR_INVITE_GROUP_HOST_ID,
+            TBCIG.CALENDAR_ID,
+            TBC.CALENDAR_TITLE
+        FROM
+            TBL_CALENDAR_INVITE_GROUP TBCIG
+                JOIN
+            TBL_CALENDAR TBC ON TBCIG.CALENDAR_ID = TBC.ID
+        WHERE
+            TBCIG.CALENDAR_INVITE_GROUP_INVITED_MEMBER_ID = #{memberId}
+          AND
+            TBCIG.CALENDAR_INVITE_GROUP_IS_APPROVED = 0
+    </select>
+
+    <!-- 초대 승인 여부 업데이트 -->
+    <update id="updateCalendarInviteGroup" parameterType="ScheduleVO">
+        UPDATE TBL_CALENDAR_INVITE_GROUP
+        SET
+            CALENDAR_INVITE_GROUP_IS_APPROVED = #{calendarInviteGroupIsApproved}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- CALENDAR_ID 조회 -->
+    <select id="selectCalendarId" parameterType="Long" resultType="Long">
+        SELECT ID
+        FROM TBL_CALENDAR
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 캘린더 멤버 그룹 등록 -->
+    <insert id="insertCalendarMemberGroup" parameterType="CalendarMemberGroupVO">
+        INSERT INTO TBL_CALENDAR_MEMBER_GROUP(
+            ID, CALENDAR_MEMBER_GROUP_IS_HOST, CALENDAR_ID, MEMBER_ID
+        )
+        VALUES (
+                   SEQ_SCHEDULE.NEXTVAL, #{calendarMemberGroupIsHost}, #{calendarId}, #{memberId}
+               )
+    </insert>
+
+    <!-- 캘린더 멤버 그룹 불러오기 -->
+    <select id = "selectCalendarMemberGroupAll" parameterType="Long">
+        SELECT
+            TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        FROM
+            TBL_CALENDAR_MEMBER_GROUP TBCMG
+                JOIN
+            TBL_MEMBER TBM ON TBCMG.MEMBER_ID = TBM.ID
+        WHERE
+            CALENDAR_ID = #{calendarId}
+          AND TBCMG.MEMBER_GROUP_IS_HOST = 0
+    </select>
+
+
+
+
+
+
+
+
+
+
 </mapper>
