@@ -148,6 +148,7 @@
         WHERE ID = #{id}
     </update>
 
+    <!-- -->
     <!-- CALENDAR_ID 조회 -->
     <select id="selectCalendarId" parameterType="Long" resultType="Long">
         SELECT ID
@@ -177,8 +178,6 @@
             CALENDAR_ID = #{calendarId}
           AND TBCMG.MEMBER_GROUP_IS_HOST = 0
     </select>
-
-    <!--    -->
 
 
 
