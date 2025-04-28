@@ -20,7 +20,9 @@
         SELECT COUNT(ID)
         FROM TBL_TARGET
         WHERE TARGET_SCHEDULE_CATEGORY = #{targetScheduleCategory} AND
-            MEMBER_ID = #{memberId} AND
-            TRUNC(TARGET_COMPLETE_DATE) BETWEEN TRUNC(SYSDATE)
+        MEMBER_ID = #{memberId} AND
+        <if test="startDate != null and endDate != null">
+            AND TARGET_COMPLETE_DATE BETWEEN #{startDate} AND #{endDate}
+        </if>
     </select>
 </mapper>
