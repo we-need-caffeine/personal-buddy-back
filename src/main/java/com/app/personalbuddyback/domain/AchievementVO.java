@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 public class AchievementVO {
     private Long id;
     private String achievementName;
-    private String achievementDescription;
-    private int achievementMission;
+    private String achievementScheduleCategory;
+    private int achievementMissionCount;
     private String achievementImgPath;
     private String achievementImgName;
     private int achievementGetPoint;

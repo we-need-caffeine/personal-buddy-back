@@ -82,7 +82,6 @@
 
 <!--        목표 테이블      -->
         <typeAlias type="com.app.personalbuddyback.domain.TargetVO" alias="TargetVO" />
-        <typeAlias type="com.app.personalbuddyback.domain.TargetViewDTO" alias="TargetViewDTO" />
 
 <!--        채팅 관련 테이블       -->
         <typeAlias type="com.app.personalbuddyback.domain.ChatVO" alias="ChatVO" />

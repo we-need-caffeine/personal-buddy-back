@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AchievementCompleteVO {
     private Long id;
-    private int achievementCurrentMission;
+    private int achievementCurrentMissionCount;
     private Long achievementId;
 }
