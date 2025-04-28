@@ -14,7 +14,7 @@ public class TreeViewDTO {
     private double treeCustomizingPositionY; // treeCustomizing item 의 Y좌표 정보
     private int treeCustomizingApply; // treeCustomizing 화면 적용 여부
     private String itemName; // item 의 이름
+    private String itemType; // item 의 타입
     private String itemImgPath; // item 의 이미지 경로
     private String itemImgName; // item 의 이미지 파일 이름
-
 }

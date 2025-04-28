@@ -7,15 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @SpringBootTest
 @Slf4j
 public class Tests {
-
-    @Autowired
-    AlertMapper alertMapper;
-
-    @Test
-    public void alertInsertTest() {
-    }
 
 }

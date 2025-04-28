@@ -9,8 +9,8 @@ import java.util.Date;
 @Component
 public class GuestBookVO {
     private Long id;
-    private String guestBookContent;
-    private Date guestBookCreateTime;
+    private String guestbookContent;
+    private Date guestbookCreateTime;
     private Long ownerMemberId;
     private Long writerMemberId;
 }

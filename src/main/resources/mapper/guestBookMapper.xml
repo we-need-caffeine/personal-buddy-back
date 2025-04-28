@@ -10,7 +10,7 @@
             OWNER_MEMBER_ID,
             WRITER_MEMBER_ID
         ) VALUES (
-            #{id},
+            SEQ_GUESTBOOK.NEXTVAL,
             #{guestbookContent},
             #{ownerMemberId},
             #{writerMemberId}

@@ -18,7 +18,6 @@
             ID,
             ALERT_TYPE,
             ALERT_MESSAGE,
-            ALERT_READ,
             ALERT_PARAM,
             RECEIVER_MEMBER_ID,
             SENDER_MEMBER_ID
@@ -26,7 +25,6 @@
             SEQ_ALERT.NEXTVAL,
             #{alertType},
             #{alertMessage},
-            #{alertRead},
             #{alertParam},
             #{receiverMemberId},
             #{senderMemberId}
