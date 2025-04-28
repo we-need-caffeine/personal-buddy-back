@@ -18,4 +18,5 @@ public class ScheduleVO {
     private String scheduleCategory;
     private Integer scheduleRepeat;
     private Integer calendarId;
+    private Long scheduleMemberGroupId;
 }

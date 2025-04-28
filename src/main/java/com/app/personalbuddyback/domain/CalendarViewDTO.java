@@ -23,7 +23,6 @@ public class CalendarViewDTO {
     private Integer calendarInviteGroupIsApproved;
 
 //  캘린더 맴버 그룹 VO
-    private Long calendarMemberGroupInvitedId;
     private Integer calendarMemberGroupIsHost;
 
 //  스케줄 VO
@@ -35,4 +34,5 @@ public class CalendarViewDTO {
     private String scheduleColor;
     private String scheduleCategory;
     private Integer scheduleRepeat;
+    private Long scheduleMemberGroupId;
 }
