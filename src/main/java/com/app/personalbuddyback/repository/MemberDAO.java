@@ -18,17 +18,17 @@ public class MemberDAO {
 
 //    이메일 중복 체크
     public int checkEmail(String email) {
-        return memberMapper.checkEmail(email);
+        return memberMapper.selectCountIdByEmail(email);
     }
 
 //    전화번호 중복 체크
     public int checkPhone(String phone) {
-        return memberMapper.checkPhone(phone);
+        return memberMapper.selectCountIdByPhone(phone);
     }
 
 //    닉네임 중복 체크
-    public int checkNickname(String nickname) {
-        return memberMapper.checkNickname(nickname);
+    public int checkNickName(String nickname) {
+        return memberMapper.selectCountIdByNickName(nickname);
     }
 
 //    로그인
@@ -36,4 +36,18 @@ public class MemberDAO {
         memberMapper.selectOne(memberVO);
     }
 
+//    이메일 찾기
+    public String selectEmailByPhone(String phone) {
+        return memberMapper.selectEmailByPhone(phone);
+    }
+
+//    비밀번호 찾기
+    public Long selectMemberByNameAndEmail(MemberVO memberVO) {
+        return memberMapper.selectMemberByNameAndEmail(memberVO);
+    }
+
+//    비밀번호 변경
+    public void updatePassword(MemberVO memberVO) {
+        memberMapper.updatePassword(memberVO);
+    }
 }

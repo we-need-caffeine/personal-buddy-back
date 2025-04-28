@@ -9,14 +9,24 @@ public interface MemberMapper {
     public void insert(MemberVO memberVO);
 
 //    이메일 중복 체크
-    public int checkEmail(String email);
+    public int selectCountIdByEmail(String email);
 
 //    전화번호 중복 체크
-    public int checkPhone(String phone);
+    public int selectCountIdByPhone(String phone);
 
 //    닉네임 중복 체크
-    public int checkNickname(String nickname);
+    public int selectCountIdByNickName(String nickname);
 
 //    로그인
-    public void selectOne(MemberVO memberVO);
+    public Long selectOne(MemberVO memberVO);
+
+//    이메일 찾기
+    public String selectEmailByPhone(String phone);
+
+//    비밀번호 찾기
+    public Long selectMemberByNameAndEmail(MemberVO memberVO);
+
+//    비밀번호 변경
+    public void updatePassword(MemberVO memberVO);
+
 }
