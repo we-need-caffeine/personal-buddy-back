@@ -1,7 +1,215 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.BoardMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
+
+<!--  Board List  -->
+<!--    게시글 전체 목록 -->
+    <select id="selectBoardList" resultType="BoardListViewDTO" >
+        SELECT ID, BOARD_TITLE, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
+
+--          댓글수 (게시글의 댓글 수 카운트)
+            (SELECT COUNT(*)
+            FROM TBL_BOARD_COMMENT
+            WHERE BOARD_ID = TBL_BOARD.ID -- 댓글 테이블의 BOARD_ID 값이 게시글 테이블의 ID 값과 같은것만 센다.
+            ) AS BOARD_COMMENT_COUNT,
+
+--          좋아요 수 (게시글에 달린 좋아요 수 카운트)
+            (SELECT COUNT(*)
+            FROM TBL_BOARD_LIKE
+            WHERE BOARD_ID = TBL_BOARD.ID
+            ) AS BOARD_LIKE_COUNT,
+
+            MEMBER_NICKNAME,
+            MEMBER_IMG_NAME,
+            MEMBER_IMG_PATH,
+
+--          대표 썸네일 이미지 ( 가장 먼저 등록된 이미지 1장)
+            (SELECT BOARD_IMG_PATH || '/' || TBL_BOARD_IMG.BOARD_IMG_NAME
+            FROM TBL_BOARD_IMG
+            WHERE BOARD_ID = TBL_BOARD.ID -- 게시글 ID에 해당하는 이미지만 찾기
+             ORDER BY TBL_BOARD_IMG.ID ASC -- id 오름차순
+            FETCH FIRST 1 ROWS ONLY -- 가장 처음 등록된 1개 행만 가져오기
+            ) AS BOARD_THUMBNAIL_URL
+        FROM TBL_BOARD
+
+--      작성자 정보 조인
+        JOIN TBL_MEMBER
+        ON TBL_MEMBER.ID = TBL_BOARD.MEMBER_ID
+
+--      최신순 정렬
+        ORDER BY BOARD_CONTENT_CREATE_DATE DESC
     </select>
+
+<!--    HOT게시글-->
+    <select id="selectHotBoardList" resultType="BoardListViewDTO">
+        SELECT ID, BOARD_TITLE, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
+               MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+
+--             댓글 수
+               (SELECT COUNT(*)
+                FROM TBL_BOARD_COMMENT
+                WHERE BOARD_ID = TBL_BOARD.ID
+                ) AS BOARD_COMMENT_COUNT,
+
+--             좋아요 수
+               (SELECT COUNT(*)
+                FROM TBL_BOARD_LIKE
+                WHERE BOARD_ID = TBL_BOARD.ID
+               ) AS BOARD_LIKE_COUNT,
+
+--            대표 썸네일 이미지
+               (SELECT BOARD_IMG_PATH || '/' || TBL_BOARD_IMG.BOARD_IMG_NAME
+                FROM TBL_BOARD_IMG
+                WHERE BOARD_ID = TBL_BOARD.ID
+                ORDER BY TBL_BOARD_IMG.ID ASC
+                    FETCH FIRST 1 ROWS ONLY
+               ) AS BOARD_THUMBNAIL_URL
+        FROM TBL_BOARD
+
+        JOIN TBL_MEMBER
+        ON TBL_MEMBER.ID = TBL_BOARD.MEMBER_ID
+
+--     좋아요 많은 순 정렬
+        ORDER BY
+            BOARD_LIKE_COUNT DESC
+
+        FETCH FIRST 10 ROWS ONLY
+
+    </select>
+
+<!--    게시글 검색 + 정렬 + 해시태그 필터링 -->
+    <select id="selectBoardListBySearch" parameterType="map" resultType="BoardListViewDTO">
+        SELECT ID,BOARD_TITLE, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
+               MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+
+--             댓글 수
+               (SELECT COUNT(*)
+                FROM TBL_BOARD_COMMENT
+                WHERE BOARD_ID = TBL_BOARD.ID
+               ) AS BOARD_COMMENT_COUNT,
+
+--             좋아요 수
+               (SELECT COUNT(*)
+                FROM TBL_BOARD_LIKE
+                WHERE BOARD_ID = TBL_BOARD.ID
+               ) AS BOARD_LIKE_COUNT,
+
+--            대표 썸네일 이미지
+               (SELECT BOARD_IMG_PATH || '/' || TBL_BOARD_IMG.BOARD_IMG_NAME
+                FROM TBL_BOARD_IMG
+                WHERE BOARD_ID = TBL_BOARD.ID
+                ORDER BY TBL_BOARD_IMG.ID ASC
+                    FETCH FIRST 1 ROWS ONLY
+               ) AS BOARD_THUMBNAIL_URL
+        FROM TBL_BOARD
+
+        JOIN TBL_MEMBER
+        ON TBL_MEMBER.ID = TBL_BOARD.MEMBER_ID
+        WHERE 1=1
+
+--      키워드 검색
+            <if test="keywords != null and keywords.size > 0">
+            -- 검색어가 하나라도 있으면 제목에 포함된 글 찾기
+            -- keywords 리스트에 값이 하나라도 있으면 제목(BOARD_TITLE)에 해당 키워드가 포함된 게시글을 찾는다.
+            -- 키워드마다 OR 조건으로 이어붙여서 여러 키워드 중 하나라도 포함된 게시글을 검색할 수 있게 한다.
+                AND(
+                    <foreach item="keyword" collection="keywords" separator="OR">
+                    --keywords 리스트를 돌면서, 하나하나 "OR"로 이어 붙인다.
+                        BOARD_TITLE LIKE CONCAT('%', #{keyword}, '%')
+                    </foreach>
+                )
+            </if>
+
+--      해시태그 필터링
+            <if test="hashtags != null and hashtags.size > 0">
+            -- hashtags 리스트에 값이 하나라도 있으면,
+            -- 게시글 해시태그(BOARD_HASHTAG)가 이 리스트 안에 포함된 게시글만 조회한다.
+            -- IN을 사용해서 여러 해시태그 중 하나라도 일치하면 조회되게 한다.
+                AND BOARD_HASHTAG IN
+                <foreach item="tag" collection="hashtags" open="(" separator="," close=")">
+                    #{tag}
+                </foreach>
+            </if>
+    </select>
+
+<!--    게시글 작성-->
+    <insert id="insertBoard" parameterType="BoardVO">
+        INSERT INTO TBL_BOARD (
+                               ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_VIEWS, BOARD_CONTENT_CREATE_DATE,
+                                BOARD_CONTENT_UPDATE_DATE, BOARD_HASHTAG,MEMBER_ID
+        ) VALUES ( SEQ_BOARD.NEXTVAL, #{boardTitle}, #{boardContent}, 0, SYSDATE,
+                  SYSDATE, #{boardHashtag}, #{memberId}
+        )
+    </insert>
+
+<!--    게시글 이미지 등록 -->
+    <insert id="insertBoardImage" parameterType="BoardImgVO">
+        INSERT INTO TBL_BOARD_IMG (ID, BOARD_IMG_PATH, BOARD_IMG_NAME, BOARD_ID
+        ) VALUES ( SEQ_BOARD_IMG.NEXTVAL, #{boardImgPath}, #{boardImgName}, #{boardId}
+        )
+    </insert>
+
+<!--    게시글 수정 -->
+    <update id="updateBoard" parameterType="BoardVO">
+        UPDATE TBL_BOARD
+        SET
+            BOARD_TITLE = #{boardTitle},
+            BOARD_CONTENT = #{boardContent},
+            BOARD_HASHTAG = #{boardHashtag},
+            BOARD_CONTENT_UPDATE_DATE = SYSDATE -- 이 게시글을 수정하는 순간의 현재 시간을 수정일(BOARD_CONTENT_UPDATE_DATE) 컬럼에 저장
+        WHERE
+            ID = #{id}
+    </update>
+
+<!--    게시글 이미지 삭제(전체)-->
+    <delete id="deleteBoardImages" parameterType="Long">
+        DELETE FROM TBL_BOARD_IMG
+        WHERE BOARD_ID = #{boardId}
+    </delete>
+
+    <!-- 특정 이미지 1개 삭제 -->
+    <delete id="deleteBoardImageById" parameterType="Long">
+        DELETE FROM TBL_BOARD_IMG
+        WHERE ID = #{id}
+    </delete>
+
+<!--    게시글 삭제-->
+    <delete id="deleteBoard" parameterType="Long">
+        DELETE
+        FROM TBL_BOARD
+        WHERE ID = #{id}
+    </delete>
+
+<!--    게시글 상세 조회-->
+    <select id="selectBoardById" parameterType="Long" resultType="BoardViewDTO">
+        SELECT ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_VIEWS, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_UPDATE_DATE,
+               BOARD_HASHTAG, MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+
+--             댓글 수
+                (SELECT COUNT(*)
+                FROM TBL_BOARD_COMMENT
+                WHERE BOARD_ID = TBL_BOARD.ID) AS BOARD_COMMENT_COUNT,
+
+--             좋아요 수
+                (SELECT COUNT(*)
+                 FROM TBL_BOARD_LIKE
+                 WHERE BOARD_ID = TBL_BOARD.ID) AS BOARD_LIKE_COUNT
+        FROM TBL_BOARD
+
+        JOIN TBL_MEMBER
+        ON TBL_BOARD.MEMBER_ID = TBL_MEMBER.ID
+        WHERE ID = #{id}
+    </select>
+
+<!--    게시글 조회수 1 증가-->
+    <update id="updateBoardViews" parameterType="Long">
+        UPDATE TBL_BOARD
+        SET BOARD_CONTENT_VIEWS = BOARD_CONTENT_VIEWS + 1
+        WHERE ID = #{id}
+    </update>
+
+<!--    게시글 좋아요-->
+
+
+
 </mapper>
