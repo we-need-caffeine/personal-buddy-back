@@ -34,4 +34,5 @@ public class CalendarViewDTO {
     private String scheduleColor;
     private String scheduleCategory;
     private Integer scheduleRepeat;
+    private Long scheduleMemberGroupId;
 }

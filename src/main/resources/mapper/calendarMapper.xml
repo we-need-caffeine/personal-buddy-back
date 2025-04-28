@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.CalendarMapper">
+
+
+    <insert id="insertScheduleMemberGroup" parameterType="ScheduleMemberGroupVO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            SELECT SEQ_SCHEDULE_MEMBER_GROUP.NEXTVAL FROM DUAL
+        </selectKey>
+
+        INSERT INTO TBL_SCHEDULE_MEMBER_GROUP (
+        ID
+        ) VALUES (
+        #{id}
+        )
+    </insert>
+
     <!-- 일정 등록 -->
-    <insert id="insert" parameterType="ScheduleVO">
+    <insert id="insertSchedule" parameterType="ScheduleVO">
         INSERT INTO TBL_SCHEDULE(
             ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
-            SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT, CALENDAR_ID
+            SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT, CALENDAR_ID,SCHEDULE_MEMBER_GROUP_ID
         )
         VALUES (
                    SEQ_SCHEDULE.NEXTVAL, #{scheduleTitle}, #{scheduleContent}, #{scheduleStartDate}, #{scheduleEndDate},
-                   #{scheduleCreatedDate}, #{scheduleColor}, #{scheduleCategory}, #{scheduleRepeat}, #{calendarId}
+                   #{scheduleCreatedDate}, #{scheduleColor}, #{scheduleCategory}, #{scheduleRepeat}, #{calendarId}, #{scheduleMemberGroupId}
                )
     </insert>
 
     <!-- 일정 수정 -->
-    <update id="update" parameterType="ScheduleVO">
+    <update id="updateSchedule" parameterType="ScheduleVO">
         UPDATE TBL_SCHEDULE
         SET
             SCHEDULE_TITLE = #{scheduleTitle},
@@ -27,7 +41,7 @@
     </update>
 
     <!-- 일정 삭제 -->
-    <delete id="delete" parameterType="Long">
+    <delete id="deleteSchedule" parameterType="Long">
         DELETE FROM TBL_SCHEDULE
         WHERE ID = #{id}
     </delete>
@@ -47,8 +61,10 @@
             TBS.CALENDAR_ID
         FROM
             TBL_SCHEDULE TBS
-                JOIN
-            TBL_CALENDAR TBC ON TBS.CALENDAR_ID = TBC.ID
+        JOIN
+            TBL_CALENDAR TBC
+        ON
+            TBS.CALENDAR_ID = TBC.ID
         WHERE
             TBC.MEMBER_ID = #{memberId}
     </select>
@@ -65,11 +81,15 @@
             SCHEDULE_COLOR,
             SCHEDULE_CATEGORY,
             SCHEDULE_REPEAT,
-            CALENDAR_ID
+            CALENDAR_ID,
         FROM
-            TBL_SCHEDULE
+            TBL_SCHEDULE TBS
+        JOIN
+            TBL_SCHEDULE_MEMBER_GROUP_MEMBER TBSMGM
+        ON
+            TBS.SCHEDULE_MEMBER_GROUP_ID = TBSMGM.SCHEDULE_MEMBER_GROUP_ID
         WHERE
-            ID = #{id}
+            TS.ID = #{id}
     </select>
 
     <!--  팔로잉 리스트 불러오기  -->
@@ -158,10 +178,7 @@
           AND TBCMG.MEMBER_GROUP_IS_HOST = 0
     </select>
 
-
-
-
-
+    <!--    -->
 
 
 
