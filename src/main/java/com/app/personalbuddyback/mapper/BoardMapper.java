@@ -50,10 +50,10 @@ public interface BoardMapper {
     public void deleteBoardLike(BoardLikeVO boardLikeVO);
 
 //    게시글 좋아요 여부 체크(로그인이 된 유저가 좋아요를 눌렸는지)
-    public void checkBoardLike(BoardLikeVO boardLikeVO);
+    public int checkBoardLike(BoardLikeVO boardLikeVO);
 
 //    게시글 댓글 전체 목록
-    public List<BoardCommentViewDTO> selectBoardCommentsByBoardId(Long boardId);
+    public List<BoardCommentViewDTO> selectBoardCommentsByBoardId(Map<String, Object> params);
 
 //    댓글 작성
     public void insertBoardComment(BoardCommentVO boardCommentVO);
