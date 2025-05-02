@@ -17,7 +17,7 @@ public class FollowDAO {
         followMapper.insert(followVO);
     }
     //    팔로워 리스트 포기
-    public List<FollowVO> findFollowers(Long followerMemberId) {
+    public List<FollowVO> findFollower(Long followerMemberId) {
         return followMapper.selectFollower(followerMemberId);
     }
     //    팔로우 리스트 보기
@@ -25,11 +25,11 @@ public class FollowDAO {
         return followMapper.selectFollow(followingMemberId);
     }
     //    즐겨찾기 토글
-    public void updateFavorite(FollowVO followVO) {
+    public void update(FollowVO followVO) {
         followMapper.update(followVO);
     }
     //    팔로우 취소
-    public void deleteFollow(FollowVO followVO) {
+    public void delete(FollowVO followVO) {
         followMapper.delete(followVO);
     }
 }

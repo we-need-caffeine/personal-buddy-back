@@ -2,17 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.AlertMapper">
 <!--  알림 발생  -->
-<!--
-    alertType :
-        캘린더 초대장 = calendar,
-        게시판 관련 알림 = borad,
-        일정 알림 = schedule,
-        포인트 획득 = point,
-        팔로우 알림 = follow
-        방명록 알림 = guestBook
-    alertParam :
-        해당 알림의 타입에 따른 id값 없으면 null
--->
+<!--  타입(필수)과 파라미터값으로 해당 알림 해석 멤버가 따로 존재하지 않으면 NULL가능  -->
     <insert id="insert" parameterType="AlertVO">
         INSERT INTO TBL_ALERT (
             ID,
@@ -40,6 +30,7 @@
             ALERT_MESSAGE,
             ALERT_READ,
             ALERT_PARAM,
+            ALERT_CREATE_TIME,
             RECEIVER_MEMBER_ID,
             SENDER_MEMBER_ID
         FROM TBL_ALERT
@@ -57,6 +48,7 @@
     </update>
 
 <!--  알림 삭제  -->
+<!--  알림의 아이디값으로 삭제  -->
     <delete id="delete" parameterType="Long">
         DELETE FROM TBL_ALERT
         WHERE ID = #{id}

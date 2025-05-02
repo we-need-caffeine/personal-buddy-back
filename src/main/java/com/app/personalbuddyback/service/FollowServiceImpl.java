@@ -20,7 +20,7 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public void getFollowers(Long followerMemberId) {
-        followDAO.findFollowers(followerMemberId);
+        followDAO.findFollower(followerMemberId);
     }
 
     @Override
@@ -30,11 +30,11 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public void toggleFollowing(FollowVO followVO) {
-        followDAO.updateFavorite(followVO);
+        followDAO.update(followVO);
     }
 
     @Override
     public void unfollowMember(FollowVO followVO) {
-        followDAO.deleteFollow(followVO);
+        followDAO.delete(followVO);
     }
 }

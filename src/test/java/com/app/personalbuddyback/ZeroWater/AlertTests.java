@@ -2,6 +2,7 @@ package com.app.personalbuddyback.ZeroWater;
 
 import com.app.personalbuddyback.domain.AlertVO;
 import com.app.personalbuddyback.mapper.AlertMapper;
+import com.app.personalbuddyback.service.AlertService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class AlertTests {
 
     @Autowired
     AlertMapper alertMapper;
+    @Autowired
+    AlertService alertService;
 
     //    알람 입력 테스트
     @Test
@@ -59,4 +62,21 @@ public class AlertTests {
     public void alertDeleteAllTest() {
         alertMapper.deleteAll(2L);
     }
+
+//    전체 알림 조회(서비스)
+    @Test
+    public void getAlertsTest() {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("receiverMemberId", Long.valueOf(1));
+        map.put("alertType", "event");
+
+        List<AlertVO> alertVO = alertService.getAlerts(map);
+
+
+        alertVO.forEach(alert -> {
+            log.info("{}", alert);
+        });
+    }
+
 }
