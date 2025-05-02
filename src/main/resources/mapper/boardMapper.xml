@@ -29,24 +29,21 @@
         BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_THUMBNAIL_URL
         FROM VW_BOARD_LIST
         WHERE 1=1
-        <!-- 키워드 검색 -->
-        <if test="keywords != null and !keywords.isEmpty()">
+        <if test="keywords != null and !keywords.isEmpty()"> <!-- 키워드 검색 -->
             AND (
             <foreach item="keyword" collection="keywords" separator="OR">
                 BOARD_TITLE LIKE '%' || #{keyword} || '%'
             </foreach>
             )
         </if>
-        <!-- 해시태그 필터링 -->
-        <if test="hashtags != null and !hashtags.isEmpty()">
+        <if test="hashtags != null and !hashtags.isEmpty()"> <!-- 해시태그 필터링 -->
             AND BOARD_HASHTAG IN
             <foreach item="tag" collection="hashtags" open="(" separator="," close=")">
                 #{tag}
             </foreach>
         </if>
-        <!-- 정렬 조건 -->
         <choose>
-            <when test="sort == 'recent'">
+            <when test="sort == 'recent'"> <!-- 정렬 조건 -->
                 ORDER BY BOARD_CONTENT_CREATE_DATE DESC
             </when>
             <when test="sort == 'like'">
@@ -58,9 +55,8 @@
         </choose>
     </select>
 
-
-
-    <!--    게시글 상세 조회 -->
+<!--    Board Post  -->
+<!--    게시글 상세 조회 -->
     <select id="selectBoardById" parameterType="Long" resultType="BoardViewDTO">
         SELECT ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_UPDATE_DATE,
                BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
@@ -148,6 +144,7 @@
             AND BOARD_ID = #{boardId}
     </select>
 
+<!--    Board Comment  -->
 <!--    게시글 댓글 전체 목록-->
     <select id="selectBoardCommentsByBoardId" parameterType="map" resultType="BoardCommentViewDTO">
         SELECT TBC.ID, TBC.BOARD_COMMENT_CONTENT, TBC.BOARD_COMMENT_CREATE_DATE,

@@ -1,8 +1,6 @@
 package com.app.personalbuddyback.mapper;
-
 import com.app.personalbuddyback.domain.*;
 import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

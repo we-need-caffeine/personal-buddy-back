@@ -1,4 +1,4 @@
-package com.app.personalbuddyback.DyunDyun.Mapper;
+package com.app.personalbuddyback.DyunDyun.mapper.board;
 
 import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.mapper.BoardMapper;
@@ -16,7 +16,7 @@ import java.util.Map;
 @SpringBootTest
 @Slf4j
 @RequiredArgsConstructor
-//@Transactional (rollbackFor = Exception.class)
+@Transactional(rollbackFor = Exception.class)
 public class BoardMapperTests {
 
     @Autowired
@@ -234,8 +234,7 @@ public class BoardMapperTests {
         like.setMemberId(999L);
         boardMapper.insertBoardCommentLike(like);
         log.info("댓글 좋아요 완료");
-    };
-
+    }
 
     // 댓글 좋아요 삭제 테스트
     @Test
