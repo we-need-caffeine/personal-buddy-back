@@ -25,24 +25,27 @@
 <!--    게시글 검색 + 정렬 + 해시태그 필터링 -->
     <select id="selectBoardListBySearch" parameterType="map" resultType="BoardListViewDTO">
         SELECT ID, BOARD_TITLE, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
-               MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
-               BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_THUMBNAIL_URL
+        MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+        BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_THUMBNAIL_URL
         FROM VW_BOARD_LIST
         WHERE 1=1
-        <if test="keywords != null and keywords.size > 0"><!-- 키워드 검색 -->
-            AND(
-                <foreach item="keyword" collection="keywords" separator="OR">
-                    BOARD_TITLE LIKE CONCAT('%', #{keyword}, '%')
-                </foreach>
+        <!-- 키워드 검색 -->
+        <if test="keywords != null and !keywords.isEmpty()">
+            AND (
+            <foreach item="keyword" collection="keywords" separator="OR">
+                BOARD_TITLE LIKE '%' || #{keyword} || '%'
+            </foreach>
             )
         </if>
-        <if test="hashtags != null and hashtags.size > 0"><!-- 해시태그 필터링 -->
+        <!-- 해시태그 필터링 -->
+        <if test="hashtags != null and !hashtags.isEmpty()">
             AND BOARD_HASHTAG IN
             <foreach item="tag" collection="hashtags" open="(" separator="," close=")">
                 #{tag}
             </foreach>
         </if>
-        <choose><!-- 정렬 조건 -->
+        <!-- 정렬 조건 -->
+        <choose>
             <when test="sort == 'recent'">
                 ORDER BY BOARD_CONTENT_CREATE_DATE DESC
             </when>
@@ -55,7 +58,9 @@
         </choose>
     </select>
 
-<!--    게시글 상세 조회 -->
+
+
+    <!--    게시글 상세 조회 -->
     <select id="selectBoardById" parameterType="Long" resultType="BoardViewDTO">
         SELECT ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_UPDATE_DATE,
                BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
@@ -99,7 +104,7 @@
         WHERE BOARD_ID = #{boardId}
     </delete>
 
-    <!-- 특정 이미지 1개 삭제 -->
+<!--    특정 이미지 1개 삭제 -->
     <delete id="deleteBoardImageById" parameterType="Long">
         DELETE FROM TBL_BOARD_IMG
         WHERE ID = #{id}

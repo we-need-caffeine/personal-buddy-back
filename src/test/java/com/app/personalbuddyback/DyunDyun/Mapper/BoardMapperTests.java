@@ -16,7 +16,7 @@ import java.util.Map;
 @SpringBootTest
 @Slf4j
 @RequiredArgsConstructor
-@Transactional (rollbackFor = Exception.class)
+//@Transactional (rollbackFor = Exception.class)
 public class BoardMapperTests {
 
     @Autowired
@@ -51,10 +51,27 @@ public class BoardMapperTests {
         }
     }
 
+    //  게시글 검색 + 정렬 + 해시태그 필터링
+    @Test
+    public void testSelectBoardListBySearch() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("keywords", List.of("테스트"));
+        params.put("hashtags", List.of("#테스트"));
+        params.put("sort", "recent");
+        List<BoardListViewDTO> result = boardMapper.selectBoardListBySearch(params);
+        if (result.isEmpty()) {
+            log.info("검색 결과 없음");
+        } else {
+            for (BoardListViewDTO dto : result) {
+                log.info("검색 결과 게시글 제목: {}", dto.getBoardTitle());
+            }
+        }
+    }
+
     // 게시글 1개 조회 (상세보기) 테스트
     @Test
     public void testSelectPostById() {
-        Long boardId = 1L;
+        Long boardId = 999L;
         BoardViewDTO post = boardMapper.selectBoardById(boardId).orElse(null);
 
         if (post != null) {
@@ -71,8 +88,7 @@ public class BoardMapperTests {
         post.setBoardTitle("테스트 제목");
         post.setBoardContent("테스트 내용.");
         post.setBoardHashtag("#테스트");
-        post.setMemberId(1L);
-
+        post.setMemberId(999L);
         boardMapper.insertBoard(post);
         log.info("게시글 작성 완료");
     }
@@ -81,11 +97,10 @@ public class BoardMapperTests {
     @Test
     public void testUpdatePost() {
         BoardVO post = new BoardVO();
-        post.setId(1L);
+        post.setId(999L);
         post.setBoardTitle("수정된 제목");
         post.setBoardContent("수정된 내용");
         post.setBoardHashtag("#수정");
-
         boardMapper.updateBoard(post);
         log.info("게시글 수정 완료");
     }
@@ -93,7 +108,7 @@ public class BoardMapperTests {
     // 게시글 삭제 테스트
     @Test
     public void testDeletePost() {
-        boardMapper.deleteBoard(1L);
+        boardMapper.deleteBoard(999L);
         log.info("게시글 삭제 완료");
     }
 
@@ -103,7 +118,7 @@ public class BoardMapperTests {
         BoardImgVO image = new BoardImgVO();
         image.setBoardImgName("test.png");
         image.setBoardImgPath("/images");
-        image.setBoardId(1L);
+        image.setBoardId(999L);
 
         boardMapper.insertBoardImage(image);
         log.info("이미지 등록 완료");
@@ -130,17 +145,16 @@ public class BoardMapperTests {
         log.info("조회수 1 증가 완료");
     }
 
-//     게시글 좋아요 추가 테스트
-//    @Test
-//    public void testInsertPostLike() {
-//        BoardLikeVO like = new BoardLikeVO();
-//        like.setBoardId(1L);
-//        like.setMemberId(1L);
-//
-//        boardMapper.insertBoardLike(like);
-//        log.info("좋아요 추가 완료");
-//    }
-    // 밑에 좋아요 삭제는 되는데 왜 추가는 안 되고 난리?
+    // 게시글 좋아요 추가 테스트
+    @Test
+    public void testInsertPostLike() {
+        BoardLikeVO like = new BoardLikeVO();
+        like.setBoardId(999L);
+        like.setMemberId(999L);
+
+        boardMapper.insertBoardLike(like);
+        log.info("좋아요 추가 완료");
+    }
 
     // 게시글 좋아요 삭제 테스트
     @Test
@@ -167,7 +181,7 @@ public class BoardMapperTests {
         }
     }
 
-    // 댓글 목록 조회 테스트 //--> 잘 모르겠음 이해필요
+    // 댓글 목록 조회 테스트
     @Test
     public void testSelectCommentList() {
         Map<String, Object> params = new HashMap<>();
@@ -183,17 +197,17 @@ public class BoardMapperTests {
         }
     }
 
-    // 댓글 작성 테스트 --> 실패
-//    @Test
-//    public void testInsertComment() {
-//        BoardCommentVO comment = new BoardCommentVO();
-//        comment.setBoardId(1L);
-//        comment.setMemberId(1L);
-//        comment.setBoardCommentContent("댓글 내용");
-//
-//        boardMapper.insertBoardComment(comment);
-//        log.info("댓글 등록 완료");
-//    }
+    // 댓글 작성 테스트
+    @Test
+    public void testInsertComment() {
+        BoardCommentVO comment = new BoardCommentVO();
+        comment.setBoardId(999L);
+        comment.setMemberId(999L);
+        comment.setBoardCommentContent("댓글 내용");
+
+        boardMapper.insertBoardComment(comment);
+        log.info("댓글 등록 완료");
+    }
 
     // 댓글 수정 테스트
     @Test
@@ -212,15 +226,15 @@ public class BoardMapperTests {
         log.info("댓글 삭제 완료");
     }
 
-    // 댓글 좋아요 추가 테스트 --> 실패
-//    @Test
-//    public void testInsertCommentLike() {
-//        BoardCommentLikeVO like = new BoardCommentLikeVO();
-//        like.setBoardCommentId(1L);
-//        like.setMemberId(1L);
-//        boardMapper.insertBoardCommentLike(like);
-//        log.info("댓글 좋아요 완료");
-//    }
+    // 댓글 좋아요 추가 테스트
+    @Test
+    public void testInsertCommentLike() {
+        BoardCommentLikeVO like = new BoardCommentLikeVO();
+        like.setBoardCommentId(999L);
+        like.setMemberId(999L);
+        boardMapper.insertBoardCommentLike(like);
+        log.info("댓글 좋아요 완료");
+    };
 
 
     // 댓글 좋아요 삭제 테스트
