@@ -39,7 +39,7 @@ public class AlertAPI {
 
 
 //    해당 유저의 모든 알림을 조회하는 API
-    @Operation(summary = "전체 알림 조회", description = "해당 유저의 전체 알림을 조회하는 API")
+    @Operation(summary = "전체 알림 조회", description = "body(alertType)와 해당 유저의 전체 알림을 조회하는 API")
     @Parameter(
             name = "memberId",
             description = "멤버 아이디",
@@ -47,16 +47,9 @@ public class AlertAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @Parameter(
-            name = "alertType",
-            description = "알림 타입 (선택)",
-            in = ParameterIn.QUERY,
-            schema = @Schema(type = "string"),
-            required = false
-    )
     @ApiResponse(responseCode = "200", description = "알림 전체 조회 성공")
     @GetMapping("list/{memberId}")
-    public List<AlertVO> listAlert(@PathVariable Long memberId, @RequestParam(required = false) String alertType) {
+    public List<AlertVO> listAlert(@PathVariable Long memberId, @RequestBody(required = false) String alertType) {
         Map<String, Object> map = new HashMap<>();
         map.put("receiverMemberId", memberId);
         map.put("alertType", alertType);

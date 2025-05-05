@@ -2,32 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.FollowMapper">
 <!--  팔로워 추가  -->
-<!--  followerMemberId = 팔로우를 받는사람, followingMemberId = 팔로우를 하는사람  -->
+<!--  followerMemberId : 구독된 대상 / followingMemberId : 구독자   -->
     <insert id="insert" parameterType="FollowVO">
         INSERT INTO TBL_FOLLOW (ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID)
         VALUES (SEQ_FOLLOW.NEXTVAL, #{followerMemberId}, #{followingMemberId})
     </insert>
 
 <!--  팔로워 리스트 보기  -->
-<!--  나를 팔로우 한 사람들의 리스트  -->
+<!--  유저를 구독한 사람들의 리스트  -->
     <select id="selectFollower" parameterType="Long" resultType="FollowVO">
-        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
+        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE, FOLLOWING_DATE
         FROM TBL_FOLLOW
         WHERE FOLLOWER_MEMBER_ID = #{followerMemberId}
     </select>
 
 <!--  팔로우 리스트 보기  -->
-<!--  내가 팔로우 한 사람의 리스트  -->
-    <select id="selectFollow" parameterType="Long" resultType="FollowVO">
-        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
+<!--  유저가 구독한 사람들의 리스트  -->
+    <select id="selectFollowing" parameterType="Long" resultType="FollowVO">
+        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE, FOLLOWING_DATE
         FROM TBL_FOLLOW
         WHERE FOLLOWING_MEMBER_ID = #{followingMemberId}
     </select>
 
 <!--  즐겨찾기 조회  -->
-<!--  내가 팔로잉을 한 유저들 중, 즐겨찾기가 1인 유저를 가져오기  -->
+<!--  내가 구독한 유저들 중, 즐겨찾기가 1인 유저를 가져오기  -->
     <select id="selectFavorite" parameterType="Long" resultType="FollowVO">
-        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE
+        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE, FOLLOWING_DATE
         FROM TBL_FOLLOW
         WHERE FOLLOWING_MEMBER_ID = #{followingMemberId} AND FOLLOW_FAVORITE = 1
     </select>

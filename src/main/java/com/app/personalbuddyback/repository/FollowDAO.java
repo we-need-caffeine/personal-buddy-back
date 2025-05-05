@@ -22,7 +22,11 @@ public class FollowDAO {
     }
     //    팔로우 리스트 보기
     public List<FollowVO> findFollowing(Long followingMemberId) {
-        return followMapper.selectFollow(followingMemberId);
+        return followMapper.selectFollowing(followingMemberId);
+    }
+    //    내가 즐겨찾기 한 유저의 리스트
+    public List<FollowVO> findFavorite(Long favoriteMemberId) {
+        return followMapper.selectFavorite(favoriteMemberId);
     }
     //    즐겨찾기 토글
     public void update(FollowVO followVO) {
