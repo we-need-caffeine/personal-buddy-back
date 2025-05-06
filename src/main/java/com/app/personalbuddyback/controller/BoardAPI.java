@@ -2,15 +2,10 @@ package com.app.personalbuddyback.controller;
 
 import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.service.BoardService;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,11 +34,8 @@ public class BoardAPI {
 
     // 게시글 상세 조회
     @GetMapping("/post/{id}")
-    public Optional<BoardViewDTO> getBoardById(
-            @Parameter(name = "id", description = "게시글 ID", in = ParameterIn.PATH, required = true,
-                    schema = @Schema(type = "number"))
-            @PathVariable("id") Long id) {
-        return boardService.getBoardById(id);
+    public BoardViewDTO getBoardById(@PathVariable Long id) {
+        return boardService.getBoardById(id).orElseThrow();
     }
 
     // 게시글 작성

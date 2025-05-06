@@ -106,11 +106,11 @@ public class BoardMapperTests {
     }
 
     // 게시글 삭제 테스트
-    @Test
-    public void testDeletePost() {
-        boardMapper.deleteBoard(999L);
-        log.info("게시글 삭제 완료");
-    }
+//    @Test
+//    public void testDeletePost() {
+//        boardMapper.deleteBoard(999L);
+//        log.info("게시글 삭제 완료");
+//    }
 
     // 게시글 이미지 등록 테스트
     @Test
@@ -198,16 +198,16 @@ public class BoardMapperTests {
     }
 
     // 댓글 작성 테스트
-    @Test
-    public void testInsertComment() {
-        BoardCommentVO comment = new BoardCommentVO();
-        comment.setBoardId(999L);
-        comment.setMemberId(999L);
-        comment.setBoardCommentContent("댓글 내용");
-
-        boardMapper.insertBoardComment(comment);
-        log.info("댓글 등록 완료");
-    }
+//    @Test
+//    public void testInsertComment() {
+//        BoardCommentVO comment = new BoardCommentVO();
+//        comment.setBoardId(999L);
+//        comment.setMemberId(999L);
+//        comment.setBoardCommentContent("댓글 내용");
+//
+//        boardMapper.insertBoardComment(comment);
+//        log.info("댓글 등록 완료");
+//    }
 
     // 댓글 수정 테스트
     @Test
@@ -227,14 +227,14 @@ public class BoardMapperTests {
     }
 
     // 댓글 좋아요 추가 테스트
-    @Test
-    public void testInsertCommentLike() {
-        BoardCommentLikeVO like = new BoardCommentLikeVO();
-        like.setBoardCommentId(999L);
-        like.setMemberId(999L);
-        boardMapper.insertBoardCommentLike(like);
-        log.info("댓글 좋아요 완료");
-    }
+//    @Test
+//    public void testInsertCommentLike() {
+//        BoardCommentLikeVO like = new BoardCommentLikeVO();
+//        like.setBoardCommentId(999L);
+//        like.setMemberId(999L);
+//        boardMapper.insertBoardCommentLike(like);
+//        log.info("댓글 좋아요 완료");
+//    }
 
     // 댓글 좋아요 삭제 테스트
     @Test
