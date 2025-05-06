@@ -41,7 +41,7 @@ public class EventMapperTests {
         log.info("참여 가능한 이벤트 : {}", events.size());
     }
 
-    // 이벤트 참여 등록 테스트 --> 뱅글뱅글 돈다
+    // 이벤트 참여 등록 테스트
 //    @Test
 //    public void testInsertEventJoin() {
 //        EventJoinVO joinVO = new EventJoinVO();
@@ -72,7 +72,7 @@ public class EventMapperTests {
         log.info("조회수 1 증가");
     }
 
-    // 게시글 좋아요 추가 테스트 --> 뱅글뱅글 돈다
+    // 게시글 좋아요 추가 테스트
 //    @Test
 //    public void testInsertEventLike(){
 //        EventLikeVO eventLikeVO = new EventLikeVO();
@@ -116,7 +116,7 @@ public class EventMapperTests {
         log.info("댓글 수 : {}", comments.size());
     }
 
-    // 댓글 작성 테스트 --> 뱅글뱅글 돈다
+    // 댓글 작성 테스트
 //    @Test
 //    public void testInsertEventComment() {
 //        EventCommentVO commentVO = new EventCommentVO();
@@ -137,7 +137,7 @@ public class EventMapperTests {
         log.info("댓글 작성 여부: {}", result);
     }
 
-    // 댓글 좋아요 테스트 --> 실패
+    // 댓글 좋아요 테스트
 //    @Test
 //    public void testInsertEventCommentLike() {
 //        EventCommentLikeVO likeVO = new EventCommentLikeVO();

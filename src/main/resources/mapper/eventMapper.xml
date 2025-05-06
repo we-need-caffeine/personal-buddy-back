@@ -146,29 +146,27 @@
     <!-- 기상 챌린지: 05:00~06:00 사이 -->
     <select id="wakeUpChallengeTime" resultType="int">
         SELECT CASE
-                   WHEN TO_CHAR(SYSDATE, 'HH24:MI:SS') BETWEEN '05:00:00' AND '06:00:00' THEN 1
-                   ELSE 0
-                   END FROM DUAL
+            WHEN TO_CHAR(SYSDATE, 'HH24:MI:SS') BETWEEN '05:00:00' AND '06:00:00' THEN 1
+            ELSE 0
+            END FROM DUAL
     </select>
 
     <!-- 힐링데이 베스트 댓글 (좋아요 Top 3 → 작성일 빠른 순) -->
     <select id="selectBestComments" parameterType="long" resultType="EventCommentViewDTO">
-        SELECT ID,
-        EVENT_COMMENT_DESCRIPTION,
-        COMMENTER_NICKNAME,
-        CREATED_DATE,
-        LIKE_COUNT
+        SELECT ID, EVENT_COMMENT_DESCRIPTION, COMMENTER_NICKNAME, CREATED_DATE, LIKE_COUNT
         FROM (
-        SELECT TEC.ID,
-        TEC.EVENT_COMMENT_DESCRIPTION,
-        TMN.MEMBER_NICKNAME AS COMMENTER_NICKNAME,
-        TO_CHAR(TEC.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
-        (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TEC.ID) AS LIKE_COUNT
-        FROM TBL_EVENT_COMMENT TEC
-        JOIN TBL_MEMBER TMN ON TEC.MEMBER_ID = TMN.ID
-        WHERE TEC.EVENT_ID = #{eventId}
-        ORDER BY LIKE_COUNT DESC, TEC.EVENT_COMMENT_CREATE_DATE
-        )
+            SELECT TEC.ID,
+            TEC.EVENT_COMMENT_DESCRIPTION,
+            TMN.MEMBER_NICKNAME AS COMMENTER_NICKNAME,
+            TO_CHAR(TEC.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
+                (SELECT COUNT(ID)
+                FROM TBL_EVENT_COMMENT_LIKE
+                WHERE EVENT_COMMENT_ID = TEC.ID) AS LIKE_COUNT
+            FROM TBL_EVENT_COMMENT TEC
+            JOIN TBL_MEMBER TMN ON TEC.MEMBER_ID = TMN.ID
+            WHERE TEC.EVENT_ID = #{eventId}
+            ORDER BY LIKE_COUNT DESC, TEC.EVENT_COMMENT_CREATE_DATE
+            )
         WHERE ROWNUM &lt;= 3
     </select>
 
