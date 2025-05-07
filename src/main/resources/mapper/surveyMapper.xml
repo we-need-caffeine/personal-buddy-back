@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.SurveyMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
-    </select>
+<!-- INSERT -->
+    <insert id="insertInterest" parameterType="interestDTO">
+        <selectKey keyProperty="interestId" resultType="Long" order="BEFORE">
+            SELECT SEQ_INTEREST.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_INTEREST
+        VALUES(#{interestId}, #{interestType}, #{memberId})
+    </insert>
+
+    <insert id="insertInterestDetail" parameterType="interestDTO">
+        INSERT INTO TBL_INTEREST_DETAIL
+        VALUES(SEQ_INTEREST_DETAIL.NEXTVAL, #{interestDetailInformation}, #{interestDetailPlace},
+               #{interestDetailShopping}, #{interestId})
+    </insert>
+
+<!-- DELETE -->
+    <delete id="deleteInterestDetailByMemberId" parameterType="Long">
+        DELETE FROM TBL_INTEREST_DETAIL
+        WHERE INTEREST_ID IN(SELECT ID FROM TBL_INTEREST WHERE MEMBER_ID = #{memberId})
+    </delete>
+
+    <delete id="deleteInterestByMemberId" parameterType="Long">
+        DELETE FROM TBL_INTEREST
+        WHERE MEMBER_ID = #{memberId}
+    </delete>
+
 </mapper>
