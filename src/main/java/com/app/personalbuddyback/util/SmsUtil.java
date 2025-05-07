@@ -1,4 +1,4 @@
-package com.app.oauth.util;
+package com.app.personalbuddyback.util;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
@@ -43,7 +43,7 @@ public class SmsUtil {
 
         message.setFrom("여러분들 핸드폰 번호 제발 입력하세요!!"); // 보내는 사람
         message.setTo(toPhoneNumber); // 받는 사람
-        message.setText("[낮잠자는 고양이] 인증번호 \n[" + verificationCode + "]를 입력하세요");
+        message.setText("[퍼스널 버디] 인증번호 \n[" + verificationCode + "]를 입력하세요");
 
         return this.messageService.sendOne(new SingleMessageSendingRequest(message));
     };

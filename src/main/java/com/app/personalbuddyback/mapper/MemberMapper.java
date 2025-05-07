@@ -25,6 +25,9 @@ public interface MemberMapper {
 //    로그인
     public Long selectOne(MemberVO memberVO);
 
+//    이메일로 아이디 조회
+    public Long selectIdByEmail(String email);
+
 //    이메일 찾기 (회원 존재 여부 확인)
     public int selectCountIdByNameAndPhone(MemberVO memberVO);
 
@@ -39,5 +42,8 @@ public interface MemberMapper {
 
 //    비밀번호 변경
     public void updatePassword(MemberVO memberVO);
+
+//    소셜 로그인으로 회원 정보 수정
+    public void updateByOauth(MemberVO memberVO);
 
 }
