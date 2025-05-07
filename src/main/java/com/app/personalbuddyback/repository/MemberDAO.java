@@ -43,6 +43,11 @@ public class MemberDAO {
         return memberMapper.selectOne(memberVO);
     }
 
+//    이메일로 회원 아이디 조회
+    public Long selectIdByEmail(String email) {
+        return memberMapper.selectIdByEmail(email);
+    }
+
 //    이메일 찾기 (회원 존재 여부 확인)
     public int selectCountIdByNameAndPhone(MemberVO memberVO) {
         return memberMapper.selectCountIdByNameAndPhone(memberVO);
@@ -66,5 +71,10 @@ public class MemberDAO {
 //    비밀번호 변경
     public void updatePassword(MemberVO memberVO) {
         memberMapper.updatePassword(memberVO);
+    }
+
+//    소셜 로그인으로 회원 정보 수정
+    public void updateByOauth(MemberVO memberVO) {
+        memberMapper.updateByOauth(memberVO);
     }
 }
