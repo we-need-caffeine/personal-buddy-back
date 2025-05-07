@@ -4,14 +4,39 @@
 
     <!-- 투두리스트 등록 -->
     <insert id="insertTodoList" parameterType="ToDoListVO">
-        INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, TODOLIST_IS_COMPLETED, CALENDAR_ID)
-        VALUES (SEQ_TODOLIST.NEXTVAL, #{todoListContent}, #{todoListIsCompleted}, #{calendarId})
+        <if test="todoListIsCompleted != null">
+            INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, CALENDAR_ID)
+            VALUES (
+                SEQ_TODOLIST.NEXTVAL,
+                #{todoListContent},
+                #{calendarId},
+            )
+        </if>
+        <if test="todoListIsCompleted == null">
+            INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, TODOLIST_IS_COMPLETED, CALENDAR_ID)
+            VALUES (
+                SEQ_TODOLIST.NEXTVAL,
+                #{todoListContent},
+                #{todoListIsCompleted},
+                #{calendarId}
+            )
+        </if>
     </insert>
 
     <!-- 캘린더 등록 -->
     <insert id="insertCalendar" parameterType="CalendarVO">
-        INSERT INTO TBL_CALENDAR (ID, CALENDAR_TITLE, CALENDAR_INDEX, CALENDAR_IS_GROUP, CALENDAR_MEMBER_ID, TODOLIST_ID)
-        VALUES (SEQ_CALENDAR.NEXTVAL, #{calendarTitle}, #{calendarIndex}, #{calendarIsGroup}, #{calendarMemberId}, #{todoListId})
+        INSERT INTO TBL_CALENDAR (
+        ID, CALENDAR_TITLE, CALENDAR_INDEX, CALENDAR_IS_GROUP, CALENDAR_MEMBER_ID
+        ) VALUES (
+        SEQ_CALENDAR.NEXTVAL,
+        #{calendarTitle},
+        #{calendarIndex},
+        <choose>
+            <when test="calendarIsGroup != null">#{calendarIsGroup}</when>
+            <otherwise>0</otherwise>
+        </choose>,
+        #{calendarMemberId}
+        )
     </insert>
 
     <!-- 일정 멤버 그룹 등록  -->
@@ -32,22 +57,55 @@
 
     <!-- 일정 등록 -->
     <insert id="insertSchedule" parameterType="ScheduleVO">
-        INSERT INTO TBL_SCHEDULE (ID,SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
-                                  SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT, CALENDAR_ID, SCHEDULE_MEMBER_GROUP_ID)
-        VALUES (SEQ_SCHEDULE.NEXTVAL, #{scheduleTitle}, #{scheduleContent}, #{scheduleStartDate}, #{scheduleEndDate},
-                #{scheduleCreatedDate}, #{scheduleColor}, #{scheduleCategory}, #{scheduleRepeat}, #{calendarId}, #{scheduleMemberGroupId})
+        INSERT INTO TBL_SCHEDULE (
+        ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
+        SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT,
+        CALENDAR_ID, SCHEDULE_MEMBER_GROUP_ID
+        ) VALUES (
+        SEQ_SCHEDULE.NEXTVAL,
+        #{scheduleTitle},
+        #{scheduleContent},
+        #{scheduleStartDate},
+        #{scheduleEndDate},
+        <choose>
+            <when test="scheduleCreatedDate != null">#{scheduleCreatedDate}</when>
+            <otherwise>SYSDATE</otherwise>
+        </choose>,
+        <choose>
+            <when test="scheduleColor != null">#{scheduleColor}</when>
+            <otherwise>'green'</otherwise>
+        </choose>,
+        #{scheduleCategory},
+        <choose>
+            <when test="scheduleRepeat != null">#{scheduleRepeat}</when>
+            <otherwise>0</otherwise>
+        </choose>,
+        #{calendarId},
+        #{scheduleMemberGroupId}
+        )
     </insert>
 
     <!--  캘린더 초대 등록 -->
     <insert id="insertCalendarInvite" parameterType="CalendarInviteVO">
         INSERT INTO TBL_CALENDAR_INVITE (ID, CALENDAR_INVITE_INVITED_MEMBER_ID, CALENDAR_INVITE_HOST_ID, CALENDAR_INVITE_IS_APPROVED, CALENDAR_ID)
-        VALUES (SEQ_CALENDAR_INVITE_GROUP.NEXTVAL, #{calendarInviteInvitedMemberId}, #{calendarInviteHostId}, #{calendarInviteIsApproved}, #{calendarId})
+        VALUES (
+                SEQ_CALENDAR_INVITE_GROUP.NEXTVAL,
+                <if test="calendarInviteInvitedMemberId != null">#{calendarInviteInvitedMemberId}</if>,
+                #{calendarInviteHostId},
+                #{calendarInviteIsApproved},
+                #{calendarId}
+        )
     </insert>
 
     <!-- 캘린더 멤버 등록 -->
     <insert id="insertCalendarMember" parameterType="CalendarMemberVO">
         INSERT INTO TBL_CALENDAR_MEMBER (ID, CALENDAR_MEMBER_IS_HOST, CALENDAR_ID, MEMBER_ID)
-        VALUES (SEQ_CALENDAR_MEMBER_GROUP.NEXTVAL, #{calendarMemberIsHost}, #{calendarId}, #{memberId})
+        VALUES (
+                SEQ_CALENDAR_MEMBER_GROUP.NEXTVAL,
+                <if test ="calendarMemberIsHost != null">#{calendarMemberIsHost}</if>,
+                #{calendarId},
+                #{memberId}
+        )
     </insert>
 
     <!-- 일정 전체 조회 -->
@@ -156,7 +214,7 @@
     <!-- 투두리스트 수정 -->
     <update id="updateTodoList" parameterType="ToDoListVO">
         UPDATE TBL_TODOLIST
-        SET TODOLIST_CONTENT = #{todoListCOntent}, TODOLIST_IS_COMPLETED = #{todoListIsCompleted}
+        SET TODOLIST_CONTENT = #{todoListContent}, TODOLIST_IS_COMPLETED = #{todoListIsCompleted}
         WHERE ID = #{id}
     </update>
 

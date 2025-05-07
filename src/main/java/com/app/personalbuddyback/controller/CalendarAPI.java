@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,7 +18,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/calendars/api/*")
-
+@Slf4j
 public class CalendarAPI {
 
     private final CalendarService calendarService;
@@ -28,6 +29,7 @@ public class CalendarAPI {
     @PostMapping("/register")
     public void registerCalendar(@RequestBody CalendarVO calendarVO) {
         calendarService.registerCalendar(calendarVO);
+        log.info("calendarVO = {}", calendarVO);
     }
 
     @Operation(summary = "캘린더 전체 조회", description = "캘린더 전체를 조회할 수 있는 API")
@@ -172,7 +174,7 @@ public class CalendarAPI {
         calendarService.modifyTodoList(toDoListVO);
     }
 
-    @Operation(summary = "투두리스트 수정", description = "투두리스트 항목을 수정하는 API")
+    @Operation(summary = "투두리스트 삭제", description = "투두리스트 항목을 삭제하는 API")
     @DeleteMapping("/todoLists/{todoListId}")
     public void deleteTodoList(@PathVariable Long todoListId) {
         calendarService.deleteTodoList(todoListId);
