@@ -1,7 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.AchievementMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
+    <insert id="insertAchievement" parameterType="AchievementVO">
+        INSERT INTO TBL_ACHIEVEMENT (ID,
+                                     ACHIEVEMENT_NAME,
+                                     ACHIEVEMENT_SCHEDULE_CATEGORY,
+                                     ACHIEVEMENT_IMG_PATH,
+                                     ACHIEVEMENT_IMG_NAME,
+                                     ACHIEVEMENT_MISSION_COUNT,
+                                     ACHIEVEMENT_GET_POINT)
+        VALUES (SEQ_ACHIEVEMENT.NEXTVAL,
+                #{achievementName},
+                #{achievementScheduleCategory},
+                #{acheivementImgPath},
+                #{achievementImgName},
+                #{achievementMissonCount},
+                #{achievementGetPoint})
+    </insert>
+
+    <!--    업적 완료 테이블 추가    -->
+    <insert id="insertAchievementComplete" parameterType="AchievementCompleteVO">
+        INSERT INTO TBL_ACHIEVEMENT_COMPLETE(ID, ACHIEVEMENT_CURRENT_MISSION_COUNT, ACHIEVEMENT_ID)
+        VALUES (SEQ_ACHIEVEMENT_COMPLETE.NEXTVAL, #{achievementCurrentMissonCount}, #{achievementId})
+    </insert>
+
+    <!--    회원 번호 - 업적완료 연결 테이블 추가      -->
+    <insert id="insertMemberAchievement" parameterType="MemberAchievementVO">
+        INSERT INTO TBL_MEMBER_ACHIEVEMENT(ID, MEMBER_ACHIEVEMENT_DISPLAY , MEMBER_ID, ACHIEVEMENT_COMPLETE_ID)
+        VALUES (SEQ_MEMBER_ACHIEVEMENT.NEXTVAL, #{memberAchievementDisplay}, #{memberId}, #{achievementCompleteId})
+    </insert>
+
+    <!--    회원 번호를 통한 전체 업적 리스트 조회      -->
+    <select id="selectAchievementsByMemberId" parameterType="memberId" resultType="AchievementViewDTO">
+        SELECT
+            TA.ID AS ID,
+            TAC.ID AS ACHIEVEMENT_COMPLETE_ID,
+            TMA.ID AS MEMBER_ACHIEVEMENT_ID,
+            TA.ACHIEVEMENT_SCHEDULE_CATEGORY AS ACHIEVEMENT_SCHEDULE_CATEGORY,
+            TA.ACHIEVEMENT_IMG_PATH AS ACHIEVEMENT_IMG_PATH,
+            TA.ACHIEVEMENT_IMG_NAME AS ACHIEVEMENT_IMG_NAME,
+            TA.ACHIEVEMENT_GET_POINT AS ACHIEVEMENT_GET_POINT,
+            TA.ACHIEVEMENT_MISSION_COUNT AS ACHIEVEMENT_MISSION_COUNT,
+            TAC.ACHIEVEMENT_CURRENT_MISSION_COUNT AS ACHIEVEMENT_CURRENT_MISSION_COUNT,
+            TMA.MEMBER_ACHIEVEMENT_DISPLAY AS MEMBER_ACHIEVEMENT_DISPLAY
+        FROM TBL_ACHIEVEMENT TA
+        JOIN HR.TBL_ACHIEVEMENT_COMPLETE TAC
+            ON TA.ID = TAC.ACHIEVEMENT_ID
+        JOIN HR.TBL_MEMBER_ACHIEVEMENT TMA
+            ON TAC.ID = TMA.ACHIEVEMENT_COMPLETE_ID
+        WHERE TMA.MEMBER_ID = #{id}
     </select>
+
+    <update id="updateAchievementComplete" parameterType="AchievementCompleteVO">
+        UPDATE TBL_ACHIEVEMENT_COMPLETE
+        SET ACHIEVEMENT_CURRENT_MISSION_COUNT = #{achievementCurrentMissonCount}
+        WHERE ID = #{id}
+    </update>
 </mapper>
