@@ -5,46 +5,83 @@
 <!-- 회원가입 -->
     <insert id="insert" parameterType="MemberVO">
         INSERT INTO TBL_MEMBER
-        VALUES(#{id}, #{memberNickName}, #{memberStatusMessage}, #{memberName},
-               #{memberGender}, #{memberPassword}, #{memberBirth}, #{memberPhone}, #{memberEmail},
-               #{memberImgName}, #{memberImgPath}, #{memberAdmin}, #{memberCreateDate}, #{memberPoint},
-               #{memberTermServiceAgree}, #{memberTermInformationAgree}, #{memberTermLocationAgree},
-               #{memberTermPromotionAgree})
+        VALUES(SEQ_MEMBER.NEXTVAL, #{memberEmail}, #{memberPassword}, #{memberName}, #{memberBirth},
+               #{memberGender}, #{memberPhone}, #{memberNickName}, #{memberStatusMessage}, #{memberImgName},
+               #{memberImgPath}, #{memberPoint}, #{memberAdmin}, #{memberCreateDate}, #{memberTermServiceAgree},
+               #{memberTermInformationAgree}, #{memberTermLocationAgree}, #{memberTermPromotionAgree}, #{memberProvider})
     </insert>
 
-<!-- 이메일 중복 체크 -->
-    <select id="checkEmail" parameterType="string" resultType="int">
-        SELECT COUNT(*)
+<!-- ID로 회원 상세 정보 조회 -->
+    <select id="selectMemberInfoById" parameterType="Long" resultType="MemberVO">
+        SELECT ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE,
+               MEMBER_NICKNAME, MEMBER_STATUS_MESSAGE, MEMBER_IMG_NAME, MEMBER_IMG_PATH, MEMBER_POINT,
+               MEMBER_ADMIN, MEMBER_CREATE_DATE, MEMBER_TERM_SERVICE_AGREE, MEMBER_TERM_INFORMATION_AGREE,
+               MEMBER_TERM_LOCATION_AGREE, MEMBER_TERM_PROMOTION_AGREE, MEMBER_PROVIDER
+        FROM TBL_MEMBER
+        WHERE ID = #{id}
+    </select>
+
+<!-- 이메일 중복 체크 & 이메일 존재 여부 확인(비밀번호 찾기) -->
+    <select id="selectCountIdByEmail" parameterType="String" resultType="_int">
+        SELECT COUNT(ID)
         FROM TBL_MEMBER
         WHERE MEMBER_EMAIL = #{memberEmail}
     </select>
 
 <!-- 전화번호 중복 체크 -->
-    <select id="checkPhone" parameterType="string" resultType="int">
-        SELECT COUNT(*)
+    <select id="selectCountIdByPhone" parameterType="String" resultType="_int">
+        SELECT COUNT(ID)
         FROM TBL_MEMBER
         WHERE MEMBER_PHONE = #{memberPhone}
     </select>
 
 <!-- 닉네임 중복 체크 -->
-    <select id="checkNickname" parameterType="string" resultType="int">
-        SELECT COUNT(*)
+    <select id="selectCountIdByNickName" parameterType="String" resultType="_int">
+        SELECT COUNT(ID)
         FROM TBL_MEMBER
         WHERE MEMBER_NICKNAME = #{memberNickName}
     </select>
 
-<!-- ID 생성 -->
-    <select id="selectNextId" resultType="Long">
-        SELECT SEQ_MEMBER.NEXTVAL
-        FROM DUAL
-    </select>
-
-<!--  -->
-
 <!-- 로그인 -->
-    <select id="selectOne" parameterType="MemberVO">
-        SELECT MEMBER_EMAIL, MEMBER_PASSWORD
+    <select id="selectOne" parameterType="MemberVO" resultType="Long">
+        SELECT ID
         FROM TBL_MEMBER
-        WHERE MEMBER_EMAIL = ${memberEmail} AND MEMBER_PASSWORD = ${memberPassword}
+        WHERE MEMBER_EMAIL = #{memberEmail} AND MEMBER_PASSWORD = #{memberPassword}
     </select>
+
+<!-- 이메일 찾기 (회원 존재 여부 확인) -->
+    <select id="selectCountIdByNameAndPhone" parameterType="MemberVO" resultType="_int">
+        SELECT COUNT(ID)
+        FROM TBL_MEMBER
+        WHERE MEMBER_NAME = #{memberName} AND MEMBER_PHONE = #{memberPhone}
+    </select>
+
+<!-- 이메일 찾기 (회원 이메일 조회) -->
+    <select id="selectEmailByNameAndPhone" parameterType="MemberVO" resultType="String">
+        SELECT MEMBER_EMAIL
+        FROM TBL_MEMBER
+        WHERE MEMBER_NAME = #{memberName} AND MEMBER_PHONE = #{memberPhone}
+    </select>
+
+<!-- 비밀번호 찾기 (이름과 이메일이 일치하는 회원 존재 여부 확인) -->
+    <select id="selectCountIdByNameAndEmail" parameterType="MemberVO" resultType="_int">
+        SELECT COUNT(ID)
+        FROM TBL_MEMBER
+        WHERE MEMBER_NAME = #{memberName} AND MEMBER_EMAIL = #{memberEmail}
+    </select>
+
+<!-- 비밀번호 찾기 (이름과 이메일이 일치하는 회원의 ID 조회) -->
+    <select id="selectIdByNameAndEmail" parameterType="MemberVO" resultType="Long">
+        SELECT ID
+        FROM TBL_MEMBER
+        WHERE MEMBER_NAME = #{memberName} AND MEMBER_EMAIL = #{memberEmail}
+    </select>
+
+<!-- 비밀번호 변경 -->
+    <update id="updatePassword" parameterType="MemberVO">
+        UPDATE TBL_MEMBER
+        SET MEMBER_PASSWORD = #{memberPassword}
+        WHERE ID = #{id}
+    </update>
+
 </mapper>
