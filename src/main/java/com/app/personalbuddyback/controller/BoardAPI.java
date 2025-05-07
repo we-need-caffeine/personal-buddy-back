@@ -111,7 +111,7 @@ public class BoardAPI {
         return boardService.isBoardLiked(boardLikeVO);
     }
 
-    // ---------------------------- [댓글] ----------------------------
+
 
     // 게시글 댓글 전체 목록
     @GetMapping("/post/comment/list")
