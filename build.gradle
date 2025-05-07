@@ -31,6 +31,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'net.nurigo:sdk:4.3.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
