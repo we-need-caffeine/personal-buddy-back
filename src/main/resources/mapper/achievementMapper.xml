@@ -31,7 +31,7 @@
     </insert>
 
     <!--    회원 번호를 통한 전체 업적 리스트 조회      -->
-    <select id="selectAchievementsByMemberId" parameterType="memberId" resultType="AchievementViewDTO">
+    <select id="selectAchievementsByMemberId" parameterType="Long" resultType="AchievementViewDTO">
         SELECT
             TA.ID AS ID,
             TAC.ID AS ACHIEVEMENT_COMPLETE_ID,
