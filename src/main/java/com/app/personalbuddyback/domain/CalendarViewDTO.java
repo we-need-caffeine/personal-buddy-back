@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Component
@@ -18,14 +19,15 @@ public class CalendarViewDTO {
     private Long todoListId;
 
 //  캘린더 초대 그룹 VO
-    private Long calendarInviteGroupInvitedMemberId;
-    private Long calendarInviteGroupHostId;
-    private Integer calendarInviteGroupIsApproved;
+    private Long calendarInviteInvitedMemberId;
+    private Long calendarInviteHostId;
+    private Integer calendarInviteIsApproved;
 
 //  캘린더 맴버 그룹 VO
-    private Integer calendarMemberGroupIsHost;
+    private Integer calendarMemberIsHost;
 
 //  스케줄 VO
+    private ScheduleVO scheduleVO;
     private String scheduleTitle;
     private String scheduleContent;
     private Date scheduleStartDate;
@@ -35,4 +37,6 @@ public class CalendarViewDTO {
     private String scheduleCategory;
     private Integer scheduleRepeat;
     private Long scheduleMemberGroupId;
+
+    private List<Long> memberIds;
 }
