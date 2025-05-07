@@ -1,4 +1,4 @@
-package com.app.personalbuddyback.ZeroWater;
+package com.app.personalbuddyback.JinYoung.ZeroWater;
 
 import com.app.personalbuddyback.domain.GuestBookVO;
 import com.app.personalbuddyback.mapper.GuestBookMapper;
