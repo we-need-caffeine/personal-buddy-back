@@ -28,4 +28,6 @@ public class AchievementViewDTO {
     private int achievementMissionCount;
     @Schema(description = "업적 완료 진행도 횟수", required = true, example = "2")
     private int achievementCurrentMissionCount;
+    @Schema(description = "대표 업적 표시 정보", required = true, example = "1 : 대표 업적 표시 O / 0 : 대표업적 표시 X")
+    private int memberAchievementDisplay;
 }
