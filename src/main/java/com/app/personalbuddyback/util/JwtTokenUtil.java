@@ -1,4 +1,4 @@
-package com.app.oauth.util;
+package com.app.personalbuddyback.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
