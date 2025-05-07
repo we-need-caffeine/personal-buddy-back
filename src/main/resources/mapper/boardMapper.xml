@@ -135,7 +135,7 @@
         WHERE MEMBER_ID = #{memberId}
             AND BOARD_ID = #{boardId}
     </delete>
-    
+
 <!--    게시글 좋아요 여부 조회-->
     <select id="checkBoardLike" parameterType="BoardLikeVO" resultType="_int">
         SELECT COUNT(ID)
