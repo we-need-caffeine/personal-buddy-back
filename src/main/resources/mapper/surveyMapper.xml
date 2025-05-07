@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.SurveyMapper">
 <!-- INSERT -->
-    <insert id="insertInterest" parameterType="interestDTO">
+    <insert id="insertInterest" parameterType="InterestDTO">
         <selectKey keyProperty="interestId" resultType="Long" order="BEFORE">
             SELECT SEQ_INTEREST.NEXTVAL FROM DUAL
         </selectKey>
@@ -10,7 +10,7 @@
         VALUES(#{interestId}, #{interestType}, #{memberId})
     </insert>
 
-    <insert id="insertInterestDetail" parameterType="interestDTO">
+    <insert id="insertInterestDetail" parameterType="InterestDTO">
         INSERT INTO TBL_INTEREST_DETAIL
         VALUES(SEQ_INTEREST_DETAIL.NEXTVAL, #{interestDetailInformation}, #{interestDetailPlace},
                #{interestDetailShopping}, #{interestId})

@@ -46,7 +46,7 @@
         <typeAlias type="com.app.personalbuddyback.domain.ScheduleMemberGroupVO" alias="ScheduleMemberGroupVO" />
         <typeAlias type="com.app.personalbuddyback.domain.CalendarViewDTO" alias="CalendarViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.ToDoListVO" alias="ToDoListVO" />
-            <typeAlias type="com.app.personalbuddyback.domain.ScheduleGroupMemberVO" alias="ScheduleGroupMemberVO" />
+    <typeAlias type="com.app.personalbuddyback.domain.ScheduleGroupMemberVO" alias="ScheduleGroupMemberVO" />
 
 <!--        설문조사 / 추천항목 관련 테이블      -->
         <typeAlias type="com.app.personalbuddyback.domain.InterestVO" alias="InterestVO" />
