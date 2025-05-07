@@ -19,9 +19,7 @@
 <!-- DELETE -->
     <delete id="deleteInterestDetailByMemberId" parameterType="Long">
         DELETE FROM TBL_INTEREST_DETAIL
-        WHERE INTEREST_ID IN(
-            SELECT ID FROM TBL_INTEREST WHERE MEMBER_ID = #{memberId}
-            )
+        WHERE INTEREST_ID IN(SELECT ID FROM TBL_INTEREST WHERE MEMBER_ID = #{memberId})
     </delete>
 
     <delete id="deleteInterestByMemberId" parameterType="Long">

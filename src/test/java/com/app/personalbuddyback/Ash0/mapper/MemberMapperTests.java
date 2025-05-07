@@ -21,7 +21,6 @@ public class MemberMapperTests {
 //    회원가입
     @Test
     public void insertTest() {
-
         MemberVO memberVO = new MemberVO();
         memberVO.setId(1L);
         memberVO.setMemberEmail("oasis1340@gmail.com");
@@ -34,7 +33,7 @@ public class MemberMapperTests {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        memberVO.setMemberGender("남성");
+        memberVO.setMemberGender("남자");
         memberVO.setMemberPhone("010-1234-5678");
         memberVO.setMemberNickName("babo");
         memberVO.setMemberStatusMessage("반갑읍니다");
@@ -70,6 +69,15 @@ public class MemberMapperTests {
         log.info("{}", memberMapper.selectCountIdByNickName("babo"));
     }
 
+//     ID로 회원 상세 정보 조회
+    @Test
+    public void selectMemberInfoByIdTest() {
+        MemberVO memberVO = new MemberVO();
+        memberVO.setId(2L);
+        log.info("======checkMemberInfoByIdTest======");
+        log.info("{}", memberMapper.selectMemberInfoById(memberVO.getId()));
+    }
+
 //    로그인
     @Test
     public void selectOneTest() {
@@ -81,23 +89,48 @@ public class MemberMapperTests {
         log.info("{}", memberId);
     }
 
-//    이메일 찾기
+//    이메일 찾기 (회원 존재 여부 확인)
     @Test
-    public void selectEmailByPhoneTest() {
-        String memberEmail = memberMapper.selectEmailByPhone("010-1234-5678");
+    public void selectCountIdByNameAndPhoneTest() {
+        MemberVO memberVO = new MemberVO();
+        memberVO.setMemberName("장재영");
+        memberVO.setMemberPhone("010-1234-5678");
+        int countId = memberMapper.selectCountIdByNameAndPhone(memberVO);
         log.info("======selectEmailByPhoneTest======");
-        log.info("{}", memberEmail);
+        log.info("{}", countId);
     }
 
-//    비밀번호 찾기
+//    이메일 찾기 (회원 이메일 조회)
+    @Test
+    public void selectEmailByNameAndPhoneTest() {
+        MemberVO memberVO = new MemberVO();
+        memberVO.setMemberName("장재영");
+        memberVO.setMemberPhone("010-1234-5678");
+        String email = memberMapper.selectEmailByNameAndPhone(memberVO);
+        log.info("======selectEmailByEmailTest======");
+        log.info("{}", email);
+    }
+
+//    비밀번호 찾기 (이름과 이메일이 일치하는 회원 존재 여부 확인)
     @Test
     public void selectMemberByNameAndEmailTest() {
         MemberVO memberVO = new MemberVO();
         memberVO.setMemberName("장재영");
         memberVO.setMemberEmail("oasis1340@gmail.com");
-        Long memberId = memberMapper.selectMemberByNameAndEmail(memberVO);
+        int foundMember = memberMapper.selectCountIdByNameAndEmail(memberVO);
         log.info("======selectMemberByNameAndEmailTest======");
-        log.info("{}", memberId);
+        log.info("{}", foundMember);
+    }
+
+//    비밀번호 찾기 (이름과 이메일이 일치하는 회원의 ID 조회)
+    @Test
+    public void selectIdByNameAndEmailTest() {
+        MemberVO memberVO = new MemberVO();
+        memberVO.setMemberName("장재영");
+        memberVO.setMemberEmail("oasis1340@gmail.com");
+        Long id = memberMapper.selectIdByNameAndEmail(memberVO);
+        log.info("======selectIdByNameAndEmailTest======");
+        log.info("{}", id);
     }
 
 //    비밀번호 변경

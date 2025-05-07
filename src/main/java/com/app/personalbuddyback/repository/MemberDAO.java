@@ -5,6 +5,8 @@ import com.app.personalbuddyback.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class MemberDAO {
@@ -14,6 +16,11 @@ public class MemberDAO {
 //    회원가입
     public void insert(MemberVO memberVO) {
         memberMapper.insert(memberVO);
+    }
+
+//    ID로 회원 상세 정보 조회
+    public Optional<MemberVO> selectMemberById(Long id){
+        return memberMapper.selectMemberInfoById(id);
     }
 
 //    이메일 중복 체크
@@ -32,18 +39,28 @@ public class MemberDAO {
     }
 
 //    로그인
-    public void selectOne(MemberVO memberVO) {
-        memberMapper.selectOne(memberVO);
+    public Long selectOne(MemberVO memberVO) {
+        return memberMapper.selectOne(memberVO);
     }
 
-//    이메일 찾기
-    public String selectEmailByPhone(String phone) {
-        return memberMapper.selectEmailByPhone(phone);
+//    이메일 찾기 (회원 존재 여부 확인)
+    public int selectCountIdByNameAndPhone(MemberVO memberVO) {
+        return memberMapper.selectCountIdByNameAndPhone(memberVO);
     }
 
-//    비밀번호 찾기
-    public Long selectMemberByNameAndEmail(MemberVO memberVO) {
-        return memberMapper.selectMemberByNameAndEmail(memberVO);
+//    이메일 찾기 (회원 이메일 조회)
+    public String selectEmailByNameAndPhone(MemberVO memberVO) {
+        return memberMapper.selectEmailByNameAndPhone(memberVO);
+    }
+
+//    비밀번호 찾기 (이름과 이메일이 일치하는 회원 존재 여부 확인)
+    public int selectCountIdByNameAndEmail(MemberVO memberVO) {
+        return memberMapper.selectCountIdByNameAndEmail(memberVO);
+    }
+
+//    비밀번호 찾기 (이름과 이메일이 일치하는 회원의 ID 조회)
+    public Long selectIdByNameAndEmail(MemberVO memberVO) {
+        return memberMapper.selectIdByNameAndEmail(memberVO);
     }
 
 //    비밀번호 변경

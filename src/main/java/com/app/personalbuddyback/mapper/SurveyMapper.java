@@ -10,7 +10,7 @@ public interface SurveyMapper {
 //    설문조사 상세 추가
     public void insertInterestDetail(InterestDTO interestDTO);
 //    설문조사 상세 제거
-    public void deleteInterestDetail(Long memberId);
+    public void deleteInterestDetailByMemberId(Long memberId);
 //    설문조사 대분류 제거
-    public void deleteInterest(Long memberId);
+    public void deleteInterestByMemberId(Long memberId);
 }
