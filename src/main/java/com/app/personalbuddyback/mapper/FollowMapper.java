@@ -9,10 +9,12 @@ import java.util.List;
 public interface FollowMapper {
 //    팔로워 추가
     public void insert(FollowVO followVO);
-//    팔로워 리스트 포기
+//    나를 구독한 유저
     public List<FollowVO> selectFollower(Long followerMemberId);
-//    팔로우 리스트 보기
-    public List<FollowVO> selectFollow(Long followingMemberId);
+//    내가 구독한 유저
+    public List<FollowVO> selectFollowing(Long followingMemberId);
+//    즐겨찾기 한 유저의 리스트
+    public List<FollowVO> selectFavorite(Long favoriteMemberId);
 //    즐겨찾기 토글
     public void update(FollowVO followVO);
 //    팔로우 취소

@@ -5,6 +5,7 @@ import com.app.personalbuddyback.repository.AlertDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,12 +20,12 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public void getAlerts(Map<String, Object> map) {
-        alertDAO.findAll(map);
+    public List<AlertVO> getAlerts(Map<String, Object> map) {
+        return alertDAO.findAll(map);
     }
 
     @Override
-    public void readAlert(Long id) {
+    public void alertChangeRead(Long id) {
         alertDAO.update(id);
     }
 

@@ -19,22 +19,27 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public void getFollowers(Long followerMemberId) {
-        followDAO.findFollowers(followerMemberId);
+    public List<FollowVO> getMyFollower(Long followerMemberId) {
+        return followDAO.findFollower(followerMemberId);
     }
 
     @Override
-    public void getFollowing(Long followingMemberId) {
-        followDAO.findFollowing(followingMemberId);
+    public List<FollowVO> getMyFollowing(Long followingMemberId) {
+        return followDAO.findFollowing(followingMemberId);
+    }
+
+    @Override
+    public List<FollowVO> getMyFavorite(Long favoriteMemberId) {
+        return followDAO.findFavorite(favoriteMemberId);
     }
 
     @Override
     public void toggleFollowing(FollowVO followVO) {
-        followDAO.updateFavorite(followVO);
+        followDAO.update(followVO);
     }
 
     @Override
     public void unfollowMember(FollowVO followVO) {
-        followDAO.deleteFollow(followVO);
+        followDAO.delete(followVO);
     }
 }

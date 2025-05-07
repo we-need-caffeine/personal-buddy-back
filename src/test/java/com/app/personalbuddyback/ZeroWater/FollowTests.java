@@ -35,7 +35,7 @@ public class FollowTests {
     //    팔로우 리스트 보기
     @Test
     public void selectFollowTest() {
-        List<FollowVO> followList = followMapper.selectFollow(2L);
+        List<FollowVO> followList = followMapper.selectFollowing(2L);
         log.info(followList.toString());
     }
     //    즐겨찾기 토글
