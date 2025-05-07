@@ -89,7 +89,9 @@ public class BoardDAO {
         return boardMapper.selectBoardCommentsByBoardId(params);
     }
 
-    // 댓글 작석
+// ---------------------------- [댓글] ----------------------------
+
+    // 댓글 작성
     public void saveComment(BoardCommentVO commentVO) {
         boardMapper.insertBoardComment(commentVO);
     }

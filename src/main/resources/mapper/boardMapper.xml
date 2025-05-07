@@ -68,9 +68,12 @@
 
 <!--    게시글 작성-->
     <insert id="insertBoard" parameterType="BoardVO">
+        <selectKey keyProperty="boardId" resultType="Long" order="BEFORE">
+            SELECT SEQ_BOARD.NEXTVAL FROM DUAL
+        </selectKey>
         INSERT INTO TBL_BOARD ( ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_VIEWS, BOARD_CONTENT_CREATE_DATE,
                                 BOARD_CONTENT_UPDATE_DATE, BOARD_HASHTAG,MEMBER_ID
-        ) VALUES ( SEQ_BOARD.NEXTVAL, #{boardTitle}, #{boardContent}, 0, SYSDATE,
+        ) VALUES (#{boardId}, #{boardTitle}, #{boardContent}, 0, SYSDATE,
                   SYSDATE, #{boardHashtag}, #{memberId}
         )
     </insert>
