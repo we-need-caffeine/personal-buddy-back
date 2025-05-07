@@ -11,6 +11,7 @@
 
 <!--        업적 관련 테이블       -->
         <typeAlias type="com.app.personalbuddyback.domain.AchievementVO" alias="AchievementVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.AchievementCompleteVO" alias="AchievementCompleteVO" />
         <typeAlias type="com.app.personalbuddyback.domain.AchievementViewDTO" alias="AchievementViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.MemberAchievementVO" alias="MemberAchievementVO" />
 
