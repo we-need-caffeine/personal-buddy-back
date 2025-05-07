@@ -2,43 +2,169 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.CalendarMapper">
 
+    <!-- 투두리스트 등록 -->
+    <insert id="insertTodoList" parameterType="ToDoListVO">
+        INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, TODOLIST_IS_COMPLETED, CALENDAR_ID)
+        VALUES (SEQ_TODOLIST.NEXTVAL, #{todoListContent}, #{todoListIsCompleted}, #{calendarId})
+    </insert>
 
+    <!-- 캘린더 등록 -->
+    <insert id="insertCalendar" parameterType="CalendarVO">
+        INSERT INTO TBL_CALENDAR (ID, CALENDAR_TITLE, CALENDAR_INDEX, CALENDAR_IS_GROUP, CALENDAR_MEMBER_ID, TODOLIST_ID)
+        VALUES (SEQ_CALENDAR.NEXTVAL, #{calendarTitle}, #{calendarIndex}, #{calendarIsGroup}, #{calendarMemberId}, #{todoListId})
+    </insert>
+
+    <!-- 일정 멤버 그룹 등록  -->
     <insert id="insertScheduleMemberGroup" parameterType="ScheduleMemberGroupVO">
         <selectKey keyProperty="id" order="BEFORE" resultType="Long">
             SELECT SEQ_SCHEDULE_MEMBER_GROUP.NEXTVAL FROM DUAL
         </selectKey>
 
-        INSERT INTO TBL_SCHEDULE_MEMBER_GROUP (
-        ID
-        ) VALUES (
-        #{id}
-        )
+        INSERT INTO TBL_SCHEDULE_MEMBER_GROUP (ID)
+        VALUES (#{id})
+    </insert>
+
+    <!-- 일정 그룹 멤버 등록  -->
+    <insert id="insertScheduleGroupMember" parameterType="ScheduleGroupMemberVO">
+        INSERT INTO TBL_SCHEDULE_GROUP_MEMBER (ID, MEMBER_ID, SCHEDULE_MEMBER_GROUP_ID)
+        VALUES (SEQ_SCHEDULE_GROUP_MEMBER.NEXTVAL, #{memberId}, #{scheduleMemberGroupId})
     </insert>
 
     <!-- 일정 등록 -->
     <insert id="insertSchedule" parameterType="ScheduleVO">
-        INSERT INTO TBL_SCHEDULE(
-            ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
-            SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT, CALENDAR_ID,SCHEDULE_MEMBER_GROUP_ID
-        )
-        VALUES (
-                   SEQ_SCHEDULE.NEXTVAL, #{scheduleTitle}, #{scheduleContent}, #{scheduleStartDate}, #{scheduleEndDate},
-                   #{scheduleCreatedDate}, #{scheduleColor}, #{scheduleCategory}, #{scheduleRepeat}, #{calendarId}, #{scheduleMemberGroupId}
-               )
+        INSERT INTO TBL_SCHEDULE (ID,SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
+                                  SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT, CALENDAR_ID, SCHEDULE_MEMBER_GROUP_ID)
+        VALUES (SEQ_SCHEDULE.NEXTVAL, #{scheduleTitle}, #{scheduleContent}, #{scheduleStartDate}, #{scheduleEndDate},
+                #{scheduleCreatedDate}, #{scheduleColor}, #{scheduleCategory}, #{scheduleRepeat}, #{calendarId}, #{scheduleMemberGroupId})
     </insert>
+
+    <!--  캘린더 초대 등록 -->
+    <insert id="insertCalendarInvite" parameterType="CalendarInviteVO">
+        INSERT INTO TBL_CALENDAR_INVITE (ID, CALENDAR_INVITE_INVITED_MEMBER_ID, CALENDAR_INVITE_HOST_ID, CALENDAR_INVITE_IS_APPROVED, CALENDAR_ID)
+        VALUES (SEQ_CALENDAR_INVITE_GROUP.NEXTVAL, #{calendarInviteInvitedMemberId}, #{calendarInviteHostId}, #{calendarInviteIsApproved}, #{calendarId})
+    </insert>
+
+    <!-- 캘린더 멤버 등록 -->
+    <insert id="insertCalendarMember" parameterType="CalendarMemberVO">
+        INSERT INTO TBL_CALENDAR_MEMBER (ID, CALENDAR_MEMBER_IS_HOST, CALENDAR_ID, MEMBER_ID)
+        VALUES (SEQ_CALENDAR_MEMBER_GROUP.NEXTVAL, #{calendarMemberIsHost}, #{calendarId}, #{memberId})
+    </insert>
+
+    <!-- 일정 전체 조회 -->
+    <select id="selectAllSchedulesByMemberId" parameterType="Long" resultType="CalendarViewDTO">
+        SELECT TBS.ID, TBS.SCHEDULE_TITLE, TBS.SCHEDULE_CONTENT, TBS.SCHEDULE_START_DATE, TBS.SCHEDULE_END_DATE,
+               TBS.SCHEDULE_CREATED_DATE, TBS.SCHEDULE_COLOR, TBS.SCHEDULE_CATEGORY, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID
+        FROM TBL_SCHEDULE TBS
+        JOIN TBL_CALENDAR TBC
+        ON TBS.CALENDAR_ID = TBC.ID
+        WHERE TBC.CALENDAR_MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 일정 단일 조회 -->
+    <select id="selectSchedule" parameterType="Long" resultType="ScheduleVO">
+        SELECT ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE, SCHEDULE_CREATED_DATE,
+               SCHEDULE_COLOR, SCHEDULE_CATEGORY, SCHEDULE_REPEAT, CALENDAR_ID, SCHEDULE_MEMBER_GROUP_ID
+        FROM TBL_SCHEDULE
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 일정 공유 멤버 전체 조회 -->
+    <select id="selectAllScheduleGroupMembersByScheduleMemberGroupId" parameterType="Long" resultType="MemberVO">
+        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        FROM TBL_SCHEDULE_GROUP_MEMBER TBSGM
+        JOIN TBL_MEMBER TBM
+        ON TBSGM.MEMBER_ID = TBM.ID
+        WHERE TBSGM.SCHEDULE_MEMBER_GROUP_ID = #{scheduleMemberGroupId}
+    </select>
+
+    <!--  팔로잉 전체 조회  -->
+    <select id="selectAllMutualFollowingsByMemberId" parameterType="Long" resultType="MemberVO">
+        SELECT TBF1.FOLLOWING_MEMBER_ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        FROM TBL_FOLLOW TBF1
+        JOIN TBL_MEMBER TBM
+        ON TBF1.FOLLOWING_MEMBER_ID = TBM.ID
+        WHERE TBF1.FOLLOWER_MEMBER_ID = #{memberId}
+        AND TBF1.FOLLOWING_MEMBER_ID IN (
+            SELECT TBF2.FOLLOWER_MEMBER_ID
+            FROM TBL_FOLLOW TBF2
+            WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
+        );
+    </select>
+
+    <!-- 캘린더 단일 조회(알람) -->
+    <select id="selectCalendarDetailByMemberId" parameterType="Long" resultType="CalendarViewDTO">
+        SELECT TBCI.ID, TBCI.CALENDAR_INVITE_INVITED_MEMBER_ID, TBCI.CALENDAR_INVITE_HOST_ID, TBCI.CALENDAR_ID, TBC.CALENDAR_TITLE
+        FROM TBL_CALENDAR_INVITE TBCI
+        JOIN TBL_CALENDAR TBC
+        ON TBCI.CALENDAR_ID = TBC.ID
+        WHERE TBCI.CALENDAR_INVITE_INVITED_MEMBER_ID = #{memberId} AND TBCI.CALENDAR_INVITE_IS_APPROVED = 0
+    </select>
+
+    <!-- 캘린더 전체 조회 -->
+    <select id="selectAllCalendarsByMemberId" parameterType="Long" resultType="CalendarVO">
+        SELECT ID, CALENDAR_TITLE, CALENDAR_INDEX,
+        FROM TBL_CALENDAR
+        WHERE CALENDAR_MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 캘린더 단일 조회 -->
+    <select id="selectCalendar" parameterType="Long" resultType="CalendarVO">
+        SELECT ID, CALENDAR_TITLE, CALENDAR_IS_GROUP, CALENDAR_INDEX, TODOLIST_ID
+        FROM TBL_CALENDAR
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 투두리스트 전체 조회 -->
+    <select id = "selectAllTodoListsByCalendarId" parameterType="Long" resultType="ToDoListVO">
+        SELECT TODOLIST_CONTENT, TODOLIST_IS_COMPLETED
+        FROM TBL_TODOLIST
+        WHERE CALENDAR_ID = #{calendarId}
+    </select>
+
+    <!-- 캘린더 멤버 전체 조회 -->
+    <select id = "selectAllCalendarMembersByCalendarId" parameterType="Long" resultType="MemberVO">
+        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        FROM TBL_CALENDAR_MEMBER TBCM
+        JOIN TBL_MEMBER TBM
+        ON TBCM.MEMBER_ID = TBM.ID
+        WHERE CALENDAR_ID = #{calendarId}
+        AND TBCM.CALENDAR_MEMBER_IS_HOST = 0
+    </select>
+
+    <!-- 초대 승인 여부 업데이트 -->
+    <update id="updateCalendarInvite" parameterType="CalendarInviteVO">
+        UPDATE TBL_CALENDAR_INVITE
+        SET CALENDAR_INVITE_IS_APPROVED = #{calendarInviteIsApproved}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 캘린더 수정 -->
+    <update id="updateCalendar" parameterType="CalendarVO">
+        UPDATE TBL_CALENDAR
+        SET CALENDAR_TITLE = #{calendarTitle}, CALENDAR_INDEX = #{calendarIndex}
+        WHERE ID = #{id}
+    </update>
 
     <!-- 일정 수정 -->
     <update id="updateSchedule" parameterType="ScheduleVO">
         UPDATE TBL_SCHEDULE
-        SET
-            SCHEDULE_TITLE = #{scheduleTitle},
-            SCHEDULE_CONTENT = #{scheduleContent},
-            SCHEDULE_START_DATE = #{scheduleStartDate},
-            SCHEDULE_END_DATE = #{scheduleEndDate},
-            SCHEDULE_CATEGORY = #{scheduleCategory},
-            SCHEDULE_REPEAT = #{scheduleRepeat}
+        SET SCHEDULE_TITLE = #{scheduleTitle}, SCHEDULE_CONTENT = #{scheduleContent}, SCHEDULE_START_DATE = #{scheduleStartDate},
+            SCHEDULE_END_DATE = #{scheduleEndDate}, SCHEDULE_CATEGORY = #{scheduleCategory}, SCHEDULE_REPEAT = #{scheduleRepeat}
         WHERE ID = #{id}
     </update>
+
+    <!-- 투두리스트 수정 -->
+    <update id="updateTodoList" parameterType="ToDoListVO">
+        UPDATE TBL_TODOLIST
+        SET TODOLIST_CONTENT = #{todoListCOntent}, TODOLIST_IS_COMPLETED = #{todoListIsCompleted}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 투두리스트 삭제 -->
+    <delete id="deleteTodoList" parameterType="Long">
+        DELETE FROM TBL_TODOLIST
+        WHERE ID = #{id}
+    </delete>
 
     <!-- 일정 삭제 -->
     <delete id="deleteSchedule" parameterType="Long">
@@ -46,141 +172,108 @@
         WHERE ID = #{id}
     </delete>
 
-    <!-- 일정 전체 불러오기 -->
-    <select id="selectScheduleAll" parameterType="Long" resultType="CalendarViewDTO">
-        SELECT
-            TBS.ID,
-            TBS.SCHEDULE_TITLE,
-            TBS.SCHEDULE_CONTENT,
-            TBS.SCHEDULE_START_DATE,
-            TBS.SCHEDULE_END_DATE,
-            TBS.SCHEDULE_CREATED_DATE,
-            TBS.SCHEDULE_COLOR,
-            TBS.SCHEDULE_CATEGORY,
-            TBS.SCHEDULE_REPEAT,
-            TBS.CALENDAR_ID
-        FROM
-            TBL_SCHEDULE TBS
-        JOIN
-            TBL_CALENDAR TBC
-        ON
-            TBS.CALENDAR_ID = TBC.ID
-        WHERE
-            TBC.MEMBER_ID = #{memberId}
-    </select>
-
-    <!-- 일정 단일 조회 -->
-    <select id="selectSchedule" parameterType="Long" resultType="ScheduleVO">
-        SELECT
-            ID,
-            SCHEDULE_TITLE,
-            SCHEDULE_CONTENT,
-            SCHEDULE_START_DATE,
-            SCHEDULE_END_DATE,
-            SCHEDULE_CREATED_DATE,
-            SCHEDULE_COLOR,
-            SCHEDULE_CATEGORY,
-            SCHEDULE_REPEAT,
-            CALENDAR_ID,
-        FROM
-            TBL_SCHEDULE TBS
-        JOIN
-            TBL_SCHEDULE_MEMBER_GROUP_MEMBER TBSMGM
-        ON
-            TBS.SCHEDULE_MEMBER_GROUP_ID = TBSMGM.SCHEDULE_MEMBER_GROUP_ID
-        WHERE
-            TS.ID = #{id}
-    </select>
-
-    <!--  팔로잉 리스트 불러오기  -->
-    <select id="selectFollowingAll" parameterType="Long" resultType="MemberVO">
-        SELECT
-            TBF1.FOLLOWING_MEMBER_ID,
-            TBM.MEMBER_NAME,
-            TBM.MEMBER_IMG_PATH
-        FROM
-            TBL_FOLLOW TBF1
-                JOIN
-            TBL_MEMBER TBM ON TBF1.FOLLOWING_MEMBER_ID = TBM.ID
-        WHERE
-            TBF1.FOLLOWER_MEMBER_ID = #{memberId}
-          AND TBF1.FOLLOWING_MEMBER_ID IN (
-            SELECT TBF2.FOLLOWER_MEMBER_ID
-            FROM TBL_FOLLOW TBF2
-            WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
-        );
-    </select>
-
-    <!--  캘린더 초대 그룹 등록 -->
-    <insert id="insertCalendarInviteGroup" parameterType="CalendarInviteGroupVO">
-        INSERT INTO TBL_CALENDAR_INVITE_GROUP(
-            ID, CALENDAR_INVITE_GROUP_INVITED_MEMBER_ID,CALENDAR_INVITE_GROUP_HOST_ID,CALENDAR_INVITE_GROUP_IS_APPROVED, CALENDAR_ID
-        )
-        VALUES (
-                   SEQ_SCHEDULE.NEXTVAL, #{calendarInviteGroupInvitedMemberId}, #{calendarGroupHostId}, #{calendarInviteGroupIsApproved}, #{calendarId}
-               )
-    </insert>
-
-    <!-- HOST 이름 보여줘야 하나? -->
-    <!-- 캘린더 정보 불러오기(알람) -->
-    <select id="selectCalendarDetail" parameterType="Long" resultType="CalendarViewDTO">
-        SELECT
-            TBCIG.ID,
-            TBCIG.CALENDAR_INVITE_GROUP_INVITED_MEMBER_ID,
-            TBCIG.CALENDAR_INVITE_GROUP_HOST_ID,
-            TBCIG.CALENDAR_ID,
-            TBC.CALENDAR_TITLE
-        FROM
-            TBL_CALENDAR_INVITE_GROUP TBCIG
-                JOIN
-            TBL_CALENDAR TBC ON TBCIG.CALENDAR_ID = TBC.ID
-        WHERE
-            TBCIG.CALENDAR_INVITE_GROUP_INVITED_MEMBER_ID = #{memberId}
-          AND
-            TBCIG.CALENDAR_INVITE_GROUP_IS_APPROVED = 0
-    </select>
-
-    <!-- 초대 승인 여부 업데이트 -->
-    <update id="updateCalendarInviteGroup" parameterType="ScheduleVO">
-        UPDATE TBL_CALENDAR_INVITE_GROUP
-        SET
-            CALENDAR_INVITE_GROUP_IS_APPROVED = #{calendarInviteGroupIsApproved}
+    <!-- 캘린더 초대 삭제  -->
+    <delete id="deleteCalendarInviteMember" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_INVITE
         WHERE ID = #{id}
-    </update>
+    </delete>
 
-    <!-- -->
-    <!-- CALENDAR_ID 조회 -->
-    <select id="selectCalendarId" parameterType="Long" resultType="Long">
-        SELECT ID
-        FROM TBL_CALENDAR
+    <!-- 캘린더 멤버 삭제 -->
+    <delete id="deleteCalendarMember" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_MEMBER
         WHERE ID = #{id}
-    </select>
+    </delete>
 
-    <!-- 캘린더 멤버 그룹 등록 -->
-    <insert id="insertCalendarMemberGroup" parameterType="CalendarMemberGroupVO">
-        INSERT INTO TBL_CALENDAR_MEMBER_GROUP(
-            ID, CALENDAR_MEMBER_GROUP_IS_HOST, CALENDAR_ID, MEMBER_ID
+    <!-- 일정 그룹 멤버 삭제 -->
+    <delete id="deleteScheduleGroupMember" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- 일정 수정 그룹 멤버 삭제(해당 일정의 공유 멤버 그룹 내 모든 멤버를 삭제) -->
+    <delete id="deleteAllScheduleGroupMembersByScheduleMemberGroupId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE SCHEDULE_MEMBER_GROUP_ID = #{scheduleMemberGroupId}
+    </delete>
+
+    <!-- 캘린더 삭제 -->
+
+    <!-- 1. 일정 그룹 멤버 삭제 -->
+    <delete id="deleteAllScheduleGroupMembersByCalendarId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE SCHEDULE_MEMBER_GROUP_ID IN (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE CALENDAR_ID = #{calendarId}
         )
-        VALUES (
-                   SEQ_SCHEDULE.NEXTVAL, #{calendarMemberGroupIsHost}, #{calendarId}, #{memberId}
-               )
-    </insert>
+    </delete>
 
-    <!-- 캘린더 멤버 그룹 불러오기 -->
-    <select id = "selectCalendarMemberGroupAll" parameterType="Long">
-        SELECT
-            TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
-        FROM
-            TBL_CALENDAR_MEMBER_GROUP TBCMG
-                JOIN
-            TBL_MEMBER TBM ON TBCMG.MEMBER_ID = TBM.ID
-        WHERE
-            CALENDAR_ID = #{calendarId}
-          AND TBCMG.MEMBER_GROUP_IS_HOST = 0
-    </select>
+    <!-- 2. 일정 멤버 그룹 삭제 -->
+    <delete id="deleteScheduleMemberGroupByCalendarId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_MEMBER_GROUP
+        WHERE ID IN (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE CALENDAR_ID = #{calendarId}
+        )
+    </delete>
 
+    <!-- 3. 일정 삭제 -->
+    <delete id="deleteAllSchedulesByCalendarId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
 
+    <!-- 4. 투두리스트 삭제 -->
+    <delete id="deleteAllTodoListsByCalendarId" parameterType="Long">
+        DELETE FROM TBL_TODOLIST
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
 
+    <!-- 5. 캘린더 멤버 삭제 -->
+    <delete id="deleteAllCalendarMembersByCalendarId" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_MEMBER
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
 
+    <!-- 6. 초대 삭제 -->
+    <delete id="deleteAllCalendarInvitesByCalendarId" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_INVITE
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
+
+    <!-- 7. 캘린더 삭제 -->
+    <delete id="deleteCalendarById" parameterType="Long">
+        DELETE FROM TBL_CALENDAR
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- 일정 삭제 -->
+
+    <!-- 1. 일정 그룹 멤버 삭제 -->
+    <delete id="deleteAllScheduleGroupMembersByScheduleId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE SCHEDULE_MEMBER_GROUP_ID = (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE ID = #{scheduleId}
+        )
+    </delete>
+
+    <!-- 2. 일정 멤버 그룹 삭제 -->
+    <delete id="deleteScheduleMemberGroupByScheduleId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_MEMBER_GROUP
+        WHERE ID = (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE ID = #{scheduleId}
+        )
+    </delete>
+
+    <!-- 3. 일정 삭제 -->
+    <delete id="deleteScheduleById" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE
+        WHERE ID = #{id}
+    </delete>
 
 </mapper>
