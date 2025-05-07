@@ -24,6 +24,9 @@ public interface MemberService {
 //    로그인
     public Long login(MemberVO memberVO);
 
+//    이메일로 회원 아이디 조회
+    public Long getMemberIdByMemberEmail(String email);
+
 //    이메일 찾기 (회원 존재 여부 확인)
     public int checkMemberEmailByNameAndPhone(MemberVO memberVO);
 
@@ -38,5 +41,8 @@ public interface MemberService {
 
 //    비밀번호 변경
     public void editPassword(MemberVO memberVO);
+
+//    소셜 로그인으로 회원 정보 수정
+    public void modify (MemberVO memberVO);
 
 }

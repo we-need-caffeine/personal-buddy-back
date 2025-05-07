@@ -21,8 +21,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
 //    ID로 회원 상세 정보 조회
-
-
     @Override
     public Optional<MemberVO> getMemberInfoById(Long id) {
         return memberDAO.selectMemberById(id);
@@ -52,6 +50,11 @@ public class MemberServiceImpl implements MemberService {
         return memberDAO.selectOne(memberVO);
     }
 
+    @Override
+    public Long getMemberIdByMemberEmail(String email) {
+        return memberDAO.selectIdByEmail(email);
+    }
+
     //    이메일 찾기 (회원 존재 여부 확인)
     @Override
     public int checkMemberEmailByNameAndPhone(MemberVO memberVO) {
@@ -79,5 +82,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void editPassword(MemberVO memberVO) {
         memberDAO.updatePassword(memberVO);
+    }
+
+    @Override
+    public void modify(MemberVO memberVO) {
+        memberDAO.updateByOauth(memberVO);
     }
 }
