@@ -51,6 +51,7 @@
         WHERE TMA.MEMBER_ID = #{id}
     </select>
 
+    <!--    업적 완료 미션 횟수 수정      -->
     <update id="updateAchievementComplete" parameterType="AchievementCompleteVO">
         UPDATE TBL_ACHIEVEMENT_COMPLETE
         SET ACHIEVEMENT_CURRENT_MISSION_COUNT = #{achievementCurrentMissonCount}

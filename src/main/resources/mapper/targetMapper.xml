@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.TargetMapper">
+    <!--    목표 생성   -->
     <insert id="insert" parameterType="TargetVO">
         INSERT INTO TBL_TARGET
         VALUES (SEQ_TARGET.NEXTVAL, #{targetCompleteDate}, #{targetScheduleCategory}, #{memberId})
     </insert>
 
-<!--    일간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)        -->
+    <!--    일간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)       -->
     <select id="selectDailyTargetCountByCategoryAndMemberId" parameterType="TargetVO" resultType="int">
         SELECT COUNT(ID)
         FROM TBL_TARGET
@@ -20,7 +21,7 @@
         SELECT COUNT(ID)
         FROM TBL_TARGET
         WHERE TARGET_SCHEDULE_CATEGORY = #{targetScheduleCategory} AND
-        MEMBER_ID = #{memberId} AND
+        MEMBER_ID = #{memberId}
         <if test="startDate != null and endDate != null">
             AND TARGET_COMPLETE_DATE BETWEEN #{startDate} AND #{endDate}
         </if>
