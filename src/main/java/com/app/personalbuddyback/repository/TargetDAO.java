@@ -18,7 +18,7 @@ public class TargetDAO {
         return targetMapper.selectDailyTargetCountByCategoryAndMemberId(targetVO);
     }
 
-    public int checkWeeklyMontlyTarget(TargetVO targetVO) {
+    public int checkWeeklyMonthlyTarget(TargetVO targetVO) {
         return targetMapper.selectWeeklyMonthlyTargetCountByCategoryAndMemberId(targetVO);
     }
 }
