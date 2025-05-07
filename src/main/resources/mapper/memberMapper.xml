@@ -2,12 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.MemberMapper">
 
-<!-- 회원가입 -->
+    <!-- 회원가입 -->
     <insert id="insert" parameterType="MemberVO">
-        INSERT INTO TBL_MEMBER
+        INSERT INTO TBL_MEMBER (ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER,
+                                MEMBER_PHONE, MEMBER_NICKNAME, MEMBER_STATUS_MESSAGE, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+                                MEMBER_POINT, MEMBER_ADMIN, MEMBER_CREATE_DATE, MEMBER_TERM_SERVICE_AGREE, MEMBER_TERM_INFORMATION_AGREE,
+                                MEMBER_TERM_LOCATION_AGREE, MEMBER_TERM_PROMOTION_AGREE, MEMBER_PROVIDER)
         VALUES(SEQ_MEMBER.NEXTVAL, #{memberEmail}, #{memberPassword}, #{memberName}, #{memberBirth},
                #{memberGender}, #{memberPhone}, #{memberNickName}, #{memberStatusMessage}, #{memberImgName},
-               #{memberImgPath}, #{memberPoint}, #{memberAdmin}, #{memberCreateDate}, #{memberTermServiceAgree},
+               #{memberImgPath}, #{memberPoint}, #{memberAdmin}, SYSDATE, #{memberTermServiceAgree},
                #{memberTermInformationAgree}, #{memberTermLocationAgree}, #{memberTermPromotionAgree}, #{memberProvider})
     </insert>
 
@@ -49,6 +52,13 @@
         WHERE MEMBER_EMAIL = #{memberEmail} AND MEMBER_PASSWORD = #{memberPassword}
     </select>
 
+<!-- 이메일로 회원 정보 조회 -->
+    <select id="selectIdByEmail" parameterType="String" resultType="Long">
+        SELECT ID
+        FROM TBL_MEMBER
+        WHERE MEMBER_EMAIL = #{memberEmail}
+    </select>
+
 <!-- 이메일 찾기 (회원 존재 여부 확인) -->
     <select id="selectCountIdByNameAndPhone" parameterType="MemberVO" resultType="_int">
         SELECT COUNT(ID)
@@ -76,6 +86,14 @@
         FROM TBL_MEMBER
         WHERE MEMBER_NAME = #{memberName} AND MEMBER_EMAIL = #{memberEmail}
     </select>
+
+<!-- 소셜 로그인 회원 정보 수정 -->
+    <update id="updateByOauth" parameterType="MemberVO">
+        UPDATE TBL_MEMBER
+        SET MEMBER_EMAIL = #{memberEmail}, MEMBER_PASSWORD = #{memberPassword}, MEMBER_NAME = #{memberName},
+            MEMBER_NICKNAME = #{memberNickName}, MEMBER_PROVIDER = #{memberProvider}
+        WHERE ID = #{id}
+    </update>
 
 <!-- 비밀번호 변경 -->
     <update id="updatePassword" parameterType="MemberVO">
