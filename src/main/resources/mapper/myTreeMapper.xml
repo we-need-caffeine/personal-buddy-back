@@ -1,7 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.MyTreeMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
+
+    <!--    포인트샵 나무 아이템 추가 쿼리       -->
+    <insert id="insertTreeItem" parameterType="ItemVO">
+        INSERT INTO TBL_ITEM(ID, ITEM_NAME, ITEM_PRICE, ITEM_IMG_PATH, ITEM_IMG_NAME, ITEM_TYPE)
+        VALUES(SEQ_ITEM.NEXTVAL, #{itemName}, #{itemPrice}, #{itemImgPath}, #{itemImgName}, #{itemType})
+    </insert>
+
+    <!--    멤버 - 성장나무 연결 생성 쿼리 (최초 멤버 가입 시 생성)      -->
+    <insert id="insertMemberTree" parameterType="TreeVO">
+        INSERT INTO TBL_TREE(ID, MEMBER_ID)
+        VALUES(SEQ_ITEM.NEXTVAL, #{memberId})
+    </insert>
+
+    <!--    성장나무 아이템 적용 Insert 쿼리 (아이템 구매 시 사용)     -->
+    <insert id="insertTreeCustomizing" parameterType="TreeCustomizingVO">
+        INSERT INTO TBL_TREE_CUSTOMIZING(ID, ITEM_ID, TREE_CUSTOMIZING_POSITION_X, TREE_CUSTOMIZING_POSITION_Y, TREE_CUSTOMIZING_APPLY, TREE_ID)
+        VALUES(SEQ_ITEM.NEXTVAL, #{itemId}, #{treeCustomizingPositionX}, #{treeCustomizingPositionY}, #{treeCustomizingApply}, #{treeId})
+    </insert>
+
+    <!--    성장나무 전체 리스트 조회      -->
+    <select id="selectTreeViewsByMemberId" parameterType="Long" resultType="TreeViewDTO">
+        SELECT
+            TBT.ID AS ID,
+            TBT.MEMBER_ID AS MEMBER_ID,
+            TBI.ID AS ITEM_ID,
+            TTC.ID AS TREE_CUSTOMIZING_ID,
+            TTC.TREE_CUSTOMIZING_POSITION_X AS TREE_CUSTOMIZING_POSITION_X,
+            TTC.TREE_CUSTOMIZING_POSITION_Y AS TREE_CUSTOMIZING_POSITION_Y,
+            TTC.TREE_CUSTOMIZING_APPLY AS TREE_CUSTOMIZING_APPLY,
+            TBI.ITEM_NAME AS ITEM_NAME,
+            TBI.ITEM_TYPE AS ITEM_TYPE,
+            TBI.ITEM_IMG_PATH AS ITEM_IMG_PATH,
+            TBI.ITEM_IMG_NAME AS ITEM_IMG_NAME
+        FROM TBL_TREE TBT
+        JOIN TBL_TREE_CUSTOMIZING TTC
+            ON TBT.ID = TBT.ID = TTC.TREE_ID
+        JOIN TBL_ITEM TBI
+            ON TTC.ITEM_ID = TBI.ID
+        WHERE TBT.MEMBER_ID = #{memberId}
+        <if test="applied != null">
+            AND TTC.TREE_CUSTOMIZING_APPLY = 1
+        </if>
     </select>
+
+    <!--    성장나무 커스터마이징 수정      -->
+    <update id="updateTreeCustomizing" parameterType="TreeCustomizingVO">
+        UPDATE TBL_TREE_CUSTOMIZING
+        SET
+            TREE_CUSTOMIZING_POSITION_X = #{treeCustomizingPositionX},
+            TREE_CUSTOMIZING_POSITION_Y = #{treeCustomizingPositionY},
+            TREE_CUSTOMIZING_APPLY = #{treeCustomizingApply}
+        WHERE ID = #{id}
+    </update>
 </mapper>
