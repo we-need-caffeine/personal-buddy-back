@@ -1,4 +1,4 @@
-package com.app.personalbuddyback.JinYoung.ZeroWater;
+package com.app.personalbuddyback.ZeroWater;
 
 import com.app.personalbuddyback.domain.AlertVO;
 import com.app.personalbuddyback.mapper.AlertMapper;
