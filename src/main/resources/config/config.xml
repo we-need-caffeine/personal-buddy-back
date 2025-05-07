@@ -51,8 +51,10 @@
         <typeAlias type="com.app.personalbuddyback.domain.InterestVO" alias="InterestVO" />
         <typeAlias type="com.app.personalbuddyback.domain.InterestDetailVO" alias="InterestDetailVO" />
         <typeAlias type="com.app.personalbuddyback.domain.InterestDataVO" alias="InterestDataVO" />
+            <typeAlias type="com.app.personalbuddyback.domain.InterestDTO" alias="InterestDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.InterestRecommendViewDTO" alias="InterestRecommendViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.ScheduleRecommendViewDTO" alias="ScheduleRecommendViewDTO" />
+
 
 <!--        이벤트 관련 테이블-->
         <typeAlias type="com.app.personalbuddyback.domain.EventVO" alias="EventVO" />
