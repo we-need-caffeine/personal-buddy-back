@@ -12,7 +12,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/boards/api/*")
 public class BoardAPI {
-
+//깃허브 개떡같은거
     private final BoardService boardService;
 
     // 게시글 전체 목록
