@@ -14,5 +14,5 @@ public interface TargetMapper {
     public int selectDailyTargetCountByCategoryAndMemberId(TargetVO targetVO);
 
 //    주간/월간 목표 확인
-    public int selectWeeklyMonthlyTargetCountByCategoryAndMemberId(TargetVO targetVO);
+    public int selectWeeklyMonthlyTargetsCountByCategoryAndMemberId(TargetVO targetVO);
 }
