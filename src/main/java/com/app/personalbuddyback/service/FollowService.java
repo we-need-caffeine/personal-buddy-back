@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.FollowVO;
+import com.app.personalbuddyback.domain.MemberVO;
 
 import java.util.List;
 
@@ -14,6 +15,8 @@ public interface FollowService {
     public List<FollowVO> getMyFollowing(Long followingMemberId);
     //    내가 즐겨찾기 한 유저의 리스트
     public List<FollowVO> getMyFavorite(Long favouriteMemberId);
+    //    맞팔된 유저의 리스트
+    public List<MemberVO> getMutualFollows(Long memberId);
     //    즐겨찾기 토글
     public void toggleFollowing(FollowVO followVO);
     //    팔로우 취소

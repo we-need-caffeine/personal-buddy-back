@@ -32,6 +32,20 @@
         WHERE FOLLOWING_MEMBER_ID = #{followingMemberId} AND FOLLOW_FAVORITE = 1
     </select>
 
+<!--  맞팔 여부  -->
+    <select id="selectMutualFollows" parameterType="Long" resultType="MemberVO">
+        SELECT TBF1.FOLLOWING_MEMBER_ID, TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH
+        FROM TBL_FOLLOW TBF1
+        JOIN TBL_MEMBER TBM
+        ON TBF1.FOLLOWING_MEMBER_ID = TBM.ID
+        WHERE TBF1.FOLLOWER_MEMBER_ID = #{memberId}
+        AND TBF1.FOLLOWING_MEMBER_ID IN (
+            SELECT TBF2.FOLLOWER_MEMBER_ID
+            FROM TBL_FOLLOW TBF2
+            WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
+        )
+    </select>
+
 <!--  즐겨찾기 토글  -->
 <!--  클릭 할때 현재 팔로잉 여부에 따라 토글  -->
     <update id="update" parameterType="FollowVO">
@@ -51,5 +65,11 @@
     <delete id="delete" parameterType="FollowVO">
         DELETE FROM TBL_FOLLOW
         WHERE FOLLOWER_MEMBER_ID = #{followerMemberId} AND FOLLOWING_MEMBER_ID = #{followingMemberId}
+    </delete>
+
+<!--  회원탈퇴용 팔로우 전체삭제  -->
+    <delete id="deleteAllByWithdraw" parameterType="Long">
+        DELETE FROM TBL_FOLLOW
+        WHERE FOLLOWER_MEMBER_ID = #{memberId} OR FOLLOWING_MEMBER_ID = #{memberId}
     </delete>
 </mapper>

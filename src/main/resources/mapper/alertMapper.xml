@@ -61,4 +61,9 @@
         WHERE RECEIVER_MEMBER_ID = #{receiverMemberId}
     </delete>
 
+<!--  회원탈퇴용 알림 전체 삭제  -->
+    <delete id="deleteAllByWithdraw" parameterType="Long">
+        DELETE FROM TBL_ALERT
+        WHERE RECEIVER_MEMBER_ID = #{memberId} OR SENDER_MEMBER_ID = #{memberId}
+    </delete>
 </mapper>

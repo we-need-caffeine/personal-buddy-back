@@ -24,4 +24,8 @@ public class GuestBookDAO {
     public void delete(Long id) {
         guestBookMapper.delete(id);
     }
+    //    회원탈퇴용 방명록 전체 삭제
+    public void deleteAllByWithdraw(Long memberId) {
+        guestBookMapper.deleteAllByWithdraw(memberId);
+    }
 }

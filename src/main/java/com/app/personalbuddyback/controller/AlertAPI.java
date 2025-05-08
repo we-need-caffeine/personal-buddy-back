@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/alert/*")
+@RequestMapping("/alerts/api/*")
 public class AlertAPI {
 
 //    알림 서비스 생성자 주입

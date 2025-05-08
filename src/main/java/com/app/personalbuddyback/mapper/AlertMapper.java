@@ -18,4 +18,6 @@ public interface AlertMapper {
     public void delete(Long id);
 //    알림 전체 삭제
     public void deleteAll(Long receiverMemberId);
+//    회원탈퇴용 알림 전체 삭제
+    public void deleteAllByWithdraw(Long memberId);
 }

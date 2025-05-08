@@ -13,4 +13,6 @@ public interface GuestBookMapper {
     public List<GuestBookVO> selectAll(Long ownerMemberId);
 //    방명록 삭제
     public void delete(Long id);
+//    회원탈퇴용 방명록 전체 삭제
+    public void deleteAllByWithdraw(Long memberId);
 }

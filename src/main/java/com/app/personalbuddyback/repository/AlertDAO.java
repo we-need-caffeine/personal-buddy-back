@@ -34,4 +34,6 @@ public class AlertDAO {
     public void deleteAll(Long receiverMemberId) {
         alertMapper.deleteAll(receiverMemberId);
     }
+//    회원탈퇴용 알림 전체 삭제
+    public void deleteAllByWithdraw(Long memberId) { alertMapper.deleteAllByWithdraw(memberId); }
 }
