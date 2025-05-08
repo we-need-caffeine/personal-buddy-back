@@ -11,7 +11,6 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class BoardDAO {
-
     private final BoardMapper boardMapper;
 
     // 게시글 전체 목록
@@ -89,7 +88,9 @@ public class BoardDAO {
         return boardMapper.selectBoardCommentsByBoardId(params);
     }
 
-    // 댓글 작석
+// ---------------------------- [댓글] ----------------------------
+
+    // 댓글 작성
     public void saveComment(BoardCommentVO commentVO) {
         boardMapper.insertBoardComment(commentVO);
     }
