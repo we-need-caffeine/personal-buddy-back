@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class BoardDAO {
-
+    //깃허브 개떡같은거
     private final BoardMapper boardMapper;
 
     // 게시글 전체 목록

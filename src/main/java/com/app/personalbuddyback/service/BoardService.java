@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface BoardService {
-
+//깃허브 개떡같은거
     // ---------------- 게시글 ----------------
 
     // 게시글 전체 목록 조회
