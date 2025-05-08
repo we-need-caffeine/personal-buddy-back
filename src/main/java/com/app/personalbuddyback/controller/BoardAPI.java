@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/boards/api/*")
 public class BoardAPI {
-//깃허브 개떡같은거
     private final BoardService boardService;
 
     // 게시글 전체 목록
@@ -111,7 +111,7 @@ public class BoardAPI {
         return boardService.isBoardLiked(boardLikeVO);
     }
 
-    // ---------------------------- [댓글] ----------------------------
+
 
     // 게시글 댓글 전체 목록
     @GetMapping("/post/comment/list")
