@@ -54,7 +54,6 @@ public class BoardServiceImpl implements BoardService {
 
     //  게시글과 이미지들을 함께 등록 (트랜잭션 처리)
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void writeBoardWithImages(BoardVO boardVO, List<BoardImgVO> images) {
         boardDAO.saveBoard(boardVO);
         Long boardId = boardVO.getId();
@@ -63,7 +62,7 @@ public class BoardServiceImpl implements BoardService {
                 imgVO.setBoardId(boardId);
                 boardDAO.saveImage(imgVO);
             }
-        }
+
     }
 
     // 게시글 수정
