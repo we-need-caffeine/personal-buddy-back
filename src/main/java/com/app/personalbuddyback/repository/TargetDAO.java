@@ -10,15 +10,15 @@ import org.springframework.stereotype.Repository;
 public class TargetDAO {
     private final TargetMapper targetMapper;
 
-    public void save(TargetVO targetVO) {
+    public void saveTarget(TargetVO targetVO) {
         targetMapper.insert(targetVO);
     }
 
-    public int checkDailyTarget(TargetVO targetVO) {
+    public int findDailyTarget(TargetVO targetVO) {
         return targetMapper.selectDailyTargetCountByCategoryAndMemberId(targetVO);
     }
 
-    public int checkWeeklyMonthlyTarget(TargetVO targetVO) {
-        return targetMapper.selectWeeklyMonthlyTargetCountByCategoryAndMemberId(targetVO);
+    public int findWeeklyMonthlyTarget(TargetVO targetVO) {
+        return targetMapper.selectWeeklyMonthlyTargetsCountByCategoryAndMemberId(targetVO);
     }
 }

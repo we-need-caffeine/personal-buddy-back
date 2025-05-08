@@ -17,7 +17,7 @@
     </select>
 
     <!--    주간 / 월간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)        -->
-    <select id="selectWeeklyMonthlyTargetCountByCategoryAndMemberId" parameterType="TargetVO" resultType="int">
+    <select id="selectWeeklyMonthlyTargetsCountByCategoryAndMemberId" parameterType="TargetVO" resultType="int">
         SELECT COUNT(ID)
         FROM TBL_TARGET
         WHERE TARGET_SCHEDULE_CATEGORY = #{targetScheduleCategory} AND

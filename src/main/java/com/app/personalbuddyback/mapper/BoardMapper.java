@@ -7,7 +7,6 @@ import java.util.Optional;
 
 @Mapper
 public interface BoardMapper {
-
     //    게시글 전체 목록 조회
     public List<BoardListViewDTO> selectBoardList();
 

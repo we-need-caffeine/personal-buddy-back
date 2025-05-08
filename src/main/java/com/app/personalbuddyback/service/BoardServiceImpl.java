@@ -4,6 +4,7 @@ import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.repository.BoardDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
-
+    //깃허브 개떡같은거
     private final BoardDAO boardDAO;
 
     // 게시글 전체 목록 조회
@@ -49,6 +50,20 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void addBoardImage(BoardImgVO boardImgVO) {
         boardDAO.saveImage(boardImgVO);
+    }
+
+    //  게시글과 이미지들을 함께 등록 (트랜잭션 처리)
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void writeBoardWithImages(BoardVO boardVO, List<BoardImgVO> images) {
+        boardDAO.saveBoard(boardVO);
+        Long boardId = boardVO.getId();
+        if(images != null) {
+            for(BoardImgVO imgVO : images) {
+                imgVO.setBoardId(boardId);
+                boardDAO.saveImage(imgVO);
+            }
+        }
     }
 
     // 게시글 수정
