@@ -43,7 +43,10 @@ public interface MemberMapper {
 //    비밀번호 변경
     public void updatePassword(MemberVO memberVO);
 
-//    소셜 로그인으로 회원 정보 수정
-    public void updateByOauth(MemberVO memberVO);
+//    회원 정보 수정
+    public void update(MemberVO memberVO);
+
+//    회원 탈퇴
+    public void delete(Long id);
 
 }
