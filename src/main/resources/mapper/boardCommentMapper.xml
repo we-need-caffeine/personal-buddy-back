@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.personalbuddyback.mapper.BoardCommentMapper">
+
+    <!--    Board Comment  -->
+    <!--    게시글 댓글 전체 목록-->
+    <select id="selectBoardCommentsByBoardId" parameterType="map" resultType="BoardCommentViewDTO">
+        SELECT TBC.ID, TBC.BOARD_COMMENT_CONTENT, TBC.BOARD_COMMENT_CREATE_DATE,
+        TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH,
+        (
+        SELECT COUNT(ID)
+        FROM TBL_BOARD_COMMENT_LIKE
+        WHERE BOARD_COMMENT_ID = TBC.ID
+        ) AS BOARD_COMMENT_LIKE_COUNT
+        FROM TBL_BOARD_COMMENT TBC
+        JOIN TBL_MEMBER TBM ON TBC.MEMBER_ID = TBM.ID
+        WHERE TBC.BOARD_ID = #{boardId}
+        <choose>
+            <when test="sort == 'like'">
+                ORDER BY BOARD_COMMENT_LIKE_COUNT DESC
+            </when>
+            <otherwise>
+                ORDER BY TBC.BOARD_COMMENT_CREATE_DATE DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--    내가 쓴 댓글 ( 마이페이지용) -->
+    <select id="selectCommentsByMemberId" parameterType="long" resultType="BoardCommentViewDTO">
+        SELECT *
+        FROM VW_BOARD_COMMENT
+        WHERE MEMBER_ID = #{memberId}
+        ORDER BY BOARD_COMMENT_CREATE_DATE DESC
+    </select>
+
+    <!--    댓글 작성-->
+    <insert id="insertBoardComment" parameterType="BoardCommentVO">
+        INSERT INTO TBL_BOARD_COMMENT (
+            ID, BOARD_COMMENT_CONTENT, BOARD_COMMENT_CREATE_DATE, MEMBER_ID, BOARD_ID
+        ) VALUES (
+            EQ_BOARD_COMMENT.NEXTVAL, #{boardCommentContent}, SYSDATE, #{memberId}, #{boardId}
+        )
+    </insert>
+
+    <!--    댓글 수정-->
+    <update id="updateBoardComment" parameterType="BoardCommentVO">
+        UPDATE TBL_BOARD_COMMENT
+        SET BOARD_COMMENT_CONTENT = #{boardCommentContent}
+        WHERE ID = #{id}
+    </update>
+
+    <!--    댓글 삭제-->
+    <delete id="deleteBoardComment" parameterType="Long">
+        DELETE
+        FROM TBL_BOARD_COMMENT
+        WHERE ID = #{id}
+    </delete>
+
+    <!--    댓글 좋아요-->
+    <insert id="insertBoardCommentLike" parameterType="BoardCommentLikeVO">
+        INSERT INTO TBL_BOARD_COMMENT_LIKE(
+            ID, BOARD_COMMENT_LIKE_CREATE_DATE, MEMBER_ID, BOARD_COMMENT_ID
+        ) VALUES (
+            SEQ_BOARD_COMMENT_LIKE.NEXTVAL, SYSDATE, #{memberId}, #{boardCommentId}
+        )
+    </insert>
+
+    <!--    댓글 좋아요 취소-->
+    <delete id="deleteBoardCommentLike" parameterType="BoardCommentLikeVO">
+        DELETE
+        FROM TBL_BOARD_COMMENT_LIKE
+        WHERE MEMBER_ID = #{memberId}
+          AND BOARD_COMMENT_ID = #{boardCommentId}
+    </delete>
+
+    <!--    댓글 좋아요 여부-->
+    <select id="checkBoardCommentLike" parameterType="BoardCommentLikeVO" resultType="_int">
+        SELECT COUNT(ID)
+        FROM TBL_BOARD_COMMENT_LIKE
+        WHERE MEMBER_ID = #{memberId}
+          AND BOARD_COMMENT_ID = #{boardCommentId}
+    </select>
+
+    <!-- 베스트 댓글 3개 조회 (게시글 ID 기준) -->
+    <select id="selectBestCommentsByBoardId" parameterType="long" resultType="BoardCommentViewDTO">
+        SELECT TBC.ID, TBC.BOARD_COMMENT_CONTENT, TBC.BOARD_COMMENT_CREATE_DATE,
+               TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH,
+               (
+                   SELECT COUNT(ID)
+                   FROM TBL_BOARD_COMMENT_LIKE
+                   WHERE BOARD_COMMENT_ID = TBC.ID
+               ) AS BOARD_COMMENT_LIKE_COUNT
+        FROM TBL_BOARD_COMMENT TBC
+                 JOIN TBL_MEMBER TBM ON TBC.MEMBER_ID = TBM.ID
+        WHERE TBC.BOARD_ID = #{boardId}
+        ORDER BY BOARD_COMMENT_LIKE_COUNT DESC
+            FETCH FIRST 3 ROWS ONLY
+    </select>
+</mapper>

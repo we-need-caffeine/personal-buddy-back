@@ -2,13 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.BoardMapper">
 
-    <!--  Board List  -->
-    <!--    게시글 전체 목록 -->
-    <select id="selectBoardList" resultType="BoardListViewDTO" >
+<!--    Board List  -->
+<!--    게시글 전체 목록-->
+    <select id="selectBoardList" resultType="BoardListViewDTO">
         SELECT ID, BOARD_TITLE, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
                MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
                BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_THUMBNAIL_URL
         FROM VW_BOARD_LIST
+        ORDER BY BOARD_CONTENT_CREATE_DATE DESC
+    </select>
+
+    <!--    내가 쓴 게시글(마이페이지용) -->
+    <select id="selectBoardListByMemberId" parameterType="long" resultType="BoardListViewDTO">
+        SELECT ID, BOARD_TITLE, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
+               MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+               BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_THUMBNAIL_URL
+        FROM VW_BOARD_LIST
+        WHERE MEMBER_ID = #{memberId}
         ORDER BY BOARD_CONTENT_CREATE_DATE DESC
     </select>
 
@@ -66,23 +76,38 @@
         WHERE ID = #{id}
     </select>
 
+    <!-- 특정 멤버 게시글 조회 -->
+    <select id="selectBoardsByMemberId" parameterType="Long" resultType="BoardListViewDTO">
+        SELECT ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_UPDATE_DATE,
+               BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
+               MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+               BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_THUMBNAIL_URL
+        FROM VW_BOARD_LIST
+        WHERE MEMBER_ID = #{memberId}
+        ORDER BY BOARD_CONTENT_CREATE_DATE DESC
+    </select>
+
     <!--    게시글 작성-->
     <insert id="insertBoard" parameterType="BoardVO">
         <selectKey keyProperty="boardId" resultType="Long" order="BEFORE">
             SELECT SEQ_BOARD.NEXTVAL FROM DUAL
         </selectKey>
-        INSERT INTO TBL_BOARD ( ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_VIEWS, BOARD_CONTENT_CREATE_DATE,
+        INSERT INTO TBL_BOARD (
+        ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_VIEWS, BOARD_CONTENT_CREATE_DATE,
         BOARD_CONTENT_UPDATE_DATE, BOARD_HASHTAG,MEMBER_ID
-        ) VALUES (#{boardId}, #{boardTitle}, #{boardContent}, 0, SYSDATE,
+        ) VALUES (
+        #{boardId}, #{boardTitle}, #{boardContent}, 0, SYSDATE,
         SYSDATE, #{boardHashtag}, #{memberId}
         )
     </insert>
 
     <!--    게시글 이미지 등록 -->
     <insert id="insertBoardImage" parameterType="BoardImgVO">
-        INSERT INTO TBL_BOARD_IMG (ID, BOARD_IMG_PATH, BOARD_IMG_NAME, BOARD_ID
-        ) VALUES ( SEQ_BOARD_IMG.NEXTVAL, #{boardImgPath}, #{boardImgName}, #{boardId}
-                 )
+        INSERT INTO TBL_BOARD_IMG (
+            ID, BOARD_IMG_PATH, BOARD_IMG_NAME, BOARD_ID
+        ) VALUES (
+            SEQ_BOARD_IMG.NEXTVAL, #{boardImgPath}, #{boardImgName}, #{boardId}
+        )
     </insert>
 
     <!--    게시글 수정 -->
@@ -135,11 +160,10 @@
     <delete id="deleteBoardLike" parameterType="BoardLikeVO">
         DELETE
         FROM TBL_BOARD_LIKE
-        WHERE MEMBER_ID = #{memberId}
-          AND BOARD_ID = #{boardId}
+        WHERE MEMBER_ID = #{memberId} AND BOARD_ID = #{boardId}
     </delete>
 
-    <!--    게시글 좋아요 여부 조회-->
+    <!--    게시글 좋아요 여부 조회 (사용자가 좋아요를 눌렀는지 아닌지)-->
     <select id="checkBoardLike" parameterType="BoardLikeVO" resultType="_int">
         SELECT COUNT(ID)
         FROM TBL_BOARD_LIKE
@@ -147,73 +171,4 @@
           AND BOARD_ID = #{boardId}
     </select>
 
-    <!--    Board Comment  -->
-    <!--    게시글 댓글 전체 목록-->
-    <select id="selectBoardCommentsByBoardId" parameterType="map" resultType="BoardCommentViewDTO">
-        SELECT TBC.ID, TBC.BOARD_COMMENT_CONTENT, TBC.BOARD_COMMENT_CREATE_DATE,
-        TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH,
-        (SELECT COUNT(ID)
-        FROM TBL_BOARD_COMMENT_LIKE
-        WHERE BOARD_COMMENT_ID = TBC.ID
-        ) AS BOARD_COMMENT_LIKE_COUNT
-        FROM TBL_BOARD_COMMENT TBC
-        JOIN TBL_MEMBER TBM ON TBC.MEMBER_ID = TBM.ID
-        WHERE TBC.BOARD_ID = #{boardId}
-        <choose>
-            <when test="sort == 'like'">
-                ORDER BY BOARD_COMMENT_LIKE_COUNT DESC
-            </when>
-            <otherwise>
-                ORDER BY TBC.BOARD_COMMENT_CREATE_DATE DESC
-            </otherwise>
-        </choose>
-    </select>
-
-    <!--    댓글 작성-->
-    <insert id="insertBoardComment" parameterType="BoardCommentVO">
-        INSERT INTO TBL_BOARD_COMMENT (
-            ID, BOARD_COMMENT_CONTENT, BOARD_COMMENT_CREATE_DATE, MEMBER_ID, BOARD_ID
-        ) VALUES (
-                     SEQ_BOARD_COMMENT.NEXTVAL, #{boardCommentContent}, SYSDATE, #{memberId}, #{boardId}
-                 )
-    </insert>
-
-    <!--    댓글 수정-->
-    <update id="updateBoardComment" parameterType="BoardCommentVO">
-        UPDATE TBL_BOARD_COMMENT
-        SET BOARD_COMMENT_CONTENT = #{boardCommentContent}
-        WHERE ID = #{id}
-    </update>
-
-    <!--    댓글 삭제-->
-    <delete id="deleteBoardComment" parameterType="Long">
-        DELETE
-        FROM TBL_BOARD_COMMENT
-        WHERE ID = #{id}
-    </delete>
-
-    <!--    댓글 좋아요-->
-    <insert id="insertBoardCommentLike" parameterType="BoardCommentLikeVO">
-        INSERT INTO TBL_BOARD_COMMENT_LIKE(
-            ID, BOARD_COMMENT_LIKE_CREATE_DATE, MEMBER_ID, BOARD_COMMENT_ID
-        ) VALUES (
-                     SEQ_BOARD_COMMENT_LIKE.NEXTVAL, SYSDATE, #{memberId}, #{boardCommentId}
-                 )
-    </insert>
-
-    <!--    댓글 좋아요 취소-->
-    <delete id="deleteBoardCommentLike" parameterType="BoardCommentLikeVO">
-        DELETE
-        FROM TBL_BOARD_COMMENT_LIKE
-        WHERE MEMBER_ID = #{memberId}
-          AND BOARD_COMMENT_ID = #{boardCommentId}
-    </delete>
-
-    <!--    댓글 좋아요 여부-->
-    <select id="checkBoardCommentLike" parameterType="BoardCommentLikeVO" resultType="_int">
-        SELECT COUNT(ID)
-        FROM TBL_BOARD_COMMENT_LIKE
-        WHERE MEMBER_ID = #{memberId}
-          AND BOARD_COMMENT_ID = #{boardCommentId}
-    </select>
 </mapper>
