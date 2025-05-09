@@ -44,6 +44,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     implementation 'net.nurigo:sdk:4.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {
