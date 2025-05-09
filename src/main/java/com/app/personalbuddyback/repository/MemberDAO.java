@@ -73,8 +73,13 @@ public class MemberDAO {
         memberMapper.updatePassword(memberVO);
     }
 
-//    소셜 로그인으로 회원 정보 수정
-    public void updateByOauth(MemberVO memberVO) {
-        memberMapper.updateByOauth(memberVO);
+//    회원 정보 수정
+    public void update(MemberVO memberVO) {
+        memberMapper.update(memberVO);
+    }
+
+//    회원 탈퇴
+    public void delete(Long id) {
+        memberMapper.delete(id);
     }
 }
