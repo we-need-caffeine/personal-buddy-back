@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/members/api")
 public class MemberAPI {
 
     private final MemberService memberService;
@@ -72,7 +72,7 @@ public class MemberAPI {
         }
 
         response.put("message", "로그인 성공!");
-        response.put("memberId", foundUser.get().getId());
+        response.put("memberId", foundUser.get());
         String jwtToken = jwtTokenUtil.generateToken(claims);
         response.put("jwtToken", jwtToken);
 
@@ -123,7 +123,16 @@ public class MemberAPI {
         return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 변경되었습니다."));
     }
 
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
+    @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공")
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Map<String, Object>> withdraw(@RequestParam Long memberId) {
+        Map<String, Object> response = new HashMap<>();
+        memberService.withdraw(memberId);
 
+        response.put("message", "회원 탈퇴 완료");
 
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 }
