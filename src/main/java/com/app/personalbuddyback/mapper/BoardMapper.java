@@ -10,6 +10,9 @@ public interface BoardMapper {
     //    게시글 전체 목록 조회
     public List<BoardListViewDTO> selectBoardList();
 
+    //    내가 쓴 게시글(마이페이지용)
+    List<BoardListViewDTO> selectBoardListByMemberId(Long memberId);
+
     //    HOT 게시글 조회
     public List<BoardListViewDTO> selectHotBoardList();
 
@@ -48,25 +51,4 @@ public interface BoardMapper {
 
     //    게시글 좋아요 여부 체크(로그인이 된 유저가 좋아요를 눌렸는지)
     public int checkBoardLike(BoardLikeVO boardLikeVO);
-
-    //    게시글 댓글 전체 목록
-    public List<BoardCommentViewDTO> selectBoardCommentsByBoardId(Map<String, Object> params);
-
-    //    댓글 작성
-    public void insertBoardComment(BoardCommentVO boardCommentVO);
-
-    //    댓글 수정
-    public void updateBoardComment(BoardCommentVO boardCommentVO);
-
-    //    댓글 삭제
-    public void deleteBoardComment(Long id);
-
-    //    댓글 좋아요
-    public void insertBoardCommentLike(BoardCommentLikeVO boardCommentLikeVO);
-
-    //    댓글 좋아요 취소
-    public void deleteBoardCommentLike(BoardCommentLikeVO boardCommentLikeVO);
-
-    //    댓글 좋아요 여부
-    public int checkBoardCommentLike(BoardCommentLikeVO boardCommentLikeVO);
 }

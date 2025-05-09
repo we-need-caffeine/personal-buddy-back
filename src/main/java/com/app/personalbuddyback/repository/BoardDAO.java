@@ -18,6 +18,11 @@ public class BoardDAO {
         return boardMapper.selectBoardList();
     }
 
+    // 내가 쓴 게시글(마이페이지용)
+    public List<BoardListViewDTO> findBoardsByMemberId(Long memberId) {
+        return boardMapper.selectBoardListByMemberId(memberId);
+    }
+
     // HOT 게시글
     public List<BoardListViewDTO> findHotList() {
         return boardMapper.selectHotBoardList();
@@ -59,7 +64,7 @@ public class BoardDAO {
     }
 
     // 게시글 삭제
-    public void delete(Long id) {
+    public void deleteBoard(Long id) {
         boardMapper.deleteBoard(id);
     }
 
@@ -69,7 +74,7 @@ public class BoardDAO {
     }
 
     // 게시글 좋아요 추가
-    public void increaseLike(BoardLikeVO likeVO) {
+    public void saveLike(BoardLikeVO likeVO) {
         boardMapper.insertBoardLike(likeVO);
     }
 
@@ -83,40 +88,5 @@ public class BoardDAO {
         return boardMapper.checkBoardLike(likeVO);
     }
 
-    // 게시글 댓글 전체 목록
-    public List<BoardCommentViewDTO> findComments(Map<String, Object> params) {
-        return boardMapper.selectBoardCommentsByBoardId(params);
-    }
 
-// ---------------------------- [댓글] ----------------------------
-
-    // 댓글 작성
-    public void saveComment(BoardCommentVO commentVO) {
-        boardMapper.insertBoardComment(commentVO);
-    }
-
-    // 댓글 수정
-    public void updateComment(BoardCommentVO commentVO) {
-        boardMapper.updateBoardComment(commentVO);
-    }
-
-    // 댓글 삭제
-    public void deleteComment(Long id) {
-        boardMapper.deleteBoardComment(id);
-    }
-
-    // 댓글 좋아요
-    public void likeComment(BoardCommentLikeVO likeVO) {
-        boardMapper.insertBoardCommentLike(likeVO);
-    }
-
-    // 댓글 좋아요 취소
-    public void deleteLikeComment(BoardCommentLikeVO likeVO) {
-        boardMapper.deleteBoardCommentLike(likeVO);
-    }
-
-    // 댓글 좋아요 여부
-    public int isCommentLiked(BoardCommentLikeVO likeVO) {
-        return boardMapper.checkBoardCommentLike(likeVO);
-    }
 }
