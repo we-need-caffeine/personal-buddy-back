@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.RecommendMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
+    <insert id="insert" parameterType="InterestDataVO">
+        INSERT INTO TBL_INTEREST_DATA
+        VALUES (
+            SEQ_INTEREST_DATA.NEXTVAL, #{interestDataCategory}, #{interestDataType}, #{interestDataSection},
+            #{interestDataValue}, #{interestDataContent}, #{interestDataImgName}, #{interestDataImgPath}
+        )
+    </insert>
+
+    <select id="selectAll" resultType="InterestDataVO">
+        SELECT (
+                ID, INTEREST_DATA_CATEGORY, INTEREST_DATA_TYPE, INTEREST_DATA_SECTION, INTEREST_DATA_VALUE,
+                INTEREST_DATA_CONTENT, INTEREST_DATA_IMG_NAME, INTEREST_DATA_IMG_PATH
+            )
+        FROM TBL_INTEREST_DATA
     </select>
+
+    <update id="update" parameterType="InterestDataVO">
+        UPDATE TBL_INTEREST_DATA
+        SET INTEREST_DATA_CATEGORY = #{interestDataCategory}, INTEREST_DATA_TYPE = #{interestDataType},
+            INTEREST_DATA_SECTION = #{interestDataSection}, INTEREST_DATA_VALUE = #{interestDataValue},
+            INTEREST_DATA_CONTENT = #{interestDataContent}, INTEREST_DATA_IMG_NAME = #{interestDataImgName},
+            INTEREST_DATA_IMG_PATH = #{interestDataImgPath}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_INTEREST_DATA
+        WHERE ID = #{id}
+    </delete>
 </mapper>

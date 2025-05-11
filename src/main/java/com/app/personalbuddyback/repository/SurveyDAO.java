@@ -5,6 +5,8 @@ import com.app.personalbuddyback.mapper.SurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class SurveyDAO {
@@ -17,6 +19,10 @@ public class SurveyDAO {
 
     public void insertInterestDetail(InterestDTO interestDTO) {
         surveyMapper.insertInterestDetail(interestDTO);
+    }
+
+    public List<InterestDTO> selectAllInterest(Long id) {
+        return surveyMapper.selectAllInterest(id);
     }
 
     public void deleteInterestDetail(Long memberId) {

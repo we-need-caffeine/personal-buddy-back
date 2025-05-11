@@ -36,6 +36,9 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // 모든 경로 허용
                 )
                 .oauth2Login(oauth -> oauth
+                        .redirectionEndpoint(endpoint -> endpoint
+                                .baseUri("/login/personalbuddy/code/*")
+                        )
                                 .successHandler((request, response, authentication) -> {
 //                            log.info("{}", authentication);
                                     if(authentication instanceof OAuth2AuthenticationToken){
@@ -91,16 +94,16 @@ public class SecurityConfig {
                                                     memberVO.setMemberPassword(member.getMemberPassword());
                                                     memberVO.setMemberNickName(member.getMemberNickName());
                                                     memberVO.setMemberProvider(provider);
-                                                    memberService.modify(memberVO);
+                                                    memberService.edit(memberVO);
                                                 });
                                                 redirectUrl = "http://localhost:3000/?jwtToken=" + jwtToken;
                                             }else{
 //                                        타사의 소셜로그인
-                                                redirectUrl = "http://localhost:3000/sign-in?provider=" + foundMemberProvider + "&login=false";
+                                                redirectUrl = "http://localhost:3000/member/login?provider=" + foundMemberProvider + "&login=false";
                                             }
 //                                아니라면 신규 가입
                                         }else{
-                                            redirectUrl = "http://localhost:3000/sign-up?provider=" + provider + "&email=" + email;
+                                            redirectUrl = "http://localhost:3000/member/login?provider=" + provider + "&email=" + email;
                                         }
                                         response.sendRedirect(redirectUrl);
                                     }
@@ -108,14 +111,14 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                                 .logoutUrl("/logout")
-                                .logoutSuccessUrl("http://localhost:3000/sign-in")
+                                .logoutSuccessUrl("http://localhost:3000/member/login")
                                 .logoutSuccessHandler((request, response, authentication) -> {
 //                            세션이 있으면 가져와야 한다
                                     HttpSession session = request.getSession(false); // 세션이 있으면 가져와라
                                     if(session != null){
                                         session.invalidate();
                                     }
-                                    response.sendRedirect("http://localhost:3000/sign-in");
+                                    response.sendRedirect("http://localhost:3000/member/login");
                                 })
                 );
 

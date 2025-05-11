@@ -43,7 +43,7 @@ public interface MemberService {
     public void editPassword(MemberVO memberVO);
 
 //    회원 정보 수정
-    public void modify(MemberVO memberVO);
+    public void edit(MemberVO memberVO);
 
 //    회원 탈퇴
     public void withdraw(Long id);

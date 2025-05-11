@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -16,20 +18,17 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public void insertInterest(InterestDTO interestDTO) {
         surveyDAO.insertInterest(interestDTO);
-    }
-
-    @Override
-    public void insertInterestDetail(InterestDTO interestDTO) {
         surveyDAO.insertInterestDetail(interestDTO);
     }
 
     @Override
-    public void deleteInterestDetail(Long memberId) {
-        surveyDAO.deleteInterestDetail(memberId);
+    public List<InterestDTO> interestList(Long id) {
+        return surveyDAO.selectAllInterest(id);
     }
 
     @Override
     public void deleteInterest(Long memberId) {
+        surveyDAO.deleteInterestDetail(memberId);
         surveyDAO.deleteInterest(memberId);
     }
 }
