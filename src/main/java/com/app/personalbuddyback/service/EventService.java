@@ -36,4 +36,13 @@ public interface EventService {
     // 이벤트 좋아요 수 조회
     public int getEventLikeCount(Long eventId);
 
+    // 이벤트 등록
+    void registerEvent(EventVO eventVO);
+
+    // 이벤트 수정
+    void updateEvent(EventVO eventVO);
+
+    // 이벤트 삭제
+    void deleteEvent(Long id);
+
 }

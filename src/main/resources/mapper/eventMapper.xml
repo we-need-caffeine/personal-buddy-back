@@ -70,4 +70,34 @@
         FROM TBL_EVENT_LIKE
         WHERE EVENT_ID = #{eventId}
     </select>
+
+    <!-- 이벤트 등록 -->
+    <insert id="insertEvent" parameterType="EventVO">
+        INSERT INTO TBL_EVENT (
+            ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_CREATE_DATE,
+            EVENT_START_DATE, EVENT_END_DATE, EVENT_GET_POINT,
+            EVENT_VIEWS, MEMBER_ID
+        ) VALUES (
+            SEQ_EVENT.NEXTVAL, #{eventTitle}, #{eventDescription}, SYSDATE,
+            #{eventStartDate}, #{eventEndDate}, #{eventGetPoint},0, #{memberId}
+        )
+    </insert>
+
+    <!-- 이벤트 수정 -->
+    <update id="updateEvent" parameterType="EventVO">
+        UPDATE TBL_EVENT
+        SET EVENT_TITLE = #{eventTitle},
+            EVENT_DESCRIPTION = #{eventDescription},
+            EVENT_START_DATE = #{eventStartDate},
+            EVENT_END_DATE = #{eventEndDate},
+            EVENT_GET_POINT = #{eventGetPoint}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 이벤트 삭제 -->
+    <delete id="deleteEvent" parameterType="long">
+        DELETE
+        FROM TBL_EVENT
+        WHERE ID = #{id}
+    </delete>
 </mapper>

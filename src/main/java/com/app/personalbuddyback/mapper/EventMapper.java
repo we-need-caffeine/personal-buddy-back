@@ -35,4 +35,13 @@ public interface EventMapper {
 
     // 좋아요 수 조회
     public int countEventLike(Long eventId);
+
+    // 이벤트 등록
+    public void insertEvent(EventVO eventVO);
+
+    // 이벤트 수정
+    public void updateEvent(EventVO eventVO);
+
+    // 이벤트 삭제
+    public void deleteEvent(Long id);
 }

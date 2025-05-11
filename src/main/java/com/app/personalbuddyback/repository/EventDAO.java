@@ -57,4 +57,19 @@ public class EventDAO {
     public int countEventLikes(Long eventId) {
         return eventMapper.countEventLike(eventId);
     }
+
+    // 이벤트 등록
+    public void save(EventVO eventVO) {
+        eventMapper.insertEvent(eventVO);
+    }
+
+    // 이벤트 수정
+    public void update(EventVO eventVO) {
+        eventMapper.updateEvent(eventVO);
+    }
+
+    // 이벤트 삭제
+    public void delete(Long id) {
+        eventMapper.deleteEvent(id);
+    }
 }

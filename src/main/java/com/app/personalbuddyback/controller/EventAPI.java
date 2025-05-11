@@ -157,4 +157,26 @@ public class EventAPI {
         return eventParticipationService.isWakeUpTime();
     }
 
+    // --------------------이벤트 관리자--------------------
+    // 이벤트 등록
+    @Operation(summary = "이벤트 등록", description = "이벤트를 등록 API")
+    @PostMapping("/register")
+    public void registerEvent(@RequestBody EventVO eventVO) {
+        eventService.registerEvent(eventVO);
+    }
+
+    // 이벤트 수정
+    @Operation(summary = "이벤트 수정", description = "이벤트 정보를 수정 API")
+    @PutMapping("/update")
+    public void updateEvent(@RequestBody EventVO eventVO) {
+        eventService.updateEvent(eventVO);
+    }
+
+    // 이벤트 삭제
+    @Operation(summary = "이벤트 삭제", description = "ID를 기준으로 이벤트 삭제 API")
+    @DeleteMapping("/delete/{id}")
+    public void deleteEvent(@PathVariable Long id) {
+        eventService.deleteEvent(id);
+    }
+
 }

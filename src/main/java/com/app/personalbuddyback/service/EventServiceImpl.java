@@ -1,9 +1,6 @@
 package com.app.personalbuddyback.service;
 
-import com.app.personalbuddyback.domain.EventJoinVO;
-import com.app.personalbuddyback.domain.EventLikeVO;
-import com.app.personalbuddyback.domain.EventListViewDTO;
-import com.app.personalbuddyback.domain.EventViewDTO;
+import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.repository.EventDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +69,23 @@ public class EventServiceImpl implements EventService {
     @Override
     public int getEventLikeCount(Long eventId) {
         return eventDAO.countEventLikes(eventId);
+    }
+
+    // 이벤트 등록
+    @Override
+    public void registerEvent(EventVO eventVO) {
+        eventDAO.save(eventVO);
+    }
+
+    // 이벤트 수정
+    @Override
+    public void updateEvent(EventVO eventVO) {
+        eventDAO.update(eventVO);
+    }
+
+    // 이벤트 삭제
+    @Override
+    public void deleteEvent(Long id) {
+        eventDAO.delete(id);
     }
 }
