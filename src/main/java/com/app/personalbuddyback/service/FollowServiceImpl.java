@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.FollowVO;
+import com.app.personalbuddyback.domain.MemberVO;
 import com.app.personalbuddyback.repository.FollowDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,11 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public List<FollowVO> getMyFavorite(Long favoriteMemberId) {
         return followDAO.findFavorite(favoriteMemberId);
+    }
+
+    @Override
+    public List<MemberVO> getMutualFollows(Long memberId) {
+        return followDAO.findMutualFollows(memberId);
     }
 
     @Override

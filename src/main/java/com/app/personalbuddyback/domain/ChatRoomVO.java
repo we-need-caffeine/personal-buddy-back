@@ -10,8 +10,10 @@ import java.util.Date;
 public class ChatRoomVO {
     private Long id;
     private Date chatRoomCreateTime;
-    private int chatRoomFix;
-    private int chatRequest;
+    private String chatRoomLastChat;
+    private Date chatRoomLastChatTime;
+    private Integer firstMemberHide;
+    private Integer secondMemberHide;
     private Long firstMemberId;
     private Long secondMemberId;
 }

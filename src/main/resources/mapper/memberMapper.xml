@@ -4,22 +4,27 @@
 
     <!-- 회원가입 -->
     <insert id="insert" parameterType="MemberVO">
-        INSERT INTO TBL_MEMBER (ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER,
-                                MEMBER_PHONE, MEMBER_NICKNAME, MEMBER_STATUS_MESSAGE, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
-                                MEMBER_POINT, MEMBER_ADMIN, MEMBER_CREATE_DATE, MEMBER_TERM_SERVICE_AGREE, MEMBER_TERM_INFORMATION_AGREE,
-                                MEMBER_TERM_LOCATION_AGREE, MEMBER_TERM_PROMOTION_AGREE, MEMBER_PROVIDER)
-        VALUES(SEQ_MEMBER.NEXTVAL, #{memberEmail}, #{memberPassword}, #{memberName}, #{memberBirth},
-               #{memberGender}, #{memberPhone}, #{memberNickName}, #{memberStatusMessage}, #{memberImgName},
-               #{memberImgPath}, #{memberPoint}, #{memberAdmin}, SYSDATE, #{memberTermServiceAgree},
-               #{memberTermInformationAgree}, #{memberTermLocationAgree}, #{memberTermPromotionAgree}, #{memberProvider})
+        INSERT INTO TBL_MEMBER (
+            ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER,
+            MEMBER_PHONE, MEMBER_NICKNAME, MEMBER_STATUS_MESSAGE, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
+            MEMBER_POINT, MEMBER_ADMIN, MEMBER_CREATE_DATE, MEMBER_TERM_SERVICE_AGREE, MEMBER_TERM_INFORMATION_AGREE,
+            MEMBER_TERM_LOCATION_AGREE, MEMBER_TERM_PROMOTION_AGREE, MEMBER_PROVIDER
+        )
+        VALUES (
+            SEQ_MEMBER.NEXTVAL, #{memberEmail}, #{memberPassword}, #{memberName}, #{memberBirth},
+            #{memberGender}, #{memberPhone}, #{memberNickName}, #{memberStatusMessage}, #{memberImgName},
+            #{memberImgPath}, #{memberPoint}, #{memberAdmin}, SYSDATE, #{memberTermServiceAgree},
+            #{memberTermInformationAgree}, #{memberTermLocationAgree}, #{memberTermPromotionAgree}, #{memberProvider}
+        )
     </insert>
 
 <!-- ID로 회원 상세 정보 조회 -->
     <select id="selectMemberInfoById" parameterType="Long" resultType="MemberVO">
-        SELECT ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE,
-               MEMBER_NICKNAME, MEMBER_STATUS_MESSAGE, MEMBER_IMG_NAME, MEMBER_IMG_PATH, MEMBER_POINT,
-               MEMBER_ADMIN, MEMBER_CREATE_DATE, MEMBER_TERM_SERVICE_AGREE, MEMBER_TERM_INFORMATION_AGREE,
-               MEMBER_TERM_LOCATION_AGREE, MEMBER_TERM_PROMOTION_AGREE, MEMBER_PROVIDER
+        SELECT
+            ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER, MEMBER_PHONE,
+            MEMBER_NICKNAME, MEMBER_STATUS_MESSAGE, MEMBER_IMG_NAME, MEMBER_IMG_PATH, MEMBER_POINT,
+            MEMBER_ADMIN, MEMBER_CREATE_DATE, MEMBER_TERM_SERVICE_AGREE, MEMBER_TERM_INFORMATION_AGREE,
+            MEMBER_TERM_LOCATION_AGREE, MEMBER_TERM_PROMOTION_AGREE, MEMBER_PROVIDER
         FROM TBL_MEMBER
         WHERE ID = #{id}
     </select>
@@ -87,11 +92,23 @@
         WHERE MEMBER_NAME = #{memberName} AND MEMBER_EMAIL = #{memberEmail}
     </select>
 
-<!-- 소셜 로그인 회원 정보 수정 -->
-    <update id="updateByOauth" parameterType="MemberVO">
+<!-- 회원 정보 수정 -->
+    <update id="update" parameterType="MemberVO">
         UPDATE TBL_MEMBER
-        SET MEMBER_EMAIL = #{memberEmail}, MEMBER_PASSWORD = #{memberPassword}, MEMBER_NAME = #{memberName},
-            MEMBER_NICKNAME = #{memberNickName}, MEMBER_PROVIDER = #{memberProvider}
+        <set>
+            <if test="memberEmail != null"> MEMBER_EMAIL = #{memberEmail}, </if>
+            <if test="memberPassword != null"> MEMBER_PASSWORD = #{memberPassword}, </if>
+            <if test="memberName != null"> MEMBER_NAME = #{memberName}, </if>
+            <if test="memberName != null"> MEMBER_BIRTH = #{memberBirth}, </if>
+            <if test="memberName != null"> MEMBER_GENDER = #{memberGender}, </if>
+            <if test="memberName != null"> MEMBER_PHONE = #{memberPhone}, </if>
+            <if test="memberNickName != null"> MEMBER_NICKNAME = #{memberNickName}, </if>
+            <if test="memberNickName != null"> MEMBER_STATUS_MESSAGE = #{memberStatusMessage}, </if>
+            <if test="memberNickName != null"> MEMBER_IMG_NAME = #{memberImgName}, </if>
+            <if test="memberNickName != null"> MEMBER_IMG_PATH = #{memberImgPath}, </if>
+            <if test="memberNickName != null"> MEMBER_POINT = #{memberPoint}, </if>
+            <if test="memberProvider != null"> MEMBER_PROVIDER = #{memberProvider} </if>
+        </set>
         WHERE ID = #{id}
     </update>
 
@@ -101,5 +118,11 @@
         SET MEMBER_PASSWORD = #{memberPassword}
         WHERE ID = #{id}
     </update>
+
+<!-- 회원 탈퇴 -->
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_MEMBER
+        WHERE ID = #{id}
+    </delete>
 
 </mapper>

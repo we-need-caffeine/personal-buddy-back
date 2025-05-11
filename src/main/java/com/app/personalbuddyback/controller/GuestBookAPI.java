@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("guest-book")
+@RequestMapping("guestbooks/api/*")
 public class GuestBookAPI {
     private final GuestBookService guestBookService;
 

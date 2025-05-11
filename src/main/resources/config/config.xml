@@ -91,5 +91,6 @@
         <typeAlias type="com.app.personalbuddyback.domain.ChatVO" alias="ChatVO" />
         <typeAlias type="com.app.personalbuddyback.domain.ChatRoomVO" alias="ChatRoomVO" />
         <typeAlias type="com.app.personalbuddyback.domain.ChatViewDTO" alias="ChatViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ChatRoomViewDTO" alias="ChatRoomViewDTO" />
     </typeAliases>
 </configuration>

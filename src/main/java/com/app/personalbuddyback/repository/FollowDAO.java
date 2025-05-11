@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.repository;
 
 import com.app.personalbuddyback.domain.FollowVO;
+import com.app.personalbuddyback.domain.MemberVO;
 import com.app.personalbuddyback.mapper.FollowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -28,6 +29,10 @@ public class FollowDAO {
     public List<FollowVO> findFavorite(Long favoriteMemberId) {
         return followMapper.selectFavorite(favoriteMemberId);
     }
+    //    맞팔된 유저의 정보
+    public List<MemberVO> findMutualFollows(Long memberId) {
+        return followMapper.selectMutualFollows(memberId);
+    }
     //    즐겨찾기 토글
     public void update(FollowVO followVO) {
         followMapper.update(followVO);
@@ -35,5 +40,9 @@ public class FollowDAO {
     //    팔로우 취소
     public void delete(FollowVO followVO) {
         followMapper.delete(followVO);
+    }
+    //    회원탈퇴용 팔로우 전체삭제
+    public void deleteAllByWithdraw(Long memberId) {
+        followMapper.deleteAllByWithdraw(memberId);
     }
 }

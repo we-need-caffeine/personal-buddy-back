@@ -11,6 +11,8 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
+    
+
     @Value("${mail.api.auth-mail}")
     String authMail;
 

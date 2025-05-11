@@ -11,7 +11,8 @@ public class ChatVO {
     private Long id;
     private String chatContent;
     private Date chatSendTime;
-    private int chatReading;
+    private Integer chatReading;
+    private Integer chatVisible;
     private Long chatWriterMemberId;
     private Long chatRoomId;
 }
