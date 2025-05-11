@@ -10,8 +10,7 @@ public class InterestDTO {
     private String interestType;
     private Long memberId;
 
-    private String interestDetailInformation;
-    private String interestDetailPlace;
-    private String interestDetailShopping;
+    private String interestDetailSection;
+    private String interestDetailValue;
     private Long interestId;
 }

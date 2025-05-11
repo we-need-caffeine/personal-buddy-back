@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 정보 수정
     @Override
-    public void modify(MemberVO memberVO) {
+    public void edit(MemberVO memberVO) {
         memberDAO.update(memberVO);
     }
 
