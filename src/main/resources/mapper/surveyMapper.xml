@@ -12,9 +12,21 @@
 
     <insert id="insertInterestDetail" parameterType="InterestDTO">
         INSERT INTO TBL_INTEREST_DETAIL
-        VALUES(SEQ_INTEREST_DETAIL.NEXTVAL, #{interestDetailInformation}, #{interestDetailPlace},
-               #{interestDetailShopping}, #{interestId})
+        VALUES(SEQ_INTEREST_DETAIL.NEXTVAL, #{interestDetailSection}, #{interestDetailValue}, #{interestId})
     </insert>
+
+    <select id="selectAll" parameterType="Long" resultType="InterestDTO">
+        SELECT
+            TBI.ID AS interestId,
+            TBI.INTEREST_TYPE AS interestType,
+            TBI.MEMBER_ID AS memberId,
+            TBID.INTEREST_DETAIL_SECTION AS interestDetailSection,
+            TBID.INTEREST_DETAIL_VALUE AS interestDetailValue
+        FROM TBL_INTEREST TBI
+                 LEFT JOIN TBL_INTEREST_DETAIL TBID
+                           ON TBI.ID = TBID.INTEREST_ID
+        WHERE TBI.MEMBER_ID = #{memberId}
+    </select>
 
 <!-- DELETE -->
     <delete id="deleteInterestDetailByMemberId" parameterType="Long">
