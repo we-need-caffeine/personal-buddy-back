@@ -3,7 +3,7 @@
 <mapper namespace="com.app.personalbuddyback.mapper.EventMapper">
 
     <!-- 진행 중 이벤트 3개 (슬라이드배너) -->
-    <select id="selectCurrentEvents" resultType="EventListViewDTO">
+    <select id="selectCurrentEvents" resultType="com.app.personalbuddyback.domain.EventListViewDTO">
         SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE,
                EVENT_VIEWS, EVENT_GET_POINT, THUMBNAIL_URL, JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
         FROM VW_EVENT_LIST
@@ -30,20 +30,7 @@
         ORDER BY EVENT_START_DATE
     </select>
 
-    <!-- 이벤트 참여 등록 -->
-    <insert id="insertEventJoin" parameterType="EventJoinVO">
-        INSERT INTO TBL_EVENT_JOIN (ID, EVENT_JOIN_DATE, EVENT_ID, MEMBER_ID)
-        VALUES (SEQ_EVENT_JOIN.NEXTVAL, SYSDATE, #{eventId}, #{memberId})
-    </insert>
-
-    <!-- 이벤트 참여 여부 조회 -->
-    <select id="isJoined" resultType="int">
-        SELECT COUNT(ID)
-        FROM TBL_EVENT_JOIN
-        WHERE EVENT_ID = #{eventId} AND MEMBER_ID = #{memberId}
-    </select>
-
-    <!-- 이벤트 상세 정보 -->
+    <!-- 이벤트 상세 정보 조회 -->
     <select id="selectEventDetail" parameterType="long" resultType="EventViewDTO">
         SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE, EVENT_VIEWS,
                EVENT_GET_POINT, THUMBNAIL_URL, JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
@@ -84,110 +71,33 @@
         WHERE EVENT_ID = #{eventId}
     </select>
 
-    <!-- 게시글 전체 댓글 목록 -->
-    <select id="selectEventCommentsByEventId" parameterType="map" resultType="EventCommentViewDTO">
-        SELECT TBE.ID, TBE.EVENT_COMMENT_DESCRIPTION,
-               TO_CHAR(TBE.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
-               TBM.MEMBER_NICKNAME AS COMMENTER_NICKNAME,
-        (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TBE.ID) AS LIKE_COUNT
-        FROM TBL_EVENT_COMMENT TBE
-        JOIN TBL_MEMBER TBM ON TBE.MEMBER_ID = TBM.ID
-        WHERE TBE.EVENT_ID = #{eventId}
-        ORDER BY
-        <choose>
-            <when test="sort == 'like'">
-                (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TBE.ID) DESC
-            </when>
-            <otherwise>
-                TBE.EVENT_COMMENT_CREATE_DATE DESC
-            </otherwise>
-        </choose>
-    </select>
-
-    <!-- 댓글 작성 -->
-    <insert id="insertEventComment" parameterType="EventCommentVO">
-        INSERT INTO TBL_EVENT_COMMENT (ID, EVENT_COMMENT_DESCRIPTION, EVENT_COMMENT_CREATE_DATE, EVENT_ID, MEMBER_ID)
-        VALUES (SEQ_EVENT_COMMENT.NEXTVAL, #{eventCommentDescription}, SYSDATE, #{eventId}, #{memberId})
+    <!-- 이벤트 등록 -->
+    <insert id="insertEvent" parameterType="EventVO">
+        INSERT INTO TBL_EVENT (
+            ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_CREATE_DATE,
+            EVENT_START_DATE, EVENT_END_DATE, EVENT_GET_POINT,
+            EVENT_VIEWS, MEMBER_ID
+        ) VALUES (
+            SEQ_EVENT.NEXTVAL, #{eventTitle}, #{eventDescription}, SYSDATE,
+            #{eventStartDate}, #{eventEndDate}, #{eventGetPoint},0, #{memberId}
+        )
     </insert>
 
-    <!-- 유저 댓글 작성 여부 조회 (중복 방지용) -->
-    <select id="userCommented" parameterType="EventCommentVO" resultType="int">
-        SELECT COUNT(ID)
-        FROM TBL_EVENT_COMMENT
-        WHERE EVENT_ID = #{eventId} AND MEMBER_ID = #{memberId}
-    </select>
+    <!-- 이벤트 수정 -->
+    <update id="updateEvent" parameterType="EventVO">
+        UPDATE TBL_EVENT
+        SET EVENT_TITLE = #{eventTitle},
+            EVENT_DESCRIPTION = #{eventDescription},
+            EVENT_START_DATE = #{eventStartDate},
+            EVENT_END_DATE = #{eventEndDate},
+            EVENT_GET_POINT = #{eventGetPoint}
+        WHERE ID = #{id}
+    </update>
 
-    <!-- 댓글 좋아요 -->
-    <insert id="insertEventCommentLike" parameterType="EventCommentLikeVO">
-        INSERT INTO TBL_EVENT_COMMENT_LIKE (ID, EVENT_COMMENT_LIKE_CREATE_DATE, EVENT_COMMENT_ID, MEMBER_ID)
-        VALUES (SEQ_EVENT_COMMENT_LIKE.NEXTVAL, SYSDATE, #{eventCommentId}, #{memberId})
-    </insert>
-
-    <!-- 댓글 좋아요 취소 -->
-    <delete id="deleteEventCommentLike" parameterType="EventCommentLikeVO">
-        DELETE FROM TBL_EVENT_COMMENT_LIKE
-        WHERE EVENT_COMMENT_ID = #{eventCommentId} AND MEMBER_ID = #{memberId}
+    <!-- 이벤트 삭제 -->
+    <delete id="deleteEvent" parameterType="long">
+        DELETE
+        FROM TBL_EVENT
+        WHERE ID = #{id}
     </delete>
-
-    <!-- 댓글 좋아요 여부 -->
-    <select id="isEventCommentLiked" parameterType="EventCommentLikeVO" resultType="int">
-        SELECT COUNT(ID)
-        FROM TBL_EVENT_COMMENT_LIKE
-        WHERE EVENT_COMMENT_ID = #{eventCommentId} AND MEMBER_ID = #{memberId}
-    </select>
-
-    <!-- 댓글 좋아요 수 조회 -->
-    <select id="countEventCommentLike" parameterType="long" resultType="int">
-        SELECT COUNT(ID)
-        FROM TBL_EVENT_COMMENT_LIKE
-        WHERE EVENT_COMMENT_ID = #{eventCommentId}
-    </select>
-
-    <!-- 기상 챌린지: 05:00~06:00 사이 -->
-    <select id="wakeUpChallengeTime" resultType="int">
-        SELECT CASE
-            WHEN TO_CHAR(SYSDATE, 'HH24:MI:SS') BETWEEN '05:00:00' AND '06:00:00' THEN 1
-            ELSE 0
-            END FROM DUAL
-    </select>
-
-    <!-- 힐링데이 베스트 댓글 (좋아요 Top 3 → 작성일 빠른 순) -->
-    <select id="selectBestComments" parameterType="long" resultType="EventCommentViewDTO">
-        SELECT ID, EVENT_COMMENT_DESCRIPTION, COMMENTER_NICKNAME, CREATED_DATE, LIKE_COUNT
-        FROM (
-            SELECT TEC.ID,
-            TEC.EVENT_COMMENT_DESCRIPTION,
-            TMN.MEMBER_NICKNAME AS COMMENTER_NICKNAME,
-            TO_CHAR(TEC.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
-                (SELECT COUNT(ID)
-                FROM TBL_EVENT_COMMENT_LIKE
-                WHERE EVENT_COMMENT_ID = TEC.ID) AS LIKE_COUNT
-            FROM TBL_EVENT_COMMENT TEC
-            JOIN TBL_MEMBER TMN ON TEC.MEMBER_ID = TMN.ID
-            WHERE TEC.EVENT_ID = #{eventId}
-            ORDER BY LIKE_COUNT DESC, TEC.EVENT_COMMENT_CREATE_DATE
-            )
-        WHERE ROWNUM &lt;= 3
-    </select>
-
-    <!-- 루틴 공유 이벤트: 조건 만족 댓글 조회 -->
-    <select id="selectRoutineComments" parameterType="long" resultType="EventCommentViewDTO">
-        SELECT ID,
-               EVENT_COMMENT_DESCRIPTION,
-               COMMENTER_NICKNAME,
-               CREATED_DATE,
-               LIKE_COUNT
-        FROM (
-            SELECT TEC.ID,
-                   TEC.EVENT_COMMENT_DESCRIPTION,
-                   TMN.MEMBER_NICKNAME AS COMMENTER_NICKNAME,
-                   TO_CHAR(TEC.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
-                   (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TEC.ID) AS LIKE_COUNT
-            FROM TBL_EVENT_COMMENT TEC
-                     JOIN TBL_MEMBER TMN ON TEC.MEMBER_ID = TMN.ID
-            WHERE TEC.EVENT_ID = #{eventId}
-              AND LENGTH(TEC.EVENT_COMMENT_DESCRIPTION) >= 20
-              AND TEC.EVENT_COMMENT_DESCRIPTION LIKE '%루틴%'
-             )
-    </select>
 </mapper>
