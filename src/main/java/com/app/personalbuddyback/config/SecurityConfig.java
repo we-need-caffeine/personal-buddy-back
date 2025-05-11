@@ -96,7 +96,7 @@ public class SecurityConfig {
                                                 redirectUrl = "http://localhost:3000/?jwtToken=" + jwtToken;
                                             }else{
 //                                        타사의 소셜로그인
-                                                redirectUrl = "http://localhost:3000/sign-in?provider=" + provider + "&login=false";
+                                                redirectUrl = "http://localhost:3000/sign-in?provider=" + foundMemberProvider + "&login=false";
                                             }
 //                                아니라면 신규 가입
                                         }else{

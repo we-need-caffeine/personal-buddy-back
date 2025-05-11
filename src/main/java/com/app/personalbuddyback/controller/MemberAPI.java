@@ -2,6 +2,7 @@ package com.app.personalbuddyback.controller;
 
 import com.app.personalbuddyback.domain.MemberVO;
 import com.app.personalbuddyback.service.MemberService;
+import com.app.personalbuddyback.util.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,11 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/members/api")
 public class MemberAPI {
 
     private final MemberService memberService;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Operation(summary = "회원가입", description = "회원가입 API")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
@@ -60,6 +62,7 @@ public class MemberAPI {
     @PostMapping("login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody MemberVO memberVO) {
         Map<String, Object> response = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();
         Long memberId = memberService.login(memberVO);
         Optional<MemberVO> foundUser = memberService.getMemberInfoById(memberId);
 
@@ -69,9 +72,11 @@ public class MemberAPI {
         }
 
         response.put("message", "로그인 성공!");
-        response.put("memberId", foundUser.get().getId());
+        response.put("memberId", foundUser.get());
+        String jwtToken = jwtTokenUtil.generateToken(claims);
+        response.put("jwtToken", jwtToken);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Operation(summary = "이메일 찾기", description = "이메일 찾기 API")
@@ -118,7 +123,16 @@ public class MemberAPI {
         return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 변경되었습니다."));
     }
 
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
+    @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공")
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Map<String, Object>> withdraw(@RequestParam Long memberId) {
+        Map<String, Object> response = new HashMap<>();
+        memberService.withdraw(memberId);
 
+        response.put("message", "회원 탈퇴 완료");
 
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 }

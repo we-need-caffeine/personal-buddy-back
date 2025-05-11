@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.personalbuddyback.mapper.EventParticipationMapper">
+
+<!--    이벤트 참여 서비스-->
+    <!-- 이벤트 참여 등록 -->
+    <insert id="insertEventJoin" parameterType="EventJoinVO">
+        INSERT INTO TBL_EVENT_JOIN (ID, EVENT_ID, MEMBER_ID, EVENT_JOIN_DATE)
+        VALUES (SEQ_EVENT_JOIN.NEXTVAL, #{eventId}, #{memberId}, SYSDATE)
+    </insert>
+
+    <!-- 이벤트 참여 여부 확인 -->
+    <select id="isJoined" resultType="int">
+        SELECT COUNT(ID)
+        FROM TBL_EVENT_JOIN
+        WHERE EVENT_ID = #{eventId} AND MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 기상 챌린지: 05시~06시 사이인지 여부 (1: 참여 가능, 0: 불가) -->
+    <select id="wakeUpChallengeTime" resultType="int">
+        SELECT CASE
+                   WHEN TO_CHAR(SYSDATE, 'HH24:MI:SS') BETWEEN '05:00:00' AND '06:00:00' THEN 1
+                   ELSE 0
+                   END FROM DUAL
+    </select>
+</mapper>

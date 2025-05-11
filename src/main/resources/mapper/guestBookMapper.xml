@@ -36,4 +36,11 @@
         DELETE FROM TBL_GUESTBOOK
         WHERE ID = #{id}
     </delete>
+
+<!--  회원탈퇴용 방명록 전체 삭제  -->
+    <delete id="deleteAllByWithdraw" parameterType="Long">
+        DELETE FROM TBL_GUESTBOOK
+        WHERE OWNER_MEMBER_ID = #{memberId} OR WRITER_MEMBER_ID = #{memberId}
+    </delete>
+
 </mapper>
