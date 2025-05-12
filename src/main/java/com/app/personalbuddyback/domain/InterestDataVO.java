@@ -9,10 +9,10 @@ public class InterestDataVO {
     private Long id;
     private String interestDataCategory;
     private String interestDataType;
-    private String interestDataDetail;
-    private String interestDataTitle;
-    private String interestDataDescription;
-    private String interestDataImgPath;
+    private String interestDataSection;
+    private String interestDataValue;
+    private String interestDataContent;
     private String interestDataImgName;
+    private String interestDataImgPath;
     private Long interestDetailId;
 }
