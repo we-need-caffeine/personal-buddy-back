@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,23 +32,30 @@ public class FileAPI {
     // fileController 를 호출해야한다
 
     // 프론트 단에서 이미지를 넘길 때 파라미터를 함께 fetch 에 담아서 줘야함
-    // ex) MemberImg 이면
-    // { MemberImg, 파일 경로, 파일 이름 }
-    // 날짜 경로를 넣기 전에, MemberImg 인지, BoardImg 인지, AchievementImg 인지 등
+    // ex) MemberImg 이면 이미지는 한개만 필요하기 때문에
+    // { 이미지 파일, DataType (member)
     // 요청한 컨트롤러에 따른 폴더 구성을 다르게 해야한다.
+    // -> MemberImg : member, ItemImg : item, AchievementImg : achievement
+    // Achievement 이미지만 썸네일이 필요하지 않음
+    // 썸네일 이미지를 따로 받도록 작업이 필요
 
-    private String getPath(){
+    // ex) Board 혹은 Event Img 라면 이미지가 여러개 필요하므로
+    // { 이미지 파일 리스트, DataType(board / event) }
+    // 이미지를 구분할 기준이 따로 있지 않기 때문에 날짜별로 폴더 경로를 구성하여 구분
+    // BoardImg -> board/2025/05/09, EventImg -> event/2025/05/09
+
+    private String getDatePath(){
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
 
     @PostMapping("files-upload")
-    public ResponseEntity<Map<String, Object>> filesUpload(@RequestParam("imgFiles") List<MultipartFile> imgFiles, @RequestParam("dataType") String dataType) throws IOException {
-        String rootPath = "C:/personalbuddy/images/" + dataType + "/" + getPath();
+    public ResponseEntity<Map<String, Object>> uploadFiles(@RequestParam("imgFiles") List<MultipartFile> imgFiles, @RequestParam("dataType") String dataType) throws IOException {
+        String filePath = "C:/personalbuddy/images/" + dataType + "/" + getDatePath();
         Map<String, Object> response = new HashMap<>();
 
         List<String> uuids = new ArrayList<>();
         List<String> fileNames = new ArrayList<>();
-        File file = new File(rootPath);
+        File file = new File(filePath);
 
         if(!file.exists()){
             file.mkdirs();
@@ -57,18 +65,18 @@ public class FileAPI {
             uuids.add(UUID.randomUUID().toString());
 
             fileNames.add(uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename());
-            imgFiles.get(i).transferTo(new File(rootPath, uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
+            imgFiles.get(i).transferTo(new File(filePath, uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
 
             // 썸네일 저장
             if(imgFiles.get(i).getContentType().startsWith("image")){
-                FileOutputStream out = new FileOutputStream(new File(rootPath, "t_" + uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
+                FileOutputStream out = new FileOutputStream(new File(filePath, "t_" + uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
                 Thumbnailator.createThumbnail(imgFiles.get(i).getInputStream(), out, 100, 100);
                 out.close();
             }
         }
         // 파일의 경로는 동일하게 사용한다
         // 다만 파일의 이름은 여러개로 정해질 수 있어 List 로 전달해야함
-        response.put("filePath", rootPath);
+        response.put("filePath", filePath);
         response.put("fileNames", fileNames);
         response.put("message", "upload success");
         return ResponseEntity.ok(response);
@@ -76,28 +84,36 @@ public class FileAPI {
 
     @PostMapping("file-upload")
     @ResponseBody
-    public String upload(@RequestParam("imgFile") MultipartFile imgFile, @RequestParam("dataType") String dataType) throws IOException {
-        String rootPath = "C:/personalbuddy/images/" + dataType;
-        File file = new File(rootPath);
-
-        // uuid 뒤에 memberImg -> memberId
-        // uuid 뒤에 AchievementImg -> AchievementId
-        // uuid 뒤에 ItemImg -> ItemId
-        // uuid 뒤에 InterestDataImg -> InterestDataId
+    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("imgFile") MultipartFile imgFile, @RequestParam("dataType") String dataType) throws IOException {
+        String filePath = "C:/personalbuddy/images/" + dataType;
+        File file = new File(filePath);
+        Map<String, Object> response = new HashMap<>();
 
         if(!file.exists()){
             file.mkdirs();
         }
 
         String uuid = UUID.randomUUID().toString();
-        imgFile.transferTo(new File(rootPath, uuid + "_" + imgFile.getOriginalFilename()));
+        imgFile.transferTo(new File(filePath, uuid + "_" + imgFile.getOriginalFilename()));
+        String fileName = uuid + "_" + imgFile.getOriginalFilename();
 
         // 썸네일
         if(imgFile.getContentType().startsWith("image")){
-            FileOutputStream out = new FileOutputStream(new File(rootPath, "t_" + uuid + "_" + imgFile.getOriginalFilename()));
+            FileOutputStream out = new FileOutputStream(new File(filePath, "t_" + uuid + "_" + imgFile.getOriginalFilename()));
             Thumbnailator.createThumbnail(imgFile.getInputStream(), out, 100, 100);
             out.close();
         }
-        return uuid;
+
+        response.put("filePath", filePath);
+        response.put("fileName", fileName);
+        response.put("message", "upload success");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("display")
+    @ResponseBody
+    public byte[] displayEventImg(String filePath, String fileName) throws IOException {
+        return FileCopyUtils.copyToByteArray(new File(filePath + fileName));
     }
 }
