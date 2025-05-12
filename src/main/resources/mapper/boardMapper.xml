@@ -148,7 +148,7 @@
         WHERE ID = #{id}
     </update>
 
-    <!--    게시글 좋아요 추가-->
+    <!--  게시글 좋아요 추가-->
     <insert id="insertBoardLike" parameterType="BoardLikeVO">
         INSERT INTO TBL_BOARD_LIKE (ID, BOARD_LIKE_CREATE_DATE, MEMBER_ID, BOARD_ID
         ) VALUES (
@@ -156,7 +156,7 @@
                  )
     </insert>
 
-    <!--    게시글 좋아요 취소-->
+    <!--  게시글 좋아요 취소-->
     <delete id="deleteBoardLike" parameterType="BoardLikeVO">
         DELETE
         FROM TBL_BOARD_LIKE
