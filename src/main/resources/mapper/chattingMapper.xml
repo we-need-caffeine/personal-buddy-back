@@ -4,20 +4,12 @@
 
 <!--  채팅방 존재 여부  -->
 <!--  채팅방 요청자와, 수신자 1 AND 2 OR 2 AND 1로, 해당 채팅방이 존재하는지 검증  -->
-    <select id="selectRealChatRoom" parameterType="map" resultType="Long">
+    <select id="selectChatRoomIsTrue" parameterType="map" resultType="Long">
         SELECT ID
         FROM TBL_CHAT_ROOM
         WHERE FIRST_MEMBER_ID = #{firstMemberId} AND SECOND_MEMBER_ID = #{secondMemberId}
         OR FIRST_MEMBER_ID = #{secondMemberId} AND SECOND_MEMBER_ID = #{firstMemberId}
     </select>
-
-<!--  채팅방 생성  -->
-<!--  존재 여부로 찾지 못한경우, 채팅방을 생성  -->
-    <insert id="insertChatRoom" parameterType="ChatRoomVO">
-        INSERT INTO TBL_CHAT_ROOM ( ID, FIRST_MEMBER_ID, SECOND_MEMBER_ID )
-        VALUES ( SEQ_CHAT_ROOM.NEXTVAL, #{firstMemberId}, #{secondMemberId} )
-    </insert>
-
 
 <!--  채팅방 리스트 불러오기  -->
 <!--  - 요청자 or 수신자 중 내가 포함된 채팅방  -->
@@ -25,7 +17,7 @@
 <!--  - 상대방 닉네임, 프로필, 즐겨찾기 여부, 팔로잉 여부 포함  -->
 <!--  - 마지막 채팅 내용, 시간 포함  -->
 <!--  - 안 읽은 메시지 수 JOIN 조회 포함  -->
-    <select id="selectChatRoom" parameterType="map" resultType="ChatRoomViewDTO">
+    <select id="selectAllChatRoom" parameterType="map" resultType="ChatRoomViewDTO">
         SELECT
             TCR.ID AS CHAT_ROOM_ID,
             TCR.CHAT_ROOM_LAST_CHAT,
@@ -84,6 +76,29 @@
         WHERE ID = #{chatRoomId}
     </select>
 
+<!--  채팅 내역 불러오기  -->
+<!--  페이징 처리 고려중, 아이디 혹은 시간순으로 채팅 내역을 불러오기  -->
+    <select id="selectChat" parameterType="Long" resultType="ChatVO">
+        SELECT ID, CHAT_CONTENT, CHAT_READING, CHAT_SEND_TIME, CHAT_WRITER_MEMBER_ID
+        FROM TBL_CHAT
+        WHERE CHAT_ROOM_ID = #{chatRoomId} AND CHAT_VISIBLE = 1
+        ORDER BY CHAT_SEND_TIME ASC
+    </select>
+
+<!--  채팅방 생성  -->
+<!--  존재 여부로 찾지 못한경우, 채팅방을 생성  -->
+    <insert id="insertChatRoom" parameterType="ChatRoomVO">
+        INSERT INTO TBL_CHAT_ROOM ( ID, FIRST_MEMBER_ID, SECOND_MEMBER_ID )
+        VALUES ( SEQ_CHAT_ROOM.NEXTVAL, #{firstMemberId}, #{secondMemberId} )
+    </insert>
+
+<!--  채팅 작성  -->
+<!--  아이디, 내용, 보낸 시간, 읽음 여부, 송신자, 채팅방의 ID  -->
+    <insert id="insertChat" parameterType="ChatVO">
+        INSERT INTO TBL_CHAT (ID, CHAT_CONTENT, CHAT_WRITER_MEMBER_ID, CHAT_ROOM_ID)
+        VALUES (SEQ_CHAT.NEXTVAL, #{chatContent}, #{chatWriterMemberId}, #{chatRoomId})
+    </insert>
+
 <!--  채팅방 마지막 채팅 업데이트  -->
 <!--  마지막 채팅의 시간과 기록을 채팅방 리스트에 업데이트  -->
     <update id="updateChatRoom" parameterType="ChatRoomVO">
@@ -95,7 +110,7 @@
 
 <!--  채팅방 나가기(숨기기)  -->
 <!--  수신 유저가 나감 = 수신 유저의 상태를 1로 변환해서 숨김 처리  -->
-    <update id="updateOutChatRoom" parameterType="map">
+    <update id="updateHideChatRoom" parameterType="map">
         UPDATE TBL_CHAT_ROOM
         SET
         <choose>
@@ -111,7 +126,7 @@
 
 <!--  채팅방 보이기  -->
 <!--  내가 숨긴 채팅방에서 메세지를 받거나, 어떠한 경로로 해당 채팅방을 다시 열 때, 상대의 숨김처리를 다시 1으로  -->
-    <update id="updateInChatRoom" parameterType="map">
+    <update id="updateViewChatRoom" parameterType="map">
         UPDATE TBL_CHAT_ROOM
         SET
         <choose>
@@ -125,28 +140,6 @@
         WHERE ID = #{chatRoomId}
     </update>
 
-<!--  채팅방 삭제  -->
-    <delete id="deleteChatRoom" parameterType="Long">
-        DELETE FROM TBL_CHAT_ROOM
-        WHERE ID = #{chatRoomId}
-    </delete>
-
-<!--  채팅 작성  -->
-<!--  아이디, 내용, 보낸 시간, 읽음 여부, 송신자, 채팅방의 ID  -->
-    <insert id="insertChat" parameterType="ChatVO">
-        INSERT INTO TBL_CHAT (ID, CHAT_CONTENT, CHAT_WRITER_MEMBER_ID, CHAT_ROOM_ID)
-        VALUES (SEQ_CHAT.NEXTVAL, #{chatContent}, #{chatWriterMemberId}, #{chatRoomId})
-    </insert>
-
-<!--  채팅 내역 불러오기  -->
-<!--  페이징 처리 고려중, 아이디 혹은 시간순으로 채팅 내역을 불러오기  -->
-    <select id="selectChat" parameterType="Long" resultType="ChatVO">
-        SELECT ID, CHAT_CONTENT, CHAT_READING, CHAT_SEND_TIME, CHAT_WRITER_MEMBER_ID
-        FROM TBL_CHAT
-        WHERE CHAT_ROOM_ID = #{chatRoomId} AND CHAT_VISIBLE = 1
-        ORDER BY CHAT_SEND_TIME ASC
-    </select>
-
 <!--  채팅 읽음 처리  -->
 <!--  - 채팅방을 클릭한 순간, 자신이 보지 않은 메시지를 읽음 처리  -->
 <!--  - 내가 보낸 메시지는 제외됨  -->
@@ -158,10 +151,22 @@
 
 <!--  채팅 삭제(숨기기)  -->
 <!--  해당 채팅의 내용을 숨김 처리(데이터 보관용) / 채팅방에 있는 모든 유저는 해당 채팅을 볼 수 없음  -->
-    <update id="updateChatHide" parameterType="map">
+    <update id="updateHideChat" parameterType="map">
         UPDATE TBL_CHAT
         SET CHAT_VISIBLE = 0
         WHERE ID = #{id} AND CHAT_WRITER_MEMBER_ID = #{memberId}
     </update>
+
+<!--  회원탈퇴용 채팅방 전체 삭제  -->
+    <delete id="deleteAllChatRoom" parameterType="Long">
+        DELETE FROM TBL_CHAT_ROOM
+        WHERE FIRST_MEMBER_ID = #{memberId} OR SECOND_MEMBER_ID = #{memberId}
+    </delete>
+
+<!--  회원탈퇴용 채팅 전체 삭제  -->
+    <delete id="deleteAllChat" parameterType="Long">
+        DELETE FROM TBL_CHAT
+        WHERE CHAT_ROOM_ID = #{chatRoomId}
+    </delete>
 
 </mapper>

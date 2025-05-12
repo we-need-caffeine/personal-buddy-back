@@ -46,13 +46,17 @@
         <typeAlias type="com.app.personalbuddyback.domain.ScheduleMemberGroupVO" alias="ScheduleMemberGroupVO" />
         <typeAlias type="com.app.personalbuddyback.domain.CalendarViewDTO" alias="CalendarViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.ToDoListVO" alias="ToDoListVO" />
-    <typeAlias type="com.app.personalbuddyback.domain.ScheduleGroupMemberVO" alias="ScheduleGroupMemberVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleGroupMemberVO" alias="ScheduleGroupMemberVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleCategoryVO" alias="ScheduleCategoryVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleSubCategoryVO" alias="ScheduleSubCategoryVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleSaveDTO" alias="ScheduleSaveDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.ScheduleViewDTO" alias="ScheduleViewDTO" />
 
 <!--        설문조사 / 추천항목 관련 테이블      -->
         <typeAlias type="com.app.personalbuddyback.domain.InterestVO" alias="InterestVO" />
         <typeAlias type="com.app.personalbuddyback.domain.InterestDetailVO" alias="InterestDetailVO" />
         <typeAlias type="com.app.personalbuddyback.domain.InterestDataVO" alias="InterestDataVO" />
-            <typeAlias type="com.app.personalbuddyback.domain.InterestDTO" alias="InterestDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.InterestDTO" alias="InterestDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.InterestRecommendViewDTO" alias="InterestRecommendViewDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.ScheduleRecommendViewDTO" alias="ScheduleRecommendViewDTO" />
 
