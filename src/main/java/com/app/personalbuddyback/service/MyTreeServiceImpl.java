@@ -21,10 +21,6 @@ public class MyTreeServiceImpl implements MyTreeService {
         myTreeDAO.saveMemberTree(treeVO);
     }
 
-    @Override
-    public void addMemberTreeItem(TreeCustomizingVO treeCustomizingVO) {
-        myTreeDAO.saveTreeCustomizing(treeCustomizingVO);
-    }
 
     @Override
     public List<TreeViewDTO> getMemberTreeItems(Long memberId) {

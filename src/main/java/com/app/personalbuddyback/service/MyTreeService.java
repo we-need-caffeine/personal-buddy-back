@@ -11,8 +11,6 @@ public interface MyTreeService {
 
     public void createMemberTree(TreeVO treeVO);
 
-    public void addMemberTreeItem(TreeCustomizingVO treeCustomizingVO);
-
     public List<TreeViewDTO> getMemberTreeItems(Long memberId);
 
     public void editMemberTreeItem(TreeCustomizingVO treeCustomizingVO);
