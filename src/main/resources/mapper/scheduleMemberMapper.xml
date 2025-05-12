@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.app.personalbuddyback.mapper.scheduleMemberMapper">
+<mapper namespace="com.app.personalbuddyback.mapper.ScheduleMemberMapper">
 
     <!-- 일정 멤버 그룹 등록  -->
     <insert id="insertScheduleMemberGroup" parameterType="ScheduleMemberGroupVO">
