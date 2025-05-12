@@ -2,22 +2,63 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.PointShopMapper">
     <!--    포인트샵 나무 아이템 추가 쿼리       -->
-    <insert id="insert" parameterType="ItemVO">
+    <insert id="insertItem" parameterType="ItemVO">
         INSERT INTO TBL_ITEM(ID, ITEM_NAME, ITEM_PRICE, ITEM_IMG_PATH, ITEM_IMG_NAME, ITEM_TYPE)
         VALUES(SEQ_ITEM.NEXTVAL, #{itemName}, #{itemPrice}, #{itemImgPath}, #{itemImgName}, #{itemType})
     </insert>
 
+    <!--  아이템 구매  -->
+    <insert id="insertBuyItem" parameterType="BuyItemVO">
+        INSERT INTO HR.TBL_BUY_ITEM(ID, ITEM_ID BUY_ITEM_COUNT, MEMBER_ID)
+        VALUES(SEQ_BUY_ITEM.NEXTVAL, #{itemID}, #{buyItemCount}, #{memberId})
+    </insert>
+
+    <!--  장바구니 추가  -->
+    <insert id="insertCart" parameterType="CartVO">
+        INSERT INTO HR.TBL_CART(ID, ITEM_ID BUY_ITEM_COUNT, MEMBER_ID)
+        VALUES(SEQ_CART.NEXTVAL, #{itemID}, #{buyItemCount}, #{memberId})
+    </insert>
+
+    <!--    성장나무 아이템 추가 쿼리 (아이템 구매 시 사용)     -->
+    <insert id="insertTreeCustomizing" parameterType="TreeCustomizingVO">
+        INSERT INTO TBL_TREE_CUSTOMIZING
+        VALUES(SEQ_ITEM.NEXTVAL, #{itemId}, #{treeCustomizingPositionX}, #{treeCustomizingPositionY}, #{treeCustomizingApply}, #{treeId})
+    </insert>
+
+    <select id="selectAllItemByType" parameterType="map" resultType="ItemVO">
+        SELECT
+            ID,
+            ITEM_NAME,
+            ITEM_PRICE,
+            ITEM_IMG_PATH,
+            ITEM_IMG_NAME,
+            ITEM_TYPE
+        FROM TBL_ITEM
+        <choose>
+            <when test="type != null">
+                WHERE ITEM_TYPE = #{type}
+            </when>
+        </choose>
+    </select>
+
     <!--    포인트샵 나무 아이템 수정 쿼리       -->
-    <update id="update" parameterType="ItemVO">
+    <update id="updateItem" parameterType="ItemVO">
         UPDATE TBL_ITEM
         SET ITEM_NAME = #{itemName}, ITEM_PRICE = #{itemPrice}, ITEM_IMG_PATH = #{itemPath}, ITEM_IMG_NAME = #{itemImgName}, ITEM_TYPE = #{itemType}
         WHERE ID = #{id}
     </update>
 
     <!--    포인트샵 나무 아이템 삭제 쿼리       -->
-    <delete id="delete" parameterType="Long">
+    <delete id="deleteItem" parameterType="Long">
         DELETE
         FROM TBL_ITEM
         WHERE ID = #{id}
+    </delete>
+
+    <!--  장바구니 삭제 (장바구니 담은 아이템 구매 시 사용)  -->
+    <delete id="deleteCart" parameterType="Long">
+        DELETE
+        FROM TBL_CART
+        WHERE MEMBER_ID = #{memberId}
     </delete>
 </mapper>

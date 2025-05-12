@@ -8,11 +8,6 @@
         VALUES(SEQ_ITEM.NEXTVAL, #{memberId})
     </insert>
 
-    <!--    성장나무 아이템 추가 쿼리 (아이템 구매 시 사용)     -->
-    <insert id="insertTreeCustomizing" parameterType="TreeCustomizingVO">
-        INSERT INTO TBL_TREE_CUSTOMIZING
-        VALUES(SEQ_ITEM.NEXTVAL, #{itemId}, #{treeCustomizingPositionX}, #{treeCustomizingPositionY}, #{treeCustomizingApply}, #{treeId})
-    </insert>
 
     <!--    회원 소유의 성장나무 전체 리스트 조회 (동적 쿼리로 적용 되어있는 성장나무 아이템들 리스트도 받아올 수 있도록)      -->
     <select id="selectTreeViewsByMemberId" parameterType="map" resultType="TreeViewDTO">
