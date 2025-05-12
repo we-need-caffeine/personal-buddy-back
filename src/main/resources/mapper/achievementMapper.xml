@@ -1,37 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.AchievementMapper">
+
+    <!--    업적 추가 (관리자 용)   -->
     <insert id="insertAchievement" parameterType="AchievementVO">
-        INSERT INTO TBL_ACHIEVEMENT (ID,
-                                     ACHIEVEMENT_NAME,
-                                     ACHIEVEMENT_SCHEDULE_CATEGORY,
-                                     ACHIEVEMENT_IMG_PATH,
-                                     ACHIEVEMENT_IMG_NAME,
-                                     ACHIEVEMENT_MISSION_COUNT,
-                                     ACHIEVEMENT_GET_POINT)
-        VALUES (SEQ_ACHIEVEMENT.NEXTVAL,
-                #{achievementName},
-                #{achievementScheduleCategory},
-                #{acheivementImgPath},
-                #{achievementImgName},
-                #{achievementMissonCount},
-                #{achievementGetPoint})
+        INSERT INTO TBL_ACHIEVEMENT (
+            ID,
+            ACHIEVEMENT_NAME,
+            ACHIEVEMENT_SCHEDULE_CATEGORY,
+            ACHIEVEMENT_IMG_PATH,
+            ACHIEVEMENT_IMG_NAME,
+            ACHIEVEMENT_MISSION_COUNT,
+            ACHIEVEMENT_GET_POINT
+        )
+        VALUES (
+            SEQ_ACHIEVEMENT.NEXTVAL,
+            #{achievementName},
+            #{achievementScheduleCategory},
+            #{acheivementImgPath},
+            #{achievementImgName},
+            #{achievementMissonCount},
+            #{achievementGetPoint}
+       )
     </insert>
 
-    <!--    업적 완료 테이블 추가    -->
+    <!--    업적 완료 테이블 추가 최초 회원 가입시    -->
     <insert id="insertAchievementComplete" parameterType="AchievementCompleteVO">
-        INSERT INTO TBL_ACHIEVEMENT_COMPLETE(ID, ACHIEVEMENT_CURRENT_MISSION_COUNT, ACHIEVEMENT_ID)
-        VALUES (SEQ_ACHIEVEMENT_COMPLETE.NEXTVAL, #{achievementCurrentMissonCount}, #{achievementId})
+        INSERT INTO TBL_ACHIEVEMENT_COMPLETE
+        VALUES (SEQ_ACHIEVEMENT_COMPLETE.NEXTVAL, #{achievementCurrentMissonCount}, #{achievementId}, #{memberId})
     </insert>
 
-    <!--    회원 번호 - 업적완료 연결 테이블 추가      -->
+    <!--    회원 번호 - 업적완료 연결 테이블 추가 미션 진행도와 업적완료 미션 횟수를 비교하여 추가     -->
     <insert id="insertMemberAchievement" parameterType="MemberAchievementVO">
         INSERT INTO TBL_MEMBER_ACHIEVEMENT(ID, MEMBER_ACHIEVEMENT_DISPLAY , MEMBER_ID, ACHIEVEMENT_COMPLETE_ID)
         VALUES (SEQ_MEMBER_ACHIEVEMENT.NEXTVAL, #{memberAchievementDisplay}, #{memberId}, #{achievementCompleteId})
     </insert>
 
     <!--    회원 번호를 통한 전체 업적 리스트 조회      -->
-    <select id="selectAchievementsByMemberId" parameterType="Long" resultType="AchievementViewDTO">
+    <select id="selectAllAchievementsByMemberId" parameterType="Long" resultType="AchievementViewDTO">
+        SELECT
+            TA.ID AS ID,
+            TAC.ID AS ACHIEVEMENT_COMPLETE_ID,
+            TA.ACHIEVEMENT_SCHEDULE_CATEGORY AS ACHIEVEMENT_SCHEDULE_CATEGORY,
+            TA.ACHIEVEMENT_IMG_PATH AS ACHIEVEMENT_IMG_PATH,
+            TA.ACHIEVEMENT_IMG_NAME AS ACHIEVEMENT_IMG_NAME,
+            TA.ACHIEVEMENT_GET_POINT AS ACHIEVEMENT_GET_POINT,
+            TA.ACHIEVEMENT_MISSION_COUNT AS ACHIEVEMENT_MISSION_COUNT,
+            TAC.ACHIEVEMENT_CURRENT_MISSION_COUNT AS ACHIEVEMENT_CURRENT_MISSION_COUNT
+        FROM TBL_ACHIEVEMENT TA
+        JOIN HR.TBL_ACHIEVEMENT_COMPLETE TAC
+            ON TA.ID = TAC.ACHIEVEMENT_ID
+        WHERE TAC.MEMBER_ID = #{memberId}
+    </select>
+
+    <!--    회원의 미션 완료한 업적 리스트 조회 (업적 중 완료 여부 체크 용)      -->
+    <select id="selectAchievementComplementsByMemberId" parameterType="Long" resultType="AchievementViewDTO">
+        SELECT
+            TA.ID AS ID,
+            TAC.ID AS ACHIEVEMENT_COMPLETE_ID,
+            TA.ACHIEVEMENT_SCHEDULE_CATEGORY AS ACHIEVEMENT_SCHEDULE_CATEGORY,
+            TA.ACHIEVEMENT_IMG_PATH AS ACHIEVEMENT_IMG_PATH,
+            TA.ACHIEVEMENT_IMG_NAME AS ACHIEVEMENT_IMG_NAME,
+            TA.ACHIEVEMENT_GET_POINT AS ACHIEVEMENT_GET_POINT,
+            TA.ACHIEVEMENT_MISSION_COUNT AS ACHIEVEMENT_MISSION_COUNT,
+            TAC.ACHIEVEMENT_CURRENT_MISSION_COUNT AS ACHIEVEMENT_CURRENT_MISSION_COUNT
+        FROM TBL_ACHIEVEMENT TA
+            JOIN HR.TBL_ACHIEVEMENT_COMPLETE TAC
+            ON TA.ID = TAC.ACHIEVEMENT_ID
+        WHERE TAC.MEMBER_ID = #{memberId}
+        AND TA.ACHIEVEMENT_MISSION_COUNT = TAC.ACHIEVEMENT_CURRENT_MISSION_COUNT
+    </select>
+
+    <!--    회원의 완료된 업적 리스트 조회 (대표업적으로 설정된 업적부터 넣기)      -->
+    <select id="selectCompletedAchievementsByMemberId" parameterType="Long" resultType="AchievementViewDTO">
         SELECT
             TA.ID AS ID,
             TAC.ID AS ACHIEVEMENT_COMPLETE_ID,
@@ -49,7 +90,42 @@
         JOIN HR.TBL_MEMBER_ACHIEVEMENT TMA
             ON TAC.ID = TMA.ACHIEVEMENT_COMPLETE_ID
         WHERE TMA.MEMBER_ID = #{id}
+        ORDER BY TMA.MEMBER_ACHIEVEMENT_DISPLAY DESC
     </select>
+
+    <!--    설정된 대표 업적 조회(4개 이상은 설정할 수 없음)    -->
+    <select id="selectDisplayedAchievementsByMemberId" parameterType="Long" resultType="AchievementViewDTO">
+        SELECT
+            TA.ID AS ID,
+            TAC.ID AS ACHIEVEMENT_COMPLETE_ID,
+            TMA.ID AS MEMBER_ACHIEVEMENT_ID,
+            TA.ACHIEVEMENT_SCHEDULE_CATEGORY AS ACHIEVEMENT_SCHEDULE_CATEGORY,
+            TA.ACHIEVEMENT_IMG_PATH AS ACHIEVEMENT_IMG_PATH,
+            TA.ACHIEVEMENT_IMG_NAME AS ACHIEVEMENT_IMG_NAME,
+            TA.ACHIEVEMENT_GET_POINT AS ACHIEVEMENT_GET_POINT,
+            TA.ACHIEVEMENT_MISSION_COUNT AS ACHIEVEMENT_MISSION_COUNT,
+            TAC.ACHIEVEMENT_CURRENT_MISSION_COUNT AS ACHIEVEMENT_CURRENT_MISSION_COUNT,
+            TMA.MEMBER_ACHIEVEMENT_DISPLAY AS MEMBER_ACHIEVEMENT_DISPLAY
+        FROM TBL_ACHIEVEMENT TA
+        JOIN HR.TBL_ACHIEVEMENT_COMPLETE TAC
+            ON TA.ID = TAC.ACHIEVEMENT_ID
+        JOIN HR.TBL_MEMBER_ACHIEVEMENT TMA
+            ON TAC.ID = TMA.ACHIEVEMENT_COMPLETE_ID
+        WHERE TMA.MEMBER_ID = #{id} AND TMA.MEMBER_ACHIEVEMENT_DISPLAY = 1
+    </select>
+
+    <!--    업적 수정 (관리자 용)   -->
+    <update id="updateAchievement" parameterType="AchievementVO">
+        UPDATE TBL_ACHIEVEMENT
+        SET
+            ACHIEVEMENT_NAME = #{achievementName},
+            ACHIEVEMENT_SCHEDULE_CATEGORY = #{achievementScheduleCategory},
+            ACHIEVEMENT_IMG_PATH = #{achievementImgPath},
+            ACHIEVEMENT_IMG_NAME = #{achievementImgName},
+            ACHIEVEMENT_MISSION_COUNT = #{achievementMissionCount},
+            ACHIEVEMENT_GET_POINT = #{achievementGetPoint}
+        WHERE ID = #{id}
+    </update>
 
     <!--    업적 완료 미션 횟수 수정      -->
     <update id="updateAchievementComplete" parameterType="AchievementCompleteVO">
@@ -57,4 +133,32 @@
         SET ACHIEVEMENT_CURRENT_MISSION_COUNT = #{achievementCurrentMissonCount}
         WHERE ID = #{id}
     </update>
+
+    <!--    대표 업적 설정 변경     -->
+    <update id="updateMemberAchievementDisplay" parameterType="MemberAchievementVO">
+        UPDATE TBL_MEMBER_ACHIEVEMENT
+        SET MEMBER_ACHIEVEMENT_DISPLAY = #{memberAchievementDisplay}
+        WHERE ACHIEVEMENT_COMPLETE_ID = #{achievementCompleteId}
+    </update>
+
+    <!--  업적 삭제 (관리자 용)  -->
+    <delete id="deleteAchievement" parameterType="Long">
+        DELETE
+        FROM TBL_ACHIEVEMENT
+        WHERE ID = #{id}
+    </delete>
+
+    <!--  회원의 업적 완료 진행 정보 삭제 (회원 탈퇴 시)  -->
+    <delete id="deleteAchievementComplete" parameterType="Long">
+        DELETE
+        FROM TBL_ACHIEVEMENT_COMPLETE
+        WHERE MEMBER_ID = #{memberId}
+    </delete>
+
+    <!--  회원의 업적 삭제 (회원 탈퇴 시)  -->
+    <delete id="deleteMemberAchievement" parameterType="Long">
+        DELETE
+        FROM TBL_MEMBER_ACHIEVEMENT
+        WHERE MEMBER_ID = #{memberId}
+    </delete>
 </mapper>

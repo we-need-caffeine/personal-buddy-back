@@ -14,4 +14,6 @@ public class AchievementCompleteVO {
         private int achievementCurrentMissionCount;
         @Schema(description = "업적 번호", required = true, example = "1")
         private Long achievementId;
+        @Schema(description = "회원 번호", required = true, example = "1")
+        private Long memberId;
 }
