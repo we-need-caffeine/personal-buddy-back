@@ -1,29 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.TargetMapper">
-    <!--    목표 생성   -->
-    <insert id="insert" parameterType="TargetVO">
+    <!--    목표 완료 추가   -->
+    <insert id="insertTarget" parameterType="TargetVO">
         INSERT INTO TBL_TARGET
         VALUES (SEQ_TARGET.NEXTVAL, #{targetCompleteDate}, #{targetScheduleCategory}, #{memberId})
     </insert>
 
-    <!--    일간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)       -->
-    <select id="selectDailyTargetCountByCategoryAndMemberId" parameterType="TargetVO" resultType="int">
-        SELECT COUNT(ID)
-        FROM TBL_TARGET
-        WHERE TARGET_SCHEDULE_CATEGORY = #{targetScheduleCategory} AND
-        MEMBER_ID = #{memberId} AND
-        TRUNC(TARGET_COMPLETE_DATE) = TRUNC(SYSDATE)
+    <!--    목표 기준 테이블에 데이터 추가     -->
+    <insert id="insertTargetStandard" parameterType="TargetStandardVO">
+        INSERT INTO TBL_TARGET_STANDARD
+        VALUES (SEQ_TARGET_STANDARD.NEXTVAL, #{targetStandardScheduleCategory}, #{targetStandardPeriodType}, #{targetStandardMissionCount})
+    </insert>
+
+    <!--    기간 별 시작 날에 추가될 랜덤 목표 선정용 테이블 insert     -->
+    <insert id="insertRandomTargetLottery" parameterType="RandomTargetLotteryVO">
+        INSERT INTO TBL_TARGET_STANDARD
+        VALUES (
+            SEQ_RANDOM_TARGET_LOTTERY.NEXTVAL,
+            #{memberId},
+            #{randomTargetLotteryPeriodType},
+            #{randomTargetLotteryStartDate},
+            #{randomTargetLotteryCategory}
+        )
+    </insert>
+
+    <!--    일간 / 주간 / 월간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)       -->
+    <select id="selectTargetsView" parameterType="map" resultType="TargetViewDTO">
+        SELECT
+            MEMBER_ID,
+            TARGET_TYPE,
+            COMPLETED_COUNT,
+            STANDARD_COUNT
+        <choose>
+            <when test="type == weekly">
+                FROM VW_TARGET_WEEKLY
+            </when>
+            <when test="type == monthly">
+                FROM VW_TARGET_MONTHLY
+            </when>
+            <otherwise>
+                FROM VW_TARGET_DAILY
+            </otherwise>
+        </choose>
+        WHERE MEMBER_ID = #{memberId}
     </select>
 
-    <!--    주간 / 월간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)        -->
-    <select id="selectWeeklyMonthlyTargetsCountByCategoryAndMemberId" parameterType="TargetVO" resultType="int">
-        SELECT COUNT(ID)
+    <!--    목표 삭제 (회원탈퇴 시)     -->
+    <delete id="deleteTargetByMemberId" parameterType="Long">
+        DELETE
         FROM TBL_TARGET
-        WHERE TARGET_SCHEDULE_CATEGORY = #{targetScheduleCategory} AND
-        MEMBER_ID = #{memberId}
-        <if test="startDate != null and endDate != null">
-            AND TARGET_COMPLETE_DATE BETWEEN #{startDate} AND #{endDate}
-        </if>
-    </select>
+        WHERE MEMBER_ID = #{memberId}
+    </delete>
+
+    <!--    랜덤 선정된 목표 삭제 (목표 삭제와 함께 트랜잭션 관리)    -->
+    <delete id="deleteRandomTargetByMemberId" parameterType="Long">
+        DELETE
+        FROM TBL_RANDOM_TARGET_LOTTERY
+        WHERE MEMBER_ID = #{memberId}
+    </delete>
+
 </mapper>

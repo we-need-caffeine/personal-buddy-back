@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.PointShopMapper">
-    <select id="getTime" resultType="String">
-        SELECT CURRENT_TIMESTAMP FROM DUAL
-    </select>
+    <!--    포인트샵 나무 아이템 추가 쿼리       -->
+    <insert id="insert" parameterType="ItemVO">
+        INSERT INTO TBL_ITEM(ID, ITEM_NAME, ITEM_PRICE, ITEM_IMG_PATH, ITEM_IMG_NAME, ITEM_TYPE)
+        VALUES(SEQ_ITEM.NEXTVAL, #{itemName}, #{itemPrice}, #{itemImgPath}, #{itemImgName}, #{itemType})
+    </insert>
+
+    <!--    포인트샵 나무 아이템 수정 쿼리       -->
+    <update id="update" parameterType="ItemVO">
+        UPDATE TBL_ITEM
+        SET ITEM_NAME = #{itemName}, ITEM_PRICE = #{itemPrice}, ITEM_IMG_PATH = #{itemPath}, ITEM_IMG_NAME = #{itemImgName}, ITEM_TYPE = #{itemType}
+        WHERE ID = #{id}
+    </update>
+
+    <!--    포인트샵 나무 아이템 삭제 쿼리       -->
+    <delete id="delete" parameterType="Long">
+        DELETE
+        FROM TBL_ITEM
+        WHERE ID = #{id}
+    </delete>
 </mapper>

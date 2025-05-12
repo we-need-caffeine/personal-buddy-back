@@ -15,15 +15,11 @@ import java.util.List;
 public class MyTreeDAO {
     private final MyTreeMapper myTreeMapper;
 
-    public void saveTreeItem(ItemVO itemVO) {
-        myTreeMapper.insertTreeItem(itemVO);
-    }
-
     public void saveMemberTree(TreeVO treeVO){
         myTreeMapper.insertMemberTree(treeVO);
     }
 
-    public void insertTreeCustomizing(TreeCustomizingVO treeCustomizingVO){
+    public void saveTreeCustomizing(TreeCustomizingVO treeCustomizingVO){
         myTreeMapper.insertTreeCustomizing(treeCustomizingVO);
     }
 
@@ -33,5 +29,9 @@ public class MyTreeDAO {
 
     public void editTreeCustomizing(TreeCustomizingVO treeCustomizingVO){
         myTreeMapper.updateTreeCustomizing(treeCustomizingVO);
+    }
+
+    public void deleteTreeCustomizing(Long id){
+        myTreeMapper.deleteTreeCustomizing(id);
     }
 }
