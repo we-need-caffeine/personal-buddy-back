@@ -19,10 +19,6 @@ public class MyTreeDAO {
         myTreeMapper.insertMemberTree(treeVO);
     }
 
-    public void saveTreeCustomizing(TreeCustomizingVO treeCustomizingVO){
-        myTreeMapper.insertTreeCustomizing(treeCustomizingVO);
-    }
-
     public List<TreeViewDTO> findTreeViews(Long memberId){
         return myTreeMapper.selectTreeViewsByMemberId(memberId);
     }

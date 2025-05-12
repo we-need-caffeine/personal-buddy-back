@@ -14,7 +14,23 @@ public interface AchievementService {
 
     public void addMemberAchievement(MemberAchievementVO memberAchievementVO);
 
-    public List<AchievementViewDTO> getAllAchievements();
+    public List<AchievementViewDTO> getAllAchievements(Long memberId);
 
+    public List<AchievementViewDTO> getAchievementComplements(Long memberId);
 
+    public List<AchievementViewDTO> getCompletedAchievements(Long memberId);
+
+    public List<AchievementViewDTO> getDisplayedAchievements(Long memberId);
+
+    public void editAchievement(AchievementVO achievementVO);
+
+    public void editAchievementComplement(AchievementCompleteVO achievementCompleteVO);
+
+    public void changeAchievementDisplay(MemberAchievementVO memberAchievementVO);
+
+    public void deleteAchievement(AchievementVO achievementVO);
+
+    public void deleteAchievementComplete(AchievementCompleteVO achievementCompleteVO);
+
+    public void deleteMemberAchievement(Long memberId);
 }

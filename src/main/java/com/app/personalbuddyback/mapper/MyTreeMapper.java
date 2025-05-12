@@ -14,9 +14,6 @@ public interface MyTreeMapper {
     // 멤버 - 성장나무 연결 테이블 추가
     public void insertMemberTree(TreeVO treeVO);
 
-    // 성장나무 추가 (아이템 구매 시)
-    public void insertTreeCustomizing(TreeCustomizingVO treeCustomizingVO);
-
     // 성장나무 리스트 조회 (회원 아이디로)
     public List<TreeViewDTO>selectTreeViewsByMemberId(Long memberId);
 
