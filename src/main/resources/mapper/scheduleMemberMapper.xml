@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.personalbuddyback.mapper.scheduleMemberMapper">
+
+    <!-- 일정 멤버 그룹 등록  -->
+    <insert id="insertScheduleMemberGroup" parameterType="ScheduleMemberGroupVO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            SELECT SEQ_SCHEDULE_MEMBER_GROUP.NEXTVAL FROM DUAL
+        </selectKey>
+
+        INSERT INTO TBL_SCHEDULE_MEMBER_GROUP (ID)
+        VALUES (#{id})
+    </insert>
+
+    <!-- 일정 그룹 멤버 등록  -->
+    <insert id="insertScheduleGroupMember" parameterType="ScheduleGroupMemberVO">
+        INSERT INTO TBL_SCHEDULE_GROUP_MEMBER (ID, MEMBER_ID, SCHEDULE_MEMBER_GROUP_ID)
+        VALUES (SEQ_SCHEDULE_GROUP_MEMBER.NEXTVAL, #{memberId}, #{scheduleMemberGroupId})
+    </insert>
+
+    <!-- 일정 공유 멤버 전체 조회 -->
+    <select id="selectAllScheduleGroupMembersByScheduleMemberGroupId" parameterType="Long" resultType="MemberVO">
+        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        FROM TBL_SCHEDULE_GROUP_MEMBER TBSGM
+                 JOIN TBL_MEMBER TBM
+                      ON TBSGM.MEMBER_ID = TBM.ID
+        WHERE TBSGM.SCHEDULE_MEMBER_GROUP_ID = #{scheduleMemberGroupId}
+    </select>
+
+    <!-- 일정 그룹 멤버 삭제 -->
+    <delete id="deleteScheduleGroupMember" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- 일정 수정 그룹 멤버 삭제(해당 일정의 공유 멤버 그룹 내 모든 멤버를 삭제) -->
+    <delete id="deleteAllScheduleGroupMembersByScheduleMemberGroupId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE SCHEDULE_MEMBER_GROUP_ID = #{scheduleMemberGroupId}
+    </delete>
+
+    <!-- 일정 멤버 그룹 삭제 By CalendarId -->
+    <delete id="deleteScheduleMemberGroupByCalendarId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_MEMBER_GROUP
+        WHERE ID IN (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE CALENDAR_ID = #{calendarId}
+        )
+    </delete>
+
+    <!-- 일정 그룹 멤버 삭제 By CalendarId -->
+    <delete id="deleteAllScheduleGroupMembersByCalendarId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE SCHEDULE_MEMBER_GROUP_ID IN (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE CALENDAR_ID = #{calendarId}
+        )
+    </delete>
+
+    <!-- 일정 그룹 멤버 삭제 By ScheduleId -->
+    <delete id="deleteAllScheduleGroupMembersByScheduleId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_GROUP_MEMBER
+        WHERE SCHEDULE_MEMBER_GROUP_ID = (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE ID = #{scheduleId}
+        )
+    </delete>
+
+    <!-- 2. 일정 멤버 그룹 삭제 By ScheduleId -->
+    <delete id="deleteScheduleMemberGroupByScheduleId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE_MEMBER_GROUP
+        WHERE ID = (
+            SELECT SCHEDULE_MEMBER_GROUP_ID
+            FROM TBL_SCHEDULE
+            WHERE ID = #{scheduleId}
+        )
+    </delete>
+
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.personalbuddyback.mapper.scheduleMapper">
+
+    <!-- 일정 등록 -->
+    <insert id="insertSchedule" parameterType="ScheduleInsertDTO">
+        INSERT INTO TBL_SCHEDULE (
+        ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
+        SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY_ID, SCHEDULE_SUBCATEGORY_ID,
+        SCHEDULE_REPEAT, CALENDAR_ID, SCHEDULE_MEMBER_GROUP_ID
+        ) VALUES (
+        SEQ_SCHEDULE.NEXTVAL,
+        #{scheduleTitle},
+        #{scheduleContent},
+        #{scheduleStartDate},
+        #{scheduleEndDate},
+        <choose>
+            <when test="scheduleCreatedDate != null">#{scheduleCreatedDate}</when>
+            <otherwise>SYSDATE</otherwise>
+        </choose>,
+        <choose>
+            <when test="scheduleColor != null">#{scheduleColor}</when>
+            <otherwise>'green'</otherwise>
+        </choose>,
+        #{scheduleCategoryId},
+        #{scheduleSubcategoryId},
+        <choose>
+            <when test="scheduleRepeat != null">#{scheduleRepeat}</when>
+            <otherwise>0</otherwise>
+        </choose>,
+        #{calendarId},
+        #{scheduleMemberGroupId}
+        )
+    </insert>
+
+    <!-- 일정 대분류 전체 조회 -->
+    <select id="selectAllScheduleCategories" resultType="ScheduleCategoryVO">
+        SELECT ID, SCHEDULE_CATEGORY_TITLE
+        FROM TBL_SCHEDULE_CATEGORY
+    </select>
+
+    <!-- 일정 소분류 전체 조회 By CategoryId -->
+    <select id="selectAllScheduleSubCategories" parameterType="Long" resultType="ScheduleSubCategoryVO">
+        SELECT ID, SCHEDULE_SUBCATEGORY_TITLE
+        FROM TBL_SCHEDULE_SUBCATEGORY
+        WHERE CATEGORY_ID = #{categoryId}
+    </select>
+
+    <!-- 일정 전체 조회 -->
+    <select id="selectAllSchedulesByMemberId" parameterType="Long" resultType="ScheduleVO">
+        SELECT TBS.ID, TBS.SCHEDULE_TITLE, TBS.SCHEDULE_CONTENT, TBS.SCHEDULE_START_DATE, TBS.SCHEDULE_END_DATE,
+               TBS.SCHEDULE_CREATED_DATE, TBS.SCHEDULE_COLOR, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID
+        FROM TBL_SCHEDULE TBS
+        JOIN TBL_CALENDAR TBC
+        ON TBS.CALENDAR_ID = TBC.ID
+        WHERE TBC.CALENDAR_MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 일정 단일 조회 -->
+    <select id="selectSchedule" parameterType="Long" resultType="ScheduleViewDTO">
+        SELECT TBS.ID, TBS.SCHEDULE_TITLE, TBS.SCHEDULE_CONTENT, TBS.SCHEDULE_START_DATE, TBS.SCHEDULE_END_DATE, TBS.SCHEDULE_CREATED_DATE,
+               TBS.SCHEDULE_COLOR, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID, TBS.SCHEDULE_MEMBER_GROUP_ID, TBSS.SCHEDULE_SUBCATEGORY_TITLE
+        FROM TBL_SCHEDULE TBS
+        JOIN TBL_SCHEDULE_SUBCATEGORY TBSS
+        ON TBS.SCHEDULE_SUBCATEGORY_ID = TBSS.ID
+        WHERE TBS.ID = #{id}
+    </select>
+
+    <!-- 일정 수정 -->
+    <update id="updateSchedule" parameterType="ScheduleSaveDTO">
+        UPDATE TBL_SCHEDULE
+        SET SCHEDULE_TITLE = #{scheduleTitle}, SCHEDULE_CONTENT = #{scheduleContent}, SCHEDULE_START_DATE = #{scheduleStartDate},
+            SCHEDULE_END_DATE = #{scheduleEndDate}, SCHEDULE_REPEAT = #{scheduleRepeat}, SCHEDULE_CATEGORY_ID = #{scheduleCategoryId}, SCHEDULE_SUBCATEGORY_ID = #{scheduleSubCategoryId}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 일정 삭제 -->
+    <delete id="deleteScheduleById" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- 일정 전체 삭제 By CalendarId -->
+    <delete id="deleteAllSchedulesByCalendarId" parameterType="Long">
+        DELETE FROM TBL_SCHEDULE
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.personalbuddyback.mapper.TodoListMapper">
+
+    <!-- 투두리스트 등록 -->
+    <insert id="insertTodoList" parameterType="ToDoListVO">
+        <if test="todoListIsCompleted != null">
+            INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, CALENDAR_ID)
+            VALUES (
+            SEQ_TODOLIST.NEXTVAL,
+            #{todoListContent},
+            #{calendarId}
+            )
+        </if>
+        <if test="todoListIsCompleted == null">
+            INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, TODOLIST_IS_COMPLETED, CALENDAR_ID)
+            VALUES (
+            SEQ_TODOLIST.NEXTVAL,
+            #{todoListContent},
+            #{todoListIsCompleted},
+            #{calendarId}
+            )
+        </if>
+    </insert>
+
+    <!-- 투두리스트 전체 조회 -->
+    <select id = "selectAllTodoListsByCalendarId" parameterType="Long" resultType="ToDoListVO">
+        SELECT TODOLIST_CONTENT, TODOLIST_IS_COMPLETED
+        FROM TBL_TODOLIST
+        WHERE CALENDAR_ID = #{calendarId}
+    </select>
+
+    <!-- 투두리스트 수정 -->
+    <update id="updateTodoList" parameterType="ToDoListVO">
+        UPDATE TBL_TODOLIST
+        SET TODOLIST_CONTENT = #{todoListContent}, TODOLIST_IS_COMPLETED = #{todoListIsCompleted}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 투두리스트 전체 삭제 By CalendarId -->
+    <delete id="deleteAllTodoListsByCalendarId" parameterType="Long">
+        DELETE FROM TBL_TODOLIST
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
+
+    <!-- 투두리스트 단일 삭제 -->
+    <delete id="deleteTodoList" parameterType="Long">
+        DELETE FROM TBL_TODOLIST
+        WHERE ID = #{id}
+    </delete>
+
+</mapper>

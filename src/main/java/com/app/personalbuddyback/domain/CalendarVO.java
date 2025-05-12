@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class CalendarVO {
     private Long id;
     private String calendarTitle;
-    private Integer calendarIsGroup;
     private Integer calendarIndex;
+    private Integer calendarIsGroup;
     private Long calendarMemberId;
 }
