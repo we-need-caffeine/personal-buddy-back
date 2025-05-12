@@ -26,20 +26,20 @@ public class ChattingAPI {
 
     // 채팅방 리스트를 불러오는 API
     @GetMapping("chat-room/list/{memberId}")
-    public ResponseEntity<List<ChatRoomViewDTO>> getAllChatRoomByMemberId(@PathVariable("memberId") String memberId, @Parameter(required = false) String filter) {
+    public List<ChatRoomViewDTO> getAllChatRoomByMemberId(@PathVariable("memberId") String memberId, @Parameter(required = false) String filter) {
         Map<String, Object> map = new HashMap<>();
         map.put("memberId", memberId);
         map.put("filter", filter);
 
         // 멤버의 아이디와 필터 조건에 따라 채팅방을 검색한다.
-        List<ChatRoomViewDTO> chatRoomViewDTO = chattingService.findAllChatRoomByMemberIdAndFilter(map);
+        List<ChatRoomViewDTO> chatRooms = chattingService.findAllChatRoomByMemberIdAndFilter(map);
 
-        return ResponseEntity.ok().body(chatRoomViewDTO);
+        return chatRooms;
     }
 
     // 해당 채팅방의 아이디를 받아 채팅기록을 불러오는 API
     @GetMapping("chatting-log/{memberId}")
-    public ResponseEntity<List<ChatVO>> getChattingLog(@PathVariable Long memberId, @Parameter Long chatRoomId) {
+    public List<ChatVO> getChattingLog(@PathVariable Long memberId, @Parameter Long chatRoomId) {
         List<ChatVO> chatList = chattingService.findChatByChatRoomId(chatRoomId);
         Map<String, Object> map = new HashMap<>();
         map.put("memberId", memberId);
@@ -47,7 +47,7 @@ public class ChattingAPI {
 
         chattingService.updateChatReadByChatRoomIdAndMemberId(map);
 
-        return ResponseEntity.ok().body(chatList);
+        return chatList;
     }
 
     // 메시지 송신 및 수신, 프론트에선 /pub/chatroom로 요청
