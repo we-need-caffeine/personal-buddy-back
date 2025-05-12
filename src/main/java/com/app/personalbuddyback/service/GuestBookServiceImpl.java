@@ -20,12 +20,12 @@ public class GuestBookServiceImpl implements GuestBookService {
     }
 
     @Override
-    public List<GuestBookVO> getGuestBooksByMemberId(Long ownerMemberId) {
+    public List<GuestBookVO> getAllGuestBooksByMemberId(Long ownerMemberId) {
         return guestBookDAO.findAll(ownerMemberId);
     }
 
     @Override
-    public void deleteGuestBook(Long id) {
+    public void deleteGuestBookById(Long id) {
         guestBookDAO.delete(id);
     }
 }

@@ -21,7 +21,7 @@ public class GuestBookAPI {
 //    방명록 작성
     @Operation(summary = "방명록 작성", description = "방명록 작성을 위한 API")
     @ApiResponse(responseCode = "200", description = "방명록 작성 성공")
-    @PostMapping("write")
+    @PostMapping("/guestbook/write")
     public void write(@RequestBody GuestBookVO guestBookVO) {
         guestBookService.writeGuestBook(guestBookVO);
     }
@@ -36,9 +36,9 @@ public class GuestBookAPI {
             required = true
     )
     @ApiResponse(responseCode = "200", description = "방명록 조회 성공")
-    @GetMapping("list/{ownerMemberId}")
+    @GetMapping("/guestbook/list/{ownerMemberId}")
     public List<GuestBookVO> list(@PathVariable Long ownerMemberId) {
-        return guestBookService.getGuestBooksByMemberId(ownerMemberId);
+        return guestBookService.getAllGuestBooksByMemberId(ownerMemberId);
     }
 
 //    방명록 삭제
@@ -51,8 +51,8 @@ public class GuestBookAPI {
             required = true
     )
     @ApiResponse(responseCode = "200", description = "방명록 삭제 성공")
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/guestbook/delete/{id}")
     public void delete(Long id) {
-        guestBookService.deleteGuestBook(id);
+        guestBookService.deleteGuestBookById(id);
     }
 }

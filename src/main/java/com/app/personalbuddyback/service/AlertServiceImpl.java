@@ -15,7 +15,7 @@ public class AlertServiceImpl implements AlertService {
     private final AlertDAO alertDAO;
 
     @Override
-    public void sendAlert(AlertVO alertVO) {
+    public void registerAlert(AlertVO alertVO) {
         alertDAO.save(alertVO);
     }
 
@@ -25,17 +25,17 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public void alertChangeRead(Long id) {
+    public void updateAlertReadById(Long id) {
         alertDAO.update(id);
     }
 
     @Override
-    public void deleteAlert(Long id) {
+    public void deleteAlertById(Long id) {
         alertDAO.delete(id);
     }
 
     @Override
-    public void deleteAllAlerts(Long receiverMemberId) {
+    public void deleteAllAlertByReceiverMemberId(Long receiverMemberId) {
         alertDAO.deleteAll(receiverMemberId);
     }
 }

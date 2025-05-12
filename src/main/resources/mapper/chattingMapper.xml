@@ -154,7 +154,7 @@
     <update id="updateHideChat" parameterType="map">
         UPDATE TBL_CHAT
         SET CHAT_VISIBLE = 0
-        WHERE ID = #{id} AND CHAT_WRITER_MEMBER_ID = #{memberId}
+        WHERE ID = #{chatId} AND CHAT_WRITER_MEMBER_ID = #{memberId}
     </update>
 
 <!--  회원탈퇴용 채팅방 전체 삭제  -->
