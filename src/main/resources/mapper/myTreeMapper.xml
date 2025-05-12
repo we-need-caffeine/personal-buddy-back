@@ -2,26 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.MyTreeMapper">
 
-    <!--    포인트샵 나무 아이템 추가 쿼리       -->
-    <insert id="insertTreeItem" parameterType="ItemVO">
-        INSERT INTO TBL_ITEM(ID, ITEM_NAME, ITEM_PRICE, ITEM_IMG_PATH, ITEM_IMG_NAME, ITEM_TYPE)
-        VALUES(SEQ_ITEM.NEXTVAL, #{itemName}, #{itemPrice}, #{itemImgPath}, #{itemImgName}, #{itemType})
-    </insert>
-
     <!--    멤버 - 성장나무 연결 생성 쿼리 (최초 멤버 가입 시 생성)      -->
     <insert id="insertMemberTree" parameterType="TreeVO">
         INSERT INTO TBL_TREE(ID, MEMBER_ID)
         VALUES(SEQ_ITEM.NEXTVAL, #{memberId})
     </insert>
 
-    <!--    성장나무 아이템 적용 Insert 쿼리 (아이템 구매 시 사용)     -->
+    <!--    성장나무 아이템 추가 쿼리 (아이템 구매 시 사용)     -->
     <insert id="insertTreeCustomizing" parameterType="TreeCustomizingVO">
-        INSERT INTO TBL_TREE_CUSTOMIZING(ID, ITEM_ID, TREE_CUSTOMIZING_POSITION_X, TREE_CUSTOMIZING_POSITION_Y, TREE_CUSTOMIZING_APPLY, TREE_ID)
+        INSERT INTO TBL_TREE_CUSTOMIZING
         VALUES(SEQ_ITEM.NEXTVAL, #{itemId}, #{treeCustomizingPositionX}, #{treeCustomizingPositionY}, #{treeCustomizingApply}, #{treeId})
     </insert>
 
-    <!--    성장나무 전체 리스트 조회      -->
-    <select id="selectTreeViewsByMemberId" parameterType="Long" resultType="TreeViewDTO">
+    <!--    회원 소유의 성장나무 전체 리스트 조회 (동적 쿼리로 적용 되어있는 성장나무 아이템들 리스트도 받아올 수 있도록)      -->
+    <select id="selectTreeViewsByMemberId" parameterType="map" resultType="TreeViewDTO">
         SELECT
             TBT.ID AS ID,
             TBT.MEMBER_ID AS MEMBER_ID,
@@ -54,4 +48,11 @@
             TREE_CUSTOMIZING_APPLY = #{treeCustomizingApply}
         WHERE ID = #{id}
     </update>
+
+    <!--  회원 - 성장나무 연결 테이블 삭제 (회원 삭제 시)  -->
+    <delete id="deleteTreeCustomizing" parameterType="Long">
+        DELETE
+        FROM TBL_TREE_CUSTOMIZING
+        WHERE TREE_ID = #{treeId}
+    </delete>
 </mapper>

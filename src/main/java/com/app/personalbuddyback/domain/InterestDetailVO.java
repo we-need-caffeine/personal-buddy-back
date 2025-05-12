@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class InterestDetailVO {
     private Long id;
-    private String interestDetailInformation;
-    private String interestDetailPlace;
-    private String interestDetailShopping;
+    private String interestDetailSection;
+    private String interestDetailValue;
     private Long interestId;
 }

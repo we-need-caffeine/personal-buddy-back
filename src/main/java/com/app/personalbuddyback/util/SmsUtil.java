@@ -41,7 +41,7 @@ public class SmsUtil {
         String toPhoneNumber = to.replace("\"", "");
         log.info("toPhoneNumber: {}" + toPhoneNumber);
 
-        message.setFrom("여러분들 핸드폰 번호 제발 입력하세요!!"); // 보내는 사람
+        message.setFrom("01025641340"); // 보내는 사람
         message.setTo(toPhoneNumber); // 받는 사람
         message.setText("[퍼스널 버디] 인증번호 \n[" + verificationCode + "]를 입력하세요");
 

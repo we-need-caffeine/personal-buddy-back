@@ -42,7 +42,10 @@ public interface MemberService {
 //    비밀번호 변경
     public void editPassword(MemberVO memberVO);
 
-//    소셜 로그인으로 회원 정보 수정
-    public void modify (MemberVO memberVO);
+//    회원 정보 수정
+    public void edit(MemberVO memberVO);
+
+//    회원 탈퇴
+    public void withdraw(Long id);
 
 }

@@ -20,7 +20,7 @@ public class MemberServiceImpl implements MemberService {
         memberDAO.insert(memberVO);
     }
 
-//    ID로 회원 상세 정보 조회
+    //    ID로 회원 상세 정보 조회
     @Override
     public Optional<MemberVO> getMemberInfoById(Long id) {
         return memberDAO.selectMemberById(id);
@@ -84,8 +84,16 @@ public class MemberServiceImpl implements MemberService {
         memberDAO.updatePassword(memberVO);
     }
 
+    // 회원 정보 수정
     @Override
-    public void modify(MemberVO memberVO) {
-        memberDAO.updateByOauth(memberVO);
+    public void edit(MemberVO memberVO) {
+        memberDAO.update(memberVO);
     }
+
+    // 회원 탈퇴
+    @Override
+    public void withdraw(Long id) {
+        memberDAO.delete(id);
+    }
+
 }

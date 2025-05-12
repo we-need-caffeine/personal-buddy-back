@@ -3,6 +3,7 @@ package com.app.personalbuddyback.controller;
 import com.app.personalbuddyback.domain.MemberVO;
 import com.app.personalbuddyback.service.MemberService;
 import com.app.personalbuddyback.util.JwtTokenUtil;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/members/api")
 public class MemberAPI {
 
     private final MemberService memberService;
@@ -72,11 +73,41 @@ public class MemberAPI {
         }
 
         response.put("message", "로그인 성공!");
-        response.put("memberId", foundUser.get().getId());
+        response.put("memberId", foundUser.get());
         String jwtToken = jwtTokenUtil.generateToken(claims);
         response.put("jwtToken", jwtToken);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "토큰으로 회원 정보 조회", description = "토큰으로 회원 정보 조회 API")
+    @ApiResponse(responseCode = "200", description = "회원 조회 성공")
+    @PostMapping("profile")
+    public ResponseEntity<Map<String, Object>> profile(
+            @RequestHeader(value = "Authorization", required = false) String jwtToken
+    ){
+        Map<String, Object> response = new HashMap<>();
+        String token = jwtToken != null ? jwtToken.replace("Bearer ", "") : null;
+
+//        Alt + Ctrl + T
+        if(token != null && jwtTokenUtil.isTokenValid(token)) {
+//            유저 정보로 바꾸기
+            Claims claims = jwtTokenUtil.parseToken(token);
+            String memberEmail = claims.get("email").toString();
+
+            Long memberId = memberService.getMemberIdByMemberEmail(memberEmail);
+            MemberVO foundUser = memberService.getMemberInfoById(memberId).orElseThrow(() -> {
+                throw new RuntimeException("member profile, Not found User");
+            });
+
+            foundUser.setMemberPassword(null);
+            response.put("currentUser", foundUser);
+            return ResponseEntity.ok(response);
+        }
+
+        response.put("message", "토큰이 만료되었습니다.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
     }
 
     @Operation(summary = "이메일 찾기", description = "이메일 찾기 API")
@@ -107,7 +138,7 @@ public class MemberAPI {
 
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API")
     @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공")
-    @PutMapping("/update-password")
+    @PutMapping("/edit-password")
     public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody MemberVO memberVO) {
         Map<String, Object> response = new HashMap<>();
         Long id = memberVO.getId();
@@ -123,7 +154,34 @@ public class MemberAPI {
         return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 변경되었습니다."));
     }
 
+    @Operation(summary = "회원 정보 수정", description = "회원 정보 수정 API")
+    @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공")
+    @PutMapping("/edit")
+    public ResponseEntity<Map<String, Object>> edit(@RequestBody MemberVO memberVO) {
+        Map<String, Object> response = new HashMap<>();
+        Long id = memberVO.getId();
+        Optional<MemberVO> foundMember = memberService.getMemberInfoById(id);
 
+        if (foundMember.isEmpty()) {
+            response.put("message", "존재하지 않는 회원입니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
 
+        memberService.edit(memberVO); // 실제 update 쿼리 실행
+
+        return ResponseEntity.ok(Map.of("message", "회원정보가 성공적으로 변경되었습니다."));
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
+    @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공")
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Map<String, Object>> withdraw(@RequestParam Long memberId) {
+        Map<String, Object> response = new HashMap<>();
+        memberService.withdraw(memberId);
+
+        response.put("message", "회원 탈퇴 완료");
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 }

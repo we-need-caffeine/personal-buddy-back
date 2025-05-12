@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.personalbuddyback.mapper.calendarMemberMapper">
+
+    <!--  캘린더 초대 등록 -->
+    <insert id="insertCalendarInvite" parameterType="CalendarInviteVO">
+        INSERT INTO TBL_CALENDAR_INVITE (ID, CALENDAR_INVITE_INVITED_MEMBER_ID, CALENDAR_INVITE_HOST_ID, CALENDAR_INVITE_IS_APPROVED, CALENDAR_ID)
+        VALUES (
+        SEQ_CALENDAR_INVITE.NEXTVAL,
+        <if test="calendarInviteInvitedMemberId != null">#{calendarInviteInvitedMemberId}</if>,
+        #{calendarInviteHostId},
+        #{calendarInviteIsApproved},
+        #{calendarId}
+        )
+    </insert>
+
+    <!-- 캘린더 멤버 등록 -->
+    <insert id="insertCalendarMember" parameterType="CalendarMemberVO">
+        INSERT INTO TBL_CALENDAR_MEMBER (ID, CALENDAR_MEMBER_IS_HOST, CALENDAR_ID, MEMBER_ID)
+        VALUES (
+        SEQ_CALENDAR_MEMBER_GROUP.NEXTVAL,
+        <if test ="calendarMemberIsHost != null">#{calendarMemberIsHost}</if>,
+        #{calendarId},
+        #{memberId}
+        )
+    </insert>
+
+    <!--  팔로잉 전체 조회  -->
+    <select id="selectAllMutualFollowingsByMemberId" parameterType="Long" resultType="MemberVO">
+        SELECT TBF1.FOLLOWING_MEMBER_ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        FROM TBL_FOLLOW TBF1
+                 JOIN TBL_MEMBER TBM
+                      ON TBF1.FOLLOWING_MEMBER_ID = TBM.ID
+        WHERE TBF1.FOLLOWER_MEMBER_ID = #{memberId}
+          AND TBF1.FOLLOWING_MEMBER_ID IN (
+            SELECT TBF2.FOLLOWER_MEMBER_ID
+            FROM TBL_FOLLOW TBF2
+            WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
+        )
+    </select>
+
+    <!-- 캘린더 멤버 전체 조회 -->
+    <select id = "selectAllCalendarMembersByCalendarId" parameterType="Long" resultType="MemberVO">
+        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        FROM TBL_CALENDAR_MEMBER TBCM
+                 JOIN TBL_MEMBER TBM
+                      ON TBCM.MEMBER_ID = TBM.ID
+        WHERE CALENDAR_ID = #{calendarId}
+          AND TBCM.CALENDAR_MEMBER_IS_HOST = 0
+    </select>
+
+    <!-- 초대 승인 여부 업데이트 -->
+    <update id="updateCalendarInvite" parameterType="CalendarInviteVO">
+        UPDATE TBL_CALENDAR_INVITE
+        SET CALENDAR_INVITE_IS_APPROVED = #{calendarInviteIsApproved}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 캘린더 초대 삭제  -->
+    <delete id="deleteCalendarInviteMember" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_INVITE
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- 캘린더 멤버 삭제 -->
+    <delete id="deleteCalendarMember" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_MEMBER
+        WHERE ID = #{id}
+    </delete>
+
+    <!-- 캘린더 멤버 삭제 By CalendarId -->
+    <delete id="deleteAllCalendarMembersByCalendarId" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_MEMBER
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
+
+    <!-- 캘린더 초대 삭제 By CalendarId -->
+    <delete id="deleteAllCalendarInvitesByCalendarId" parameterType="Long">
+        DELETE FROM TBL_CALENDAR_INVITE
+        WHERE CALENDAR_ID = #{calendarId}
+    </delete>
+</mapper>
