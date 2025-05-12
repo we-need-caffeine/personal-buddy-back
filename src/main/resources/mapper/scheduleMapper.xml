@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.app.personalbuddyback.mapper.scheduleMapper">
+<mapper namespace="com.app.personalbuddyback.mapper.ScheduleMapper">
 
     <!-- 일정 등록 -->
-    <insert id="insertSchedule" parameterType="ScheduleInsertDTO">
+    <insert id="insertSchedule" parameterType="ScheduleSaveDTO">
         INSERT INTO TBL_SCHEDULE (
         ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
         SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY_ID, SCHEDULE_SUBCATEGORY_ID,
