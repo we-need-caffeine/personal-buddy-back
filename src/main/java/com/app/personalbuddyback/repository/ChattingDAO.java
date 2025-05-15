@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class ChattingDAO {
     private final ChattingMapper chattingMapper;
 
 //    채팅방 존재 여부
-    public Long findChatRoomIsTrue(Map<String, Object> map) {
+    public Optional<Long> findChatRoomIsTrue(Map<String, Object> map) {
         return chattingMapper.selectChatRoomIsTrue(map);
     }
 //    채팅방 리스트 불러오기
@@ -24,7 +25,7 @@ public class ChattingDAO {
         return chattingMapper.selectAllChatRoom(map);
     }
 //    멤버가 채팅방의 퍼스트멤버인지, 세컨드 멤버인지 찾기
-    public String findChatMemberPosition(Map<String, Object> map) {
+    public Optional<String> findChatMemberPosition(Map<String, Object> map) {
         return chattingMapper.selectChatMemberPosition(map);
     }
 //    채팅 내역 불러오기
