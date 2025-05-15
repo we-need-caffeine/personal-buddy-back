@@ -24,39 +24,63 @@ public class BoardAPI {
     // 게시글 전체 목록
     @Operation(summary = "게시글 전체 목록", description = "게시글 전체 목록 API")
     @GetMapping("/list")
-    public List<BoardListViewDTO> getAllBoards() {
-        return boardService.getAllBoards();
+    public ResponseEntity<?> getAllBoards() { // <?> 응답의 데이터 타입이 어떤 것이든 상관 없음
+        try {
+            return ResponseEntity.ok(boardService.getAllBoards());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전체 게시글 조회 실패: " + e.getMessage());
+        }
     }
 
     // HOT 게시글 목록
     @Operation(summary = "HOT 게시글 목록", description = "HOT 게시글 목록 API")
     @GetMapping("/hot")
-    public List<BoardListViewDTO> getHotBoards() {
-        return boardService.getHotBoards();
+    public ResponseEntity<?> getHotBoards() {
+        try {
+            return ResponseEntity.ok(boardService.getHotBoards());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("HOT 게시글 조회 실패: " + e.getMessage());
+        }
     }
 
     // 게시글 검색 + 정렬 + 해시태그 필터링
     @Operation(summary = "게시글 검색 + 정렬 + 해시태그 필터링", description = "게시글 검색 + 정렬 + 해시태그 필터링 API")
     @GetMapping("/search")
-    public List<BoardListViewDTO> getBoardsBySearch(@RequestParam Map<String, Object> params) {
-        return boardService.getBoardsBySearch(params);
+    public ResponseEntity<?> getBoardsBySearch(@RequestParam Map<String, Object> params) {
+        try {
+            return ResponseEntity.ok(boardService.getBoardsBySearch(params));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 검색 실패: " + e.getMessage());
+        }
     }
 
     // 게시글 상세 조회
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회 API")
     @GetMapping("/post/{id}")
-    public BoardViewDTO getBoardById(@PathVariable Long id) {
-        return boardService.getBoardById(id).orElseThrow();
+    public ResponseEntity<?> getBoardById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(boardService.getBoardById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."))); // 작못된 인자가 메서드에 전달됐을때
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 조회 실패: " + e.getMessage());
+        }
     }
 
     // 게시글 작성
     @Operation(summary = "게시글 작성", description = "게시글 작성 API")
     @ApiResponse(responseCode = "200", description = "게시글 작성 성공")
     @PostMapping("/write")
-    public ResponseEntity writeBoard(@RequestBody BoardVO boardVO) {
+    public ResponseEntity<?> registerBoard(@RequestBody BoardVO boardVO) {
         try {
+            if (boardVO.getBoardTitle() == null || boardVO.getBoardTitle().isBlank()) {
+                throw new IllegalArgumentException("게시글 제목은 필수입니다.");
+            }
             boardService.writeBoard(boardVO);
             return ResponseEntity.ok("게시글 작성 성공");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 작성 실패: " + e.getMessage());
         }
@@ -66,16 +90,28 @@ public class BoardAPI {
     @Operation(summary = "게시글 이미지 등록", description = "게시글 이미지 등록 API")
     @ApiResponse(responseCode = "200", description = "게시글 이미지 등록 성공")
     @PostMapping("/image")
-    public void addBoardImage(@RequestBody BoardImgVO boardImgVO) {
-        boardService.addBoardImage(boardImgVO);
+    public ResponseEntity<?> registerBoardImage(@RequestBody BoardImgVO boardImgVO) {
+        try {
+            boardService.addBoardImage(boardImgVO);
+            return ResponseEntity.ok("게시글 이미지 등록 성공");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 이미지 등록 실패: " + e.getMessage());
+        }
     }
 
     //  게시글과 이미지들을 함께 등록 (트랜잭션 처리)
     @Operation(summary = "게시글+이미지 등록", description = "게시글+이미지 등록 API")
     @ApiResponse(responseCode = "200", description = "게시글+이미지 등록 성공")
     @PostMapping("/image-with-write")
-    public void writeBoardImageWithWrite(@RequestBody List<BoardImgVO> boardImgVO, @RequestBody BoardVO boardVO) {
-        boardService.writeBoardWithImages(boardVO, boardImgVO);
+    public ResponseEntity<?> writeBoardImageWithWrite(@RequestBody List<BoardImgVO> boardImgVO, @RequestBody BoardVO boardVO) {
+        try {
+            boardService.writeBoardWithImages(boardVO, boardImgVO);
+            return ResponseEntity.ok("게시글+이미지 등록 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글+이미지 등록 실패" + e.getMessage());
+        }
     }
 
     // 게시글 수정
