@@ -10,7 +10,10 @@ import java.util.Date;
 public class GuestBookViewDTO {
     private Long id;
     private String guestbookContent;
-    private Date guestbookCreateDate;
+    private Date guestbookCreateTime;
     private Long ownerMemberId;
     private Long writerMemberId;
+    private String writerName;
+    private String memberImgName;
+    private String memberImgPath;
 }

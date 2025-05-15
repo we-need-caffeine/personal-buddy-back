@@ -7,16 +7,17 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Mapper
 public interface ChattingMapper {
 
 //    채팅방 존재 여부
-    public Long selectChatRoomIsTrue(Map<String, Object> map);
+    public Optional<Long> selectChatRoomIsTrue(Map<String, Object> map);
 //    채팅방 리스트 불러오기
     public List<ChatRoomViewDTO> selectAllChatRoom(Map<String, Object> map);
 //    멤버가 채팅방의 퍼스트멤버인지, 세컨드 멤버인지 찾기
-    public String selectChatMemberPosition(Map<String, Object> map);
+    public Optional<String> selectChatMemberPosition(Map<String, Object> map);
 //    채팅 내역 불러오기
     public List<ChatVO> selectChat (Long chatRoomId);
 //    채팅방 생성

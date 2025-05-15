@@ -30,6 +30,25 @@
         ORDER BY GUESTBOOK_CREATE_TIME DESC
     </select>
 
+<!--  방명록 페이지네이션  -->
+    <select id="selectOnePage" parameterType="Map" resultType="GuestBookViewDTO">
+        SELECT
+            TG.ID,
+            TG.GUESTBOOK_CONTENT,
+            TG.GUESTBOOK_CREATE_TIME,
+            TG.OWNER_MEMBER_ID,
+            TG.WRITER_MEMBER_ID,
+            TM.MEMBER_NAME,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH
+        FROM TBL_GUESTBOOK TG
+        JOIN TBL_MEMBER TM ON TG.WRITER_MEMBER_ID = TM.ID
+        WHERE OWNER_MEMBER_ID = #{ownerMemberId}
+        ORDER BY ID DESC
+        OFFSET (#{page} - 1) * 4 ROWS
+        FETCH NEXT 4 ROWS ONLY
+    </select>
+
 <!--  방명록 삭제  -->
 <!--  방명록 아이디로 삭제  -->
     <delete id="delete" parameterType="Long">

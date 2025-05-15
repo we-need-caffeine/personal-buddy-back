@@ -7,10 +7,7 @@ import com.app.personalbuddyback.repository.ChattingDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +59,7 @@ public class ChattingServiceImpl implements ChattingService {
         Map<String, Object> membersMap = new HashMap<>();
         Map<String, Object> findMemberPositionInfo = new HashMap<>();
         Map<String, Object> changeViewInfo = new HashMap<>();
-        Long chatRoomId = null;
+        Optional<Long> chatRoomId = null;
         String memberPosition = null;
         String message = null;
 
@@ -77,7 +74,7 @@ public class ChattingServiceImpl implements ChattingService {
 
         if (chatRoomId != null) {
             //채팅방 아이디가 존재한다면 해당 채팅방에서 멤버의 view 포지션을 문자열값으로 받는다.
-            memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionInfo);
+            memberPosition = String.valueOf(chattingDAO.findChatMemberPosition(findMemberPositionInfo));
 
             changeViewInfo.put("position", memberPosition);
             changeViewInfo.put("chatRoomId", chatRoomId);
@@ -110,7 +107,7 @@ public class ChattingServiceImpl implements ChattingService {
         findMemberPositionInfo.put("memberId", memberId);
         
         // 멤버의 포지션
-        memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionInfo);
+        memberPosition = String.valueOf(chattingDAO.findChatMemberPosition(findMemberPositionInfo));
 
         hideChattinginfo.put("position", memberPosition);
         hideChattinginfo.put("chatRoomId", chatRoomId);
