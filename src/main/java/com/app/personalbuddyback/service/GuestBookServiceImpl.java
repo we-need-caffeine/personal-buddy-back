@@ -1,12 +1,14 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.GuestBookVO;
-import com.app.personalbuddyback.mapper.GuestBookMapper;
+import com.app.personalbuddyback.domain.GuestBookViewDTO;
+import com.app.personalbuddyback.domain.MemberVO;
 import com.app.personalbuddyback.repository.GuestBookDAO;
+import com.app.personalbuddyback.repository.MemberDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +22,20 @@ public class GuestBookServiceImpl implements GuestBookService {
     }
 
     @Override
-    public List<GuestBookVO> getGuestBooksByMemberId(Long ownerMemberId) {
+    public List<GuestBookVO> getAllGuestBooksByMemberId(Long ownerMemberId) {
         return guestBookDAO.findAll(ownerMemberId);
     }
 
     @Override
-    public void deleteGuestBook(Long id) {
+    public List<GuestBookViewDTO> getGuestBooksOnePageByMemberIdAndPage(Long ownerMemberId, Integer page) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("ownerMemberId", ownerMemberId);
+        map.put("page", page);
+        return guestBookDAO.findOnePage(map);
+    }
+
+    @Override
+    public void deleteGuestBookById(Long id) {
         guestBookDAO.delete(id);
     }
 }
