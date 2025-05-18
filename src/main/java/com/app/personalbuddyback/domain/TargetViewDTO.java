@@ -10,4 +10,6 @@ public class TargetViewDTO {
     private String targetType;
     private int completedCount;
     private int standardCount;
+    private int isCompleted;
+    private int targetGetPoint;
 }

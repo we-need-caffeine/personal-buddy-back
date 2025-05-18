@@ -5,10 +5,11 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-public class CartViewDTO {
+public class BuyingItemDTO {
     private Long id; // 카트 id
     private Long itemId; // 아이템의 id
     private Long memberId; // 구매하는 이용자의 id
+    private String itemName;
     private String itemImgPath; // 아이템 이미지의 경로
     private String itemImgName; // 아이템 이미지의 이름
     private int buyItemCount; // 구매 아이템의 개수
