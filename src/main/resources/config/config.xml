@@ -17,6 +17,7 @@
 
 <!--        알람 테이블       -->
         <typeAlias type="com.app.personalbuddyback.domain.AlertVO" alias="AlertVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.AlertViewDTO" alias="AlertViewDTO" />
 
 <!--        게시판 관련 테이블      -->
         <typeAlias type="com.app.personalbuddyback.domain.BoardVO" alias="BoardVO" />

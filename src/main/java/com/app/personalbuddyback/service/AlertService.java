@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.AlertVO;
+import com.app.personalbuddyback.domain.AlertViewDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ public interface AlertService {
     
 //    해당 유저의 알림 전체 읽기
 //    받는 멤버 아이디와 동적 쿼리로 알림 타입에 따른 조회결과 변경
-    public List<AlertVO> getAlerts(Map<String, Object> map);
+    public List<AlertViewDTO> getAlerts(Map<String, Object> map);
 
 //    알림 읽음 처리
 //    유저가 특정 알람을 클릭했을 때, 읽음 여부처리
