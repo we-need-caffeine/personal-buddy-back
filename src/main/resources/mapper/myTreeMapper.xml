@@ -1,53 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.MyTreeMapper">
-
-    <!--    멤버 - 성장나무 연결 생성 쿼리 (최초 멤버 가입 시 생성)      -->
-    <insert id="insertMemberTree" parameterType="TreeVO">
+<!--    멤버 - 성장나무 연결 생성 쿼리 (최초 멤버 가입 시 생성)      -->
+    <insert id="insertMemberTree" parameterType="Long">
         INSERT INTO TBL_TREE(ID, MEMBER_ID)
         VALUES(SEQ_ITEM.NEXTVAL, #{memberId})
     </insert>
 
+<!--    아이템 구매 시, 멤버의 나무에 추가하기  -->
+    <insert id="insertTreeCustomizing" parameterType="TreeCustomizingVO">
+        INSERT INTO TBL_TREE_CUSTOMIZING
+        VALUES (
+            SEQ_TREE_CUSTOMIZING.NEXTVAL,
+            DEFAULT,
+            DEFAULT,
+            DEFAULT,
+            #{itemId},
+            #{treeId}
+        )
+    </insert>
 
-    <!--    회원 소유의 성장나무 전체 리스트 조회 (동적 쿼리로 적용 되어있는 성장나무 아이템들 리스트도 받아올 수 있도록)      -->
-    <select id="selectTreeViewsByMemberId" parameterType="map" resultType="TreeViewDTO">
-        SELECT
-            TBT.ID AS ID,
-            TBT.MEMBER_ID AS MEMBER_ID,
-            TBI.ID AS ITEM_ID,
-            TTC.ID AS TREE_CUSTOMIZING_ID,
-            TTC.TREE_CUSTOMIZING_POSITION_X AS TREE_CUSTOMIZING_POSITION_X,
-            TTC.TREE_CUSTOMIZING_POSITION_Y AS TREE_CUSTOMIZING_POSITION_Y,
-            TTC.TREE_CUSTOMIZING_APPLY AS TREE_CUSTOMIZING_APPLY,
-            TBI.ITEM_NAME AS ITEM_NAME,
-            TBI.ITEM_TYPE AS ITEM_TYPE,
-            TBI.ITEM_IMG_PATH AS ITEM_IMG_PATH,
-            TBI.ITEM_IMG_NAME AS ITEM_IMG_NAME
-        FROM TBL_TREE TBT
-        JOIN TBL_TREE_CUSTOMIZING TTC
-            ON TBT.ID = TBT.ID = TTC.TREE_ID
-        JOIN TBL_ITEM TBI
-            ON TTC.ITEM_ID = TBI.ID
-        WHERE TBT.MEMBER_ID = #{memberId}
-        <if test="applied != null">
-            AND TTC.TREE_CUSTOMIZING_APPLY = 1
-        </if>
+    <select id="selectTreeIdByMemberId" parameterType="Long">
+        SELECT TREE_ID
+        FROM TBL_TREE
+        WHERE MEMBER_ID = #{memberId}
     </select>
 
-    <!--    성장나무 커스터마이징 수정      -->
-    <update id="updateTreeCustomizing" parameterType="TreeCustomizingVO">
+<!--    멤버의 성장나무 전체 아이템 리스트 조회     -->
+    <select id="selectAllTreeCustomizingByMemberId" parameterType="Long" resultType="TreeViewDTO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            ITEM_ID,
+            TREE_CUSTOMIZING_ID,
+            TREE_CUSTOMIZING_POSITION_X,
+            TREE_CUSTOMIZING_POSITION_Y,
+            TREE_CUSTOMIZING_APPLY,
+            ITEM_NAME,
+            ITEM_TYPE,
+            ITEM_IMG_PATH,
+            ITEM_IMG_NAME
+        FROM VW_MEMBER_TREE
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+<!--    멤버의 전시된 나무 아이템 목록 조회   -->
+    <select id="selectAppliedTreeCustomizingByMemberId" parameterType="Long" resultType="TreeViewDTO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            ITEM_ID,
+            TREE_CUSTOMIZING_ID,
+            TREE_CUSTOMIZING_POSITION_X,
+            TREE_CUSTOMIZING_POSITION_Y,
+            TREE_CUSTOMIZING_APPLY,
+            ITEM_NAME,
+            ITEM_TYPE,
+            ITEM_IMG_PATH,
+            ITEM_IMG_NAME
+        FROM VW_MEMBER_TREE
+        WHERE MEMBER_ID = #{memberId}
+        AND TREE_CUSTOMIZING_APPLY = 1
+    </select>
+
+<!--    멤버 성장나무 아이템 수정     -->
+    <update id="updateTreeCustomizing" parameterType="TreeViewDTO">
         UPDATE TBL_TREE_CUSTOMIZING
         SET
             TREE_CUSTOMIZING_POSITION_X = #{treeCustomizingPositionX},
             TREE_CUSTOMIZING_POSITION_Y = #{treeCustomizingPositionY},
             TREE_CUSTOMIZING_APPLY = #{treeCustomizingApply}
-        WHERE ID = #{id}
+        WHERE ID = #{treeCustomizingId}
     </update>
 
-    <!--  회원 - 성장나무 연결 테이블 삭제 (회원 삭제 시)  -->
+<!--    멤버 성장나무 목록들 삭제      -->
     <delete id="deleteTreeCustomizing" parameterType="Long">
         DELETE
         FROM TBL_TREE_CUSTOMIZING
         WHERE TREE_ID = #{treeId}
+    </delete>
+
+<!--    멤버 성장나무 삭제    -->
+    <delete id="deleteTree" parameterType="Long">
+        DELETE
+        FROM TBL_TREE
+        WHERE MEMBER_ID = #{memberId}
     </delete>
 </mapper>

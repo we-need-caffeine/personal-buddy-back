@@ -4,6 +4,7 @@ import com.app.personalbuddyback.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface AchievementMapper {
@@ -17,6 +18,12 @@ public interface AchievementMapper {
     // 회원 번호 - 업적완료 연결 테이블 추가 미션 진행도와 업적완료 미션 횟수를 비교하여 추가
     public void insertMemberAchievement(MemberAchievementVO memberAchievementVO);
 
+    // 업적 번호를 통한 업적 내용 조회
+    public Optional<AchievementVO> selectAchievementById(Long id);
+
+    // 전체 업적 목록 조회
+    public List<AchievementVO> selectAllAchievements();
+
     // 회원 번호를 통한 전체 업적 리스트 조회
     public List<AchievementViewDTO> selectAllAchievementsByMemberId(Long memberId);
 
@@ -28,6 +35,9 @@ public interface AchievementMapper {
 
     // 회원의 대표 업적 조회
     public List<AchievementViewDTO> selectDisplayedAchievementsByMemberId(Long memberId);
+
+    // 일정 카테고리에 따른 업적 아이디 조회
+    public List<Long> selectAchievementsIdByScheduleCategory(String achievementScheduleCategory);
 
     // 업적 수정 (관리자 용)
     public void updateAchievement(AchievementVO achievementVO);

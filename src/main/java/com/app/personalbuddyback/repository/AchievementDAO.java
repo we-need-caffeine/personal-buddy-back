@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Member;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,9 +31,19 @@ public class AchievementDAO {
     public void saveMemberAchievement(MemberAchievementVO memberAchievementVO) {
         achievementMapper.insertMemberAchievement(memberAchievementVO);
     }
+    
+    // 업적 한 개 조회
+    public Optional<AchievementVO> findAchievementById(Long achievementId) {
+        return achievementMapper.selectAchievementById(achievementId);
+    }
+
+    // 전체 업적 목록 조회
+    public List<AchievementVO> findAllAchievements() {
+        return achievementMapper.selectAllAchievements();
+    }
 
     // 회원 번호를 통한 전체 업적 리스트 조회
-    public List<AchievementViewDTO> findAllAchievements(Long memberId) {
+    public List<AchievementViewDTO> findAllAchievementsById(Long memberId) {
         return achievementMapper.selectAllAchievementsByMemberId(memberId);
     }
 
@@ -49,6 +60,11 @@ public class AchievementDAO {
     // 회원의 대표 업적 조회
     public List<AchievementViewDTO> findDisplayedAchievements(Long memberId) {
         return achievementMapper.selectDisplayedAchievementsByMemberId(memberId);
+    }
+
+    // 일정 카테고리에 따른 업적 조회
+    public List<Long> findAchievementsIdByScheduleCategory(String achievementScheduleCategory) {
+        return achievementMapper.selectAchievementsIdByScheduleCategory(achievementScheduleCategory);
     }
 
     // 업적 수정 (관리자 용)

@@ -1,64 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.PointShopMapper">
-    <!--    포인트샵 나무 아이템 추가 쿼리       -->
+<!--    포인트샵 아이템 추가 (관리자)     -->
     <insert id="insertItem" parameterType="ItemVO">
-        INSERT INTO TBL_ITEM(ID, ITEM_NAME, ITEM_PRICE, ITEM_IMG_PATH, ITEM_IMG_NAME, ITEM_TYPE)
-        VALUES(SEQ_ITEM.NEXTVAL, #{itemName}, #{itemPrice}, #{itemImgPath}, #{itemImgName}, #{itemType})
+        INSERT INTO TBL_ITEM
+        VALUES (SEQ_ITEM.NEXTVAL, #{itemName}, #{itemType}, #{itemPrice}, #{itemImgPath}, #{itemImgName})
     </insert>
 
-    <!--  아이템 구매  -->
+<!--    아이템 구매 추가  -->
     <insert id="insertBuyItem" parameterType="BuyItemVO">
-        INSERT INTO HR.TBL_BUY_ITEM(ID, ITEM_ID BUY_ITEM_COUNT, MEMBER_ID)
-        VALUES(SEQ_BUY_ITEM.NEXTVAL, #{itemID}, #{buyItemCount}, #{memberId})
+        INSERT INTO TBL_BUY_ITEM
+        VALUES(SEQ_BUY_ITEM.NEXTVAL, #{buyItemCount}, #{memberId}, #{itemId})
     </insert>
 
-    <!--  장바구니 추가  -->
+<!--    장바구니 담기(추가)     -->
     <insert id="insertCart" parameterType="CartVO">
-        INSERT INTO HR.TBL_CART(ID, ITEM_ID BUY_ITEM_COUNT, MEMBER_ID)
-        VALUES(SEQ_CART.NEXTVAL, #{itemID}, #{buyItemCount}, #{memberId})
+        INSERT INTO TBL_CART
+        VALUES(SEQ_CART.NEXTVAL, #{cartItemCount}, #{memberId}, #{itemId})
     </insert>
 
-    <!--    성장나무 아이템 추가 쿼리 (아이템 구매 시 사용)     -->
-    <insert id="insertTreeCustomizing" parameterType="TreeCustomizingVO">
-        INSERT INTO TBL_TREE_CUSTOMIZING
-        VALUES(SEQ_ITEM.NEXTVAL, #{itemId}, #{treeCustomizingPositionX}, #{treeCustomizingPositionY}, #{treeCustomizingApply}, #{treeId})
-    </insert>
-
-    <select id="selectAllItemByType" parameterType="map" resultType="ItemVO">
+<!--    아이템 목록 SELECT   -->
+    <select id="selectAllItems" parameterType="String" resultType="ItemVO">
         SELECT
             ID,
             ITEM_NAME,
+            ITEM_TYPE,
             ITEM_PRICE,
             ITEM_IMG_PATH,
-            ITEM_IMG_NAME,
-            ITEM_TYPE
+            ITEM_IMG_NAME
         FROM TBL_ITEM
         <choose>
-            <when test="type != null">
-                WHERE ITEM_TYPE = #{type}
+            <when test="itemType != null">
+                WHERE ITEM_TYPE = #{itemType}
             </when>
         </choose>
     </select>
 
-    <!--    포인트샵 나무 아이템 수정 쿼리       -->
+    <!--    아이템 한개 정보 조회   -->
+    <select id="selectItem" parameterType="Long" resultType="ItemVO">
+        SELECT
+            ID,
+            ITEM_NAME,
+            ITEM_TYPE,
+            ITEM_PRICE,
+            ITEM_IMG_PATH,
+            ITEM_IMG_NAME
+        FROM TBL_ITEM
+        WHERE ID = #{id}
+    </select>
+
+<!--    소유하고 있는 아이템 구분할 수 있는 데이터 조회 (포인트 샵 화면)     -->
+    <select id="selectPointShopItems" parameterType="Long" resultType="PointShopViewDTO">
+        SELECT
+            TBI.ID,
+            TBI.ITEM_NAME,
+            TBI.ITEM_TYPE,
+            TBI.ITEM_PRICE,
+            TBI.ITEM_IMG_PATH,
+            TBI.ITEM_IMG_NAME,
+            CASE
+                WHEN VMT.MEMBER_ID IS NOT NULL THEN 1
+                ELSE 0
+            END AS ITEM_OWNED
+        FROM TBL_ITEM TBI
+            LEFT JOIN VW_MEMBER_TREE VMT
+            ON VMT.MEMBER_ID = #{memberID}
+            AND TBI.ID = VMT.ITEM_ID
+    </select>
+
+<!--    장바구니 정보 조회(장바구니 화면에 담을 정보) 아이템 개별 총합 가격      -->
+    <select id="selectAllCartItems" parameterType="Long" resultType="BuyingItemDTO">
+        SELECT
+            TBC.ID AS ID,
+            TBC.ITEM_ID AS ITEM_ID,
+            TBC.MEMBER_ID AS MEMBER_ID,
+            TBI.ITEM_NAME AS ITEM_NAME,
+            TBI.ITEM_IMG_NAME AS ITEM_IMG_NAME,
+            TBI.ITEM_IMG_PATH AS ITEM_IMG_PATH,
+            TBC.CART_ITEM_COUNT AS BUY_ITEM_COUNT,
+            TBI.ITEM_TYPE AS ITME_TYPE,
+            TBI.ITEM_PRICE AS ITEM_PRICE,
+            (TBI.ITEM_PRICE * TBC.CART_ITEM_COUNT) AS TOTAL_PRICE
+        FROM TBL_CART TBC
+            JOIN TBL_ITEM TBI
+            ON TBC.ITEM_ID = TBI.ID
+            AND TBC.MEMBER_ID = #{memberId}
+    </select>
+
+<!--    아이템 수정 (관리자)  -->
     <update id="updateItem" parameterType="ItemVO">
         UPDATE TBL_ITEM
-        SET ITEM_NAME = #{itemName}, ITEM_PRICE = #{itemPrice}, ITEM_IMG_PATH = #{itemPath}, ITEM_IMG_NAME = #{itemImgName}, ITEM_TYPE = #{itemType}
+        <set>
+            <if test="itemName != null"> ITEM_NAME = #{itemName}, </if>
+            <if test="itemType != null"> ITEM_TYPE = #{itemType}, </if>
+            <if test="itemPrice != null"> ITEM_PRICE = #{itemPrice}, </if>
+            <if test="itemImgPath != null"> ITEM_IMG_PATH = #{itemImgPath}, </if>
+            <if test="itemImgName != null"> ITEM_IMG_NAME = #{itemImgName}, </if>
+        </set>
         WHERE ID = #{id}
     </update>
 
-    <!--    포인트샵 나무 아이템 삭제 쿼리       -->
+<!--    장바구니 아이템 변경 (수량만, 장바구니 제거는 삭제를 통해 제거)     -->
+    <update id="updateCartItem" parameterType="CartVO">
+        UPDATE TBL_CART
+        SET CART_ITEM_COUNT = #{cartItemCount}
+        WHERE ID = #{id}
+    </update>
+
+<!--    아이템 삭제(관리자)     -->
     <delete id="deleteItem" parameterType="Long">
         DELETE
         FROM TBL_ITEM
         WHERE ID = #{id}
     </delete>
 
-    <!--  장바구니 삭제 (장바구니 담은 아이템 구매 시 사용)  -->
-    <delete id="deleteCart" parameterType="Long">
+<!--    장바구니 아이템 삭제 (장바구니에서 구매 시)  -->
+    <delete id="deleteAllCartItems" parameterType="Long">
         DELETE
         FROM TBL_CART
         WHERE MEMBER_ID = #{memberId}
+    </delete>
+
+<!--    아이템 개별 삭제 (장바구니 아이템 삭제)     -->
+    <delete id="deleteCartItem" parameterType="Long">
+        DELETE
+        FROM TBL_CART
+        WHERE ID = #{id}
     </delete>
 </mapper>
