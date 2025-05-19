@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members/api")
@@ -33,7 +35,7 @@ public class MemberAPI {
 
     @Operation(summary = "이메일 중복 조회", description = "이메일 중복 조회 API")
     @ApiResponse(responseCode = "200", description = "조회 성공")
-    @GetMapping("check-email")
+    @GetMapping("email/check")
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         boolean isEmailDuplicate = memberService.checkEmailDuplicate(email) > 0;
 
@@ -42,7 +44,7 @@ public class MemberAPI {
 
     @Operation(summary = "전화번호 중복 조회", description = "전화번호 중복 조회 API")
     @ApiResponse(responseCode = "200", description = "조회 성공")
-    @GetMapping("check-phone")
+    @GetMapping("check/phone")
     public ResponseEntity<Boolean> checkPhone(@RequestParam String phone) {
         boolean isPhoneDuplicate = memberService.checkPhoneDuplicate(phone) > 0;
 
@@ -51,7 +53,7 @@ public class MemberAPI {
 
     @Operation(summary = "닉네임 중복 조회", description = "닉네임 중복 조회 API")
     @ApiResponse(responseCode = "200", description = "조회 성공")
-    @GetMapping("check-nickname")
+    @GetMapping("check/nickname")
     public ResponseEntity<Boolean> checkNickname(@RequestParam String nickname) {
         boolean isNickNameDuplicate = memberService.checkNickNameDuplicate(nickname) > 0;
 
@@ -74,6 +76,8 @@ public class MemberAPI {
 
         response.put("message", "로그인 성공!");
         response.put("memberId", foundUser.get());
+        claims.put("email", foundUser.get().getMemberEmail());
+        claims.put("name", foundUser.get().getMemberName());
         String jwtToken = jwtTokenUtil.generateToken(claims);
         response.put("jwtToken", jwtToken);
 
@@ -94,11 +98,10 @@ public class MemberAPI {
 //            유저 정보로 바꾸기
             Claims claims = jwtTokenUtil.parseToken(token);
             String memberEmail = claims.get("email").toString();
-
             Long memberId = memberService.getMemberIdByMemberEmail(memberEmail);
             MemberVO foundUser = memberService.getMemberInfoById(memberId).orElseThrow(() -> {
                 throw new RuntimeException("member profile, Not found User");
-            });
+            }); // 반갑구리
 
             foundUser.setMemberPassword(null);
             response.put("currentUser", foundUser);
@@ -112,7 +115,7 @@ public class MemberAPI {
 
     @Operation(summary = "이메일 찾기", description = "이메일 찾기 API")
     @ApiResponse(responseCode = "200", description = "이메일 찾기 성공")
-    @PostMapping("find-email")
+    @PostMapping("find/email")
     public void findEmail(@RequestBody MemberVO memberVO) {
         memberService.findEmail(memberVO);
 
@@ -120,7 +123,7 @@ public class MemberAPI {
 
     @Operation(summary = "비밀번호 찾기", description = "비밀번호 찾기 API")
     @ApiResponse(responseCode = "200", description = "비밀번호 찾기 성공")
-    @PostMapping("/find-id-by-name-email")
+    @PostMapping("/find/password")
     public ResponseEntity<Map<String, Object>> findIdByNameAndEmail(@RequestBody MemberVO memberVO) {
         Map<String, Object> response = new HashMap<>();
         Long id = memberService.findIdByNameAndEmail(memberVO);
@@ -138,7 +141,7 @@ public class MemberAPI {
 
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API")
     @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공")
-    @PutMapping("/edit-password")
+    @PutMapping("/edit/password")
     public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody MemberVO memberVO) {
         Map<String, Object> response = new HashMap<>();
         Long id = memberVO.getId();
@@ -156,7 +159,7 @@ public class MemberAPI {
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보 수정 API")
     @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공")
-    @PutMapping("/edit")
+    @PutMapping("/update")
     public ResponseEntity<Map<String, Object>> edit(@RequestBody MemberVO memberVO) {
         Map<String, Object> response = new HashMap<>();
         Long id = memberVO.getId();

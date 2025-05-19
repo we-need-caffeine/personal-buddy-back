@@ -1,63 +1,181 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.TargetMapper">
-    <!--    목표 완료 추가   -->
+<!--    목표 달성 시 추가 테이블    -->
     <insert id="insertTarget" parameterType="TargetVO">
         INSERT INTO TBL_TARGET
         VALUES (SEQ_TARGET.NEXTVAL, #{targetCompleteDate}, #{targetScheduleCategory}, #{memberId})
     </insert>
 
-    <!--    목표 기준 테이블에 데이터 추가     -->
+<!--    목표 달성 기준 테이블 (일정 / 카테고리 별 항목 -> 관리자 최초 추가)  추가  -->
     <insert id="insertTargetStandard" parameterType="TargetStandardVO">
         INSERT INTO TBL_TARGET_STANDARD
-        VALUES (SEQ_TARGET_STANDARD.NEXTVAL, #{targetStandardScheduleCategory}, #{targetStandardPeriodType}, #{targetStandardMissionCount})
+        VALUES (
+            SEQ_TARGET_STANDARD.NEXTVAL,
+            #{targetStandardScheduleCategory},
+            #{targetStandardPeriodType},
+            #{targetStandardMissionCount},
+            #{targetStandardGetPoint}
+       )
     </insert>
 
-    <!--    기간 별 시작 날에 추가될 랜덤 목표 선정용 테이블 insert     -->
+<!--    멤버 / 기간 별 기준 테이블 선정 (매 주 시작일 , 매 월 시작일에 해당하는 기준 테이블 선정)     -->
     <insert id="insertRandomTargetLottery" parameterType="RandomTargetLotteryVO">
-        INSERT INTO TBL_TARGET_STANDARD
+        INSERT INTO TBL_RANDOM_TARGET_LOTTERY
         VALUES (
             SEQ_RANDOM_TARGET_LOTTERY.NEXTVAL,
             #{memberId},
             #{randomTargetLotteryPeriodType},
-            #{randomTargetLotteryStartDate},
+            <choose>
+                <when test="randomTargetLotteryPeriodType = 주간">
+                    TRUNC(SYSDATE, 'IW'),
+                </when>
+                <when test="randomTargetLotteryPeriodType = 월간">
+                    TRUNC(SYSDATE, 'MM'),
+                </when>
+                <otherwise>
+                    TRUNC(SYSDATE),
+                </otherwise>
+            </choose>
             #{randomTargetLotteryCategory}
         )
     </insert>
 
-    <!--    일간 / 주간 / 월간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)       -->
-    <select id="selectTargetsView" parameterType="map" resultType="TargetViewDTO">
+<!--    목표 달성 포인트 획득 로그 기록 테이블 추가 (중복 지급 방지용)   -->
+    <insert id="insertTargetPointRewardLog" parameterType="TargetPointRewardLogVO">
+        INSERT INTO TBL_TARGET_POINT_REWARD_LOG
+        VALUES (
+            SEQ_TARGET_POINT_REWARD_LOG.NEXTVAL,
+            #{memberId},
+            #{targetPointRewardLogCategory},
+            #{targetPointRewardLogPeriodType},
+            #{targetPointRewardLogStartDate}
+       )
+    </insert>
+
+<!--    같은날 달성한 목표 내용 있는지 체크    -->
+    <select id="selectTargetCount" parameterType="TargetVO" resultType="int">
+        SELECT COUNT(ID)
+        FROM TBL_TARGET
+        WHERE MEMBER_ID = #{memberId}
+        AND TARGET_COMPLETE_DATE = #{targetCompleteDate}
+        AND TARGET_SCHEDULE_CATEGORY = #{targetScheduleCategory}
+    </select>
+
+<!--    일간 목표 완성 View 조회    -->
+    <select id="selectDailyTargetCompleteList" parameterType="Long" resultType="TargetViewDTO">
         SELECT
             MEMBER_ID,
             TARGET_TYPE,
             COMPLETED_COUNT,
-            STANDARD_COUNT
-        <choose>
-            <when test="type == weekly">
-                FROM VW_TARGET_WEEKLY
-            </when>
-            <when test="type == monthly">
-                FROM VW_TARGET_MONTHLY
-            </when>
-            <otherwise>
-                FROM VW_TARGET_DAILY
-            </otherwise>
-        </choose>
+            STANDARD_COUNT,
+            IS_COMPLETED,
+            TARGET_GET_POINT
+        FROM VW_TARGET_DAILY
         WHERE MEMBER_ID = #{memberId}
     </select>
 
-    <!--    목표 삭제 (회원탈퇴 시)     -->
-    <delete id="deleteTargetByMemberId" parameterType="Long">
+<!--    주간 목표 완성 View 조회    -->
+    <select id="selectWeeklyTargetCompleteList" parameterType="Long" resultType="TargetViewDTO">
+        SELECT
+            MEMBER_ID,
+            TARGET_TYPE,
+            COMPLETED_COUNT,
+            STANDARD_COUNT,
+            IS_COMPLETED,
+            TARGET_GET_POINT
+        FROM VW_TARGET_WEEKLY
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+<!--    월간 목표 완성 View 조회    -->
+    <select id="selectMonthlyTargetCompleteList" parameterType="Long" resultType="TargetViewDTO">
+        SELECT
+            MEMBER_ID,
+            TARGET_TYPE,
+            COMPLETED_COUNT,
+            STANDARD_COUNT,
+            IS_COMPLETED,
+            TARGET_GET_POINT
+        FROM VW_TARGET_MONTHLY
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+<!--    선정된 일간 Random Target 조회 (없으면 추가)    -->
+    <select id="selectDailyRandomTargetList" parameterType="Long" resultType="RandomTargetLotteryVO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            RANDOM_TARGET_LOTTERY_PERIOD_TYPE,
+            RANDOM_TARGET_LOTTERY_START_DATE,
+            RANDOM_TARGET_LOTTERY_CATEGORY
+        FROM TBL_RANDOM_TARGET_LOTTERY
+        WHERE MEMBER_ID = #{memberId}
+        AND RANDOM_TARGET_LOTTERY_PERIOD_TYPE = '일간'
+        AND RANDOM_TARGET_LOTTERY_START_DATE = TRUNC(SYSDATE)
+    </select>
+
+<!--    선정된 주간 Random Target 조회 (없으면 추가)    -->
+    <select id="selectWeeklyRandomTargetList" parameterType="Long" resultType="RandomTargetLotteryVO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            RANDOM_TARGET_LOTTERY_PERIOD_TYPE,
+            RANDOM_TARGET_LOTTERY_START_DATE,
+            RANDOM_TARGET_LOTTERY_CATEGORY
+        FROM TBL_RANDOM_TARGET_LOTTERY
+        WHERE MEMBER_ID = #{memberId}
+        AND RANDOM_TARGET_LOTTERY_PERIOD_TYPE = '주간'
+        AND RANDOM_TARGET_LOTTERY_START_DATE = TRUNC(SYSDATE, 'IW')
+    </select>
+
+<!--    선정된 월간 Random Target 조회 (없으면 추가)    -->
+    <select id="selectMonthlyRandomTargetList" parameterType="Long" resultType="RandomTargetLotteryVO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            RANDOM_TARGET_LOTTERY_PERIOD_TYPE,
+            RANDOM_TARGET_LOTTERY_START_DATE,
+            RANDOM_TARGET_LOTTERY_CATEGORY
+        FROM TBL_RANDOM_TARGET_LOTTERY
+        WHERE MEMBER_ID = #{memberId}
+        AND RANDOM_TARGET_LOTTERY_PERIOD_TYPE = '월간'
+        AND RANDOM_TARGET_LOTTERY_START_DATE = TRUNC(SYSDATE, 'MM')
+    </select>
+
+<!--    목표 달성 포인트 지급 전, 중복 지급 방지용 포인트 지급 이력 확인 포인트 추가 전 체크할 것      -->
+    <select id="selectCountTargetPointRewardLog" parameterType="TargetPointRewardLogVO" resultType="int">
+        SELECT COUNT(ID)
+        FROM TBL_TARGET_POINT_REWARD_LOG
+        WHERE MEMBER_ID = #{memberId}
+        AND TARGET_POINT_REWARD_LOG_CATEGORY = #{targetPointRewardLogCategory}
+        AND TARGET_POINT_REWARD_LOG_PERIOD_TYPE = #{targetPointRewardLogPeriodType}
+        AND TARGET_POINT_REWARD_LOG_START_DATE = #{targetPointRewardLogStartDate}
+    </select>
+
+<!--    목표 달성 기준에 대한 수정 (관리자)   -->
+    <update id="updateTargetStandard" parameterType="TargetStandardVO">
+        UPDATE TBL_TARGET_STANDARD
+        <set>
+            <if test="targetStandardScheduleCategory != null"> TARGET_STANDARD_SCHEDULE_CATEGORY = #{targetStandardScheduleCategory}, </if>
+            <if test="targetStandardPeriodType != null"> TARGET_STANDARD_PERIOD_TYPE = #{targetStandardPeriodType}, </if>
+            <if test="targetStandardMissionCount != null"> TARGET_STANDARD_MISSION_COUNT = #{targetStandardMissionCount}, </if>
+            <if test="targetStandardGetPoint != null"> TARGET_STANDARD_GET_POINT = #{targetStandardGetPoint}, </if>
+        </set>
+        WHERE ID = #{id}
+    </update>
+
+<!--    목표 완성 내용 삭제 (회원 탈퇴 시)       -->
+    <delete id="deleteAllTarget" parameterType="Long">
         DELETE
         FROM TBL_TARGET
         WHERE MEMBER_ID = #{memberId}
     </delete>
-
-    <!--    랜덤 선정된 목표 삭제 (목표 삭제와 함께 트랜잭션 관리)    -->
-    <delete id="deleteRandomTargetByMemberId" parameterType="Long">
+<!--    선정된 RandomTarget 내용 삭제 (회원 탈퇴 시)       -->
+    <delete id="deleteAllRandomTarget" parameterType="Long">
         DELETE
         FROM TBL_RANDOM_TARGET_LOTTERY
-        WHERE MEMBER_ID = #{memberId}
+        WHERE MEMBER_ID = {memberId}
     </delete>
 
 </mapper>

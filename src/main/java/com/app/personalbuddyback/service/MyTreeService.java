@@ -8,14 +8,21 @@ import com.app.personalbuddyback.domain.TreeViewDTO;
 import java.util.List;
 
 public interface MyTreeService {
+    // 멤버 - 성장나무 연결 테이블 추가 (회원 가입 시 최초 추가)
+    public void registerMemberTree(TreeVO treeVO);
 
-    public void createMemberTree(TreeVO treeVO);
+    // 멤버의 성장나무 전체 아이템 리스트 조회
+    public List<TreeViewDTO> getAllTreeCustomizing(Long memberId);
 
-    public void addMemberTreeItem(TreeCustomizingVO treeCustomizingVO);
+    // 멤버의 전시된 나무 아이템 목록 조회
+    public List<TreeViewDTO> getAppliedTreeCustomizing(Long memberId);
 
-    public List<TreeViewDTO> getMemberTreeItems(Long memberId);
+    // 멤버 성장나무 아이템 수정
+    public void updateTreeCustomizing(TreeViewDTO TreeViewDTO);
 
-    public void editMemberTreeItem(TreeCustomizingVO treeCustomizingVO);
+    // 멤버 성장나무 목록들 삭제
+    public void deleteTreeCustomizing(Long treeId);
 
-    public void deleteMemberTreeItem(Long id);
+    // 멤버 성장나무 삭제
+    public void deleteTree(Long memberId);
 }

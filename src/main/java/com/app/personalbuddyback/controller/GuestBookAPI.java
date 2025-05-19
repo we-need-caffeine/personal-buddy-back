@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.controller;
 
 import com.app.personalbuddyback.domain.GuestBookVO;
+import com.app.personalbuddyback.domain.GuestBookViewDTO;
 import com.app.personalbuddyback.service.GuestBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +22,7 @@ public class GuestBookAPI {
 //    방명록 작성
     @Operation(summary = "방명록 작성", description = "방명록 작성을 위한 API")
     @ApiResponse(responseCode = "200", description = "방명록 작성 성공")
-    @PostMapping("write")
+    @PostMapping("/guestbook/write")
     public void write(@RequestBody GuestBookVO guestBookVO) {
         guestBookService.writeGuestBook(guestBookVO);
     }
@@ -30,15 +31,37 @@ public class GuestBookAPI {
     @Operation(summary = "방명록 조회", description = "해당 유저에게 달린 방명록들을 조회하는 API")
     @Parameter(
             name = "ownerMemberId",
-            description = "방명록 주인의 아이디",
+            description = "방명록 주인의 아이디",    
             in = ParameterIn.PATH,
             schema = @Schema(type = "number"),
             required = true
     )
     @ApiResponse(responseCode = "200", description = "방명록 조회 성공")
-    @GetMapping("list/{ownerMemberId}")
-    public List<GuestBookVO> list(@PathVariable Long ownerMemberId) {
-        return guestBookService.getGuestBooksByMemberId(ownerMemberId);
+    @GetMapping("/guestbook/list/{ownerMemberId}")
+    public List<GuestBookVO> getList(@PathVariable Long ownerMemberId) {
+        return guestBookService.getAllGuestBooksByMemberId(ownerMemberId);
+    }
+
+//    방명록 페이지네이션
+    @Operation(summary = "방명록 페이지 조회", description = "해당 유저에게 달린 방명록들을 한 페이지씩 조회하는 API")
+    @Parameter(
+            name = "ownerMemberId",
+            description = "방명록 주인의 아이디",
+            in = ParameterIn.PATH,
+            schema = @Schema(type = "number"),
+            required = true
+    )
+    @Parameter(
+            name = "page",
+            description = "현재 페이지",
+            in = ParameterIn.PATH,
+            schema = @Schema(type = "number"),
+            required = true
+    )
+    @ApiResponse(responseCode = "200", description = "방명록 페이지 조회 성공")
+    @GetMapping("/guestbook/list/page/{ownerMemberId}/{page}")
+    public List<GuestBookViewDTO> getOnePage(@PathVariable Long ownerMemberId, @PathVariable Integer page) {
+        return  guestBookService.getGuestBooksOnePageByMemberIdAndPage(ownerMemberId, page);
     }
 
 //    방명록 삭제
@@ -51,8 +74,8 @@ public class GuestBookAPI {
             required = true
     )
     @ApiResponse(responseCode = "200", description = "방명록 삭제 성공")
-    @DeleteMapping("delete/{id}")
-    public void delete(Long id) {
-        guestBookService.deleteGuestBook(id);
+    @DeleteMapping("/guestbook/delete/{id}")
+    public void delete(@PathVariable Long id) {
+        guestBookService.deleteGuestBookById(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.AlertVO;
+import com.app.personalbuddyback.domain.AlertViewDTO;
 import com.app.personalbuddyback.repository.AlertDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,27 +16,27 @@ public class AlertServiceImpl implements AlertService {
     private final AlertDAO alertDAO;
 
     @Override
-    public void sendAlert(AlertVO alertVO) {
+    public void registerAlert(AlertVO alertVO) {
         alertDAO.save(alertVO);
     }
 
     @Override
-    public List<AlertVO> getAlerts(Map<String, Object> map) {
+    public List<AlertViewDTO> getAlerts(Map<String, Object> map) {
         return alertDAO.findAll(map);
     }
 
     @Override
-    public void alertChangeRead(Long id) {
+    public void updateAlertReadById(Long id) {
         alertDAO.update(id);
     }
 
     @Override
-    public void deleteAlert(Long id) {
+    public void deleteAlertById(Long id) {
         alertDAO.delete(id);
     }
 
     @Override
-    public void deleteAllAlerts(Long receiverMemberId) {
+    public void deleteAllAlertByReceiverMemberId(Long receiverMemberId) {
         alertDAO.deleteAll(receiverMemberId);
     }
 }

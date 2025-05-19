@@ -1,0 +1,12 @@
+package com.app.personalbuddyback.domain;
+
+import lombok.Data;
+import org.springframework.stereotype.Component;
+
+@Component
+@Data
+public class VerificationRequestDTO {
+    private String type;
+    private String target;
+    private String code;
+}

@@ -4,6 +4,7 @@ import com.app.personalbuddyback.domain.ChatRoomVO;
 import com.app.personalbuddyback.domain.ChatRoomViewDTO;
 import com.app.personalbuddyback.domain.ChatVO;
 import com.app.personalbuddyback.service.ChattingService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,101 +25,62 @@ public class ChattingAPI {
     private final SimpMessageSendingOperations template;
     private final ChattingService chattingService;
 
-    // 채팅방 리스트를 불러오는 API
-    @GetMapping("chat-room/list/{memberId}")
-    public List<ChatRoomViewDTO> getAllChatRoomByMemberId(@PathVariable("memberId") String memberId, @Parameter(required = false) String filter) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("memberId", memberId);
-        map.put("filter", filter);
-
-        // 멤버의 아이디와 필터 조건에 따라 채팅방을 검색한다.
-        List<ChatRoomViewDTO> chatRooms = chattingService.findAllChatRoomByMemberIdAndFilter(map);
-
-        return chatRooms;
-    }
-
-    // 해당 채팅방의 아이디를 받아 채팅기록을 불러오는 API
-    @GetMapping("chatting-log/{memberId}")
-    public List<ChatVO> getChattingLog(@PathVariable Long memberId, @Parameter Long chatRoomId) {
-        List<ChatVO> chatList = chattingService.findChatByChatRoomId(chatRoomId);
-        Map<String, Object> map = new HashMap<>();
-        map.put("memberId", memberId);
-        map.put("chatRoomId", chatRoomId);
-
-        chattingService.updateChatReadByChatRoomIdAndMemberId(map);
-
-        return chatList;
-    }
-
     // 메시지 송신 및 수신, 프론트에선 /pub/chatroom로 요청
     // 메시지 송신 및 수신하는 API
-    @MessageMapping("chatting")
+    @MessageMapping("message")
     public void receiveChatting(@Payload ChatVO chatVO) {
-        ChatRoomVO chatRoomVO = new ChatRoomVO();
-        chatRoomVO.setId(chatVO.getId());
-        chatRoomVO.setChatRoomLastChat(chatVO.getChatContent());
-        chatRoomVO.setChatRoomLastChatTime(chatVO.getChatSendTime());
-        
-        // 채팅 기록을 저장
-        chattingService.sendChatMessage(chatVO);
-        // 채팅방의 마지막 메세지와 시간을 기록
-        chattingService.updateChatRoomLastMessage(chatRoomVO);
+        // 채팅 기록을 저장하고 채팅방에 마지막 메세지와 시간을 기록하는 서비스
+        chattingService.saveChatAndUpdateChatRoomLastMessage(chatVO);
         // 해당 채팅방 구독자에게 메시지 전송
         template.convertAndSend("/sub/chatroom/" + chatVO.getChatRoomId(), chatVO);
     }
 
+    // 채팅방 리스트를 불러오는 API
+    @Operation(summary = "채팅방 리스트 조회", description = "멤버의 아이디와 필터값으로 채팅방의 리스트를 불러오는 API")
+    @GetMapping("chat-room/list/{memberId}")
+    public List<ChatRoomViewDTO> getAllChatRoomByMemberId(@PathVariable Long memberId, @Parameter(required = false) String filter) {
+        // 멤버의 아이디와 필터 조건에 따라 채팅방을 검색한다.
+        List<ChatRoomViewDTO> chatRooms = chattingService.findAllChatRoomByMemberIdAndFilter(memberId, filter);
+
+        return chatRooms;
+    }
+
+    // 해당 채팅방에서 상대가 보낸 메세지를 읽음처리하고 채팅 기록을 불러오는 API
+    @Operation(summary = "채팅 기록 리스트", description = "상대가 보낸 채팅을 읽음 처리하고 채팅기록을 불러오는 API")
+    @GetMapping("chat/list/{memberId}")
+    public List<ChatVO> getChattingLog(@PathVariable Long memberId, @Parameter Long chatRoomId) {
+        // 해당 채팅방에서 상대가 보낸 메세지를 읽음처리하고 채팅 기록을 불러오는 서비스
+        List<ChatVO> chats = chattingService.updateChatReadAndGetAllChat(memberId, chatRoomId);
+
+        return chats;
+    }
+
     // 채팅방을 생성하는 API
-    @PostMapping("room")
-    public void createRoom(@RequestBody Map<String, Object> map) {
-        // 멤버 2명의 아이디를 받아 이미 존재하는 채팅방인지 검증
-        Long chatRoomId = chattingService.findChatRoomIsTrueByFirstMemberAndSecondMember(map);
-        Map<String, Object> findMemberPosition = new HashMap<>();
-        Map<String, Object> updateChatView = new HashMap<>();
-        String memberPosition = "";
+    @Operation(summary = "채팅방 생성/숨김 해제", description = "채팅방이 존재하면 숨김처리를 해제하고, 존재하지 않으면 새로운 채팅방을 생성하는 API")
+    @PostMapping("chat-room/register/{memberId}")
+    public String createRoom(@PathVariable Long memberId, @Parameter Long secondMemberId) {
+        // 멤버 2명의 아이디를 받아 이미 존재하는지 채팅방인지 검증 후,
+        // 존재하면 멤버아이디가 해당하는 view컬럼을 1로 바꿔준다
+        // 존재하지 않는다면 새로운 채팅방을 만든다
+        // 해당 결과에 따라 메세지를 리턴받는다
+        String message = chattingService.saveChatRoomOrChangeViewChatRoom(memberId, secondMemberId);
 
-        findMemberPosition.put("chatRoomId", chatRoomId);
-        findMemberPosition.put("memberId", map.get("firstMemberId"));
-
-        memberPosition = chattingService.findChatMemberPositionByMemberIdAndChatRoomId(findMemberPosition);
-
-        updateChatView.put("position", memberPosition);
-        updateChatView.put("chatRoomId", chatRoomId);
-
-        // 해당 채팅방이 존재하면, 현재 유저의 포지션과 채팅방의 아이디로 채팅방을 view 상태로 만든다.
-        if (chatRoomId != null) {
-            chattingService.updateViewChatRoomByPositionAndChatRoomId(updateChatView);
-        } else {
-            // 해당 채팅방이 존재하지 않다면, 받았던 멤버 아이디로 새로운 채팅방을 만든다.
-            ChatRoomVO chatRoomVO = new ChatRoomVO();
-            chatRoomVO.setFirstMemberId((Long) map.get("firstMemberId"));
-            chatRoomVO.setSecondMemberId((Long) map.get("secondMemberId"));
-            chattingService.createChatRoom(chatRoomVO);
-        }
+        return message;
     }
 
     // 채팅방을 숨기는 API
-    @PutMapping("hide")
-    public void hideChatRoom(@RequestBody Map<String, Object> map) {
-        Long id = (Long) map.get("chatRoomId");
-        Map<String, Object> findMemberPosition = new HashMap<>();
-        Map<String, Object> hideChatting = new HashMap<>();
-        String memberPosition = "";
-
-        findMemberPosition.put("chatRoomId", id);
-        findMemberPosition.put("memberId", map.get("memberId"));
-
-        memberPosition = chattingService.findChatMemberPositionByMemberIdAndChatRoomId(findMemberPosition);
-
-        hideChatting.put("position", memberPosition);
-        hideChatting.put("chatRoomId", id);
-
-        chattingService.updateHideChatRoomByPositionAndChatRoomId(hideChatting);
+    @Operation(summary = "채팅방 숨김", description = "멤버의 view 포지션을 찾고 숨김처리하는 API")
+    @PutMapping("chat-room/hide/{chatRoomId}")
+    public void hideChatRoom(@PathVariable Long chatRoomId, @Parameter Long memberId) {
+        // 멤버의 포지션 정보를 찾고, 해당 포지션에 해당하는 view 컬럼을 hide 상태로 바꾼다
+        chattingService.updateChangeHideByChatRoomIdAndMemberId(chatRoomId, memberId);
     }
 
     // 해당 채팅을 숨기는 API
-    @PutMapping("hide-chat")
-    public void hideChat(@RequestBody Map<String, Object> map) {
-        chattingService.updateHideChatByIdAndMemberId(map);
+    @Operation(summary = "채팅 숨김", description = "자신이 보낸 메세지를 모든 유저에게서 숨김 처리하는 API")
+    @PutMapping("chat/hide/{chatId}")
+    public void hideChat(@PathVariable Long chatId, @Parameter Long memberId) {
+        chattingService.updateHideChatByChatIdAndMemberId(chatId, memberId);
     }
 
 }

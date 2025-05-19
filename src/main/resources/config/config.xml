@@ -8,6 +8,7 @@
     <typeAliases>
 <!--        회원 정보 관련 테이블        -->
         <typeAlias type="com.app.personalbuddyback.domain.MemberVO" alias="MemberVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.VerificationRequestDTO" alias="VerificationRequestDTO" />
 
 <!--        업적 관련 테이블       -->
         <typeAlias type="com.app.personalbuddyback.domain.AchievementVO" alias="AchievementVO" />
@@ -17,6 +18,7 @@
 
 <!--        알람 테이블       -->
         <typeAlias type="com.app.personalbuddyback.domain.AlertVO" alias="AlertVO" />
+        <typeAlias type="com.app.personalbuddyback.domain.AlertViewDTO" alias="AlertViewDTO" />
 
 <!--        게시판 관련 테이블      -->
         <typeAlias type="com.app.personalbuddyback.domain.BoardVO" alias="BoardVO" />
@@ -32,7 +34,9 @@
         <typeAlias type="com.app.personalbuddyback.domain.ItemVO" alias="ItemVO" />
         <typeAlias type="com.app.personalbuddyback.domain.BuyItemVO" alias="BuyItemVO" />
         <typeAlias type="com.app.personalbuddyback.domain.CartVO" alias="CartVO" />
-        <typeAlias type="com.app.personalbuddyback.domain.CartViewDTO" alias="CartViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.BuyingItemDTO" alias="BuyingItemDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.PointShopViewDTO" alias="PointShopViewDTO" />
+
 <!--        성장나무 관련 테이블     -->
         <typeAlias type="com.app.personalbuddyback.domain.TreeVO" alias="TreeVO" />
         <typeAlias type="com.app.personalbuddyback.domain.TreeCustomizingVO" alias="TreeCustomizingVO" />
@@ -93,6 +97,7 @@
         <typeAlias type="com.app.personalbuddyback.domain.RandomTargetLotteryVO" alias="RandomTargetLotteryVO" />
         <typeAlias type="com.app.personalbuddyback.domain.TargetStandardVO" alias="TargetStandardVO" />
         <typeAlias type="com.app.personalbuddyback.domain.TargetViewDTO" alias="TargetViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.TargetPointRewardLogVO" alias="TargetPointRewardLogVO" />
 
 
 <!--        채팅 관련 테이블       -->

@@ -1,35 +1,58 @@
 package com.app.personalbuddyback.mapper;
 
-import com.app.personalbuddyback.domain.RandomTargetLotteryVO;
-import com.app.personalbuddyback.domain.TargetStandardVO;
-import com.app.personalbuddyback.domain.TargetVO;
-import com.app.personalbuddyback.domain.TargetViewDTO;
+import com.app.personalbuddyback.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Mapper
 public interface TargetMapper {
-
-    //  목표테이블에 insert 되면, 기간에 따라 완료 횟수를 체크한다.
-    //  따라서, 일정이 추가되면, target 테이블에 함께 insert 알맞는 정보를 insert 하여 정보를 기입
+    // 목표 달성 시 추가 테이블
     public void insertTarget(TargetVO targetVO);
 
-    // 목표 기준 테이블에 데이터 추가
+    // 목표 달성 기준 테이블 (일정 / 카테고리 별 항목 -> 관리자 최초 추가)  추가
     public void insertTargetStandard(TargetStandardVO targetStandardVO);
 
-    // 기간 별 시작 날에 추가될 랜덤 목표 선정용 테이블 insert
+    // 멤버 / 기간 별 기준 테이블 선정 (매 주 시작일 , 매 월 시작일에 해당하는 기준 테이블 선정)
     public void insertRandomTargetLottery(RandomTargetLotteryVO randomTargetLotteryVO);
 
-    // 일간 / 주간 / 월간 목표 유형에 대한 검색(ex 일정 종류를 param 으로 받아 검색)
-    // findData { memberId, type(default : daily / weekly / monthly }
-    public List<TargetViewDTO> selectTargetsView(Map<String, Objects> findData);
+    // 목표 달성 포인트 획득 로그 기록 테이블 추가 (중복 지급 방지용)
+    public void insertTargetPointRewardLog(TargetPointRewardLogVO targetPointRewardLogVO);
 
-    // 목표 삭제 (회원탈퇴 시)
-    public void deleteTargetByMemberId(Long memberId);
+    // 같은 목표 달성 목록이 있는지 조회용 쿼리 (1이면 추가하지 않는다)
+    // 이중 체크로 unique 제약 조건을 걸어놓음
+    public int selectTargetCount(TargetVO targetVO);
 
-    // 랜덤 선정된 목표 삭제 (목표 삭제와 함께 트랜잭션 관리)
-    public void deleteRandomTargetLotteryByMemberId(Long memberId);
+    // 일간 목표 완성 View 조회
+    public List<TargetViewDTO> selectDailyTargetCompleteList(Long memberId);
+
+    // 주간 목표 완성 View 조회
+    public List<TargetViewDTO> selectWeeklyTargetCompleteList(Long memberId);
+
+    // 월간 목표 완성 View 조회
+    public List<TargetViewDTO> selectMonthlyTargetCompleteList(Long memberId);
+
+    // 선정된 일간 Random Target 조회 (없으면 추가)
+    public List<RandomTargetLotteryVO> selectDailyRandomTargetList(Long memberId);
+
+    // 선정된 주간 Random Target 조회 (없으면 추가)
+    public List<RandomTargetLotteryVO> selectWeeklyRandomTargetList(Long memberId);
+
+    // 선정된 월간 Random Target 조회 (없으면 추가)
+    public List<RandomTargetLotteryVO> selectMonthlyRandomTargetList(Long memberId);
+
+    // 목표 달성 포인트 지급 전, 중복 지급 방지용 포인트 지급 이력 확인 포인트 추가 전 체크할 것
+    public int selectCountTargetPointRewardLog(TargetPointRewardLogVO targetPointRewardLogVO);
+
+    // 목표 달성 기준에 대한 수정 (관리자)
+    public void updateTargetStandard(TargetStandardVO targetStandardVO);
+
+    // 목표 완성 내용 삭제 (회원 탈퇴 시)
+    public void deleteAllTarget(Long memberId);
+
+    // 선정된 RandomTarget 내용 삭제 (회원 탈퇴 시)
+    public void deleteAllRandomTarget(Long memberId);
 }

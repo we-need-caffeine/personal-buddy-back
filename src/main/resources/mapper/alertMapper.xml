@@ -23,17 +23,21 @@
 
 <!--  알림 리스트  -->
 <!--  받는 멤버 아이디와 동적 쿼리로 알림 타입에 따른 조회결과 변경  -->
-    <select id="selectAll" parameterType="map" resultType="AlertVO">
+    <select id="selectAll" parameterType="map" resultType="AlertViewDTO">
         SELECT
-            ID,
-            ALERT_TYPE,
-            ALERT_MESSAGE,
-            ALERT_READ,
-            ALERT_PARAM,
-            ALERT_CREATE_TIME,
-            RECEIVER_MEMBER_ID,
-            SENDER_MEMBER_ID
-        FROM TBL_ALERT
+            TA.ID,
+            TA.ALERT_TYPE,
+            TA.ALERT_MESSAGE,
+            TA.ALERT_CREATE_TIME,
+            TA.ALERT_READ,
+            TA.ALERT_PARAM,
+            TA.RECEIVER_MEMBER_ID,
+            TA.SENDER_MEMBER_ID,
+            TM.MEMBER_NICKNAME,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH
+        FROM TBL_ALERT TA
+        JOIN HR.TBL_MEMBER TM ON TM.ID = TA.SENDER_MEMBER_ID
         WHERE RECEIVER_MEMBER_ID = #{receiverMemberId}
         <if test="alertType != null">
             AND ALERT_TYPE = #{alertType}

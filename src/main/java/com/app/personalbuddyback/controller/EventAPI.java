@@ -5,6 +5,7 @@ import com.app.personalbuddyback.service.EventCommentService;
 import com.app.personalbuddyback.service.EventParticipationService;
 import com.app.personalbuddyback.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
