@@ -28,6 +28,18 @@
         WHERE TBI.MEMBER_ID = #{memberId}
     </select>
 
+    <update id="updateInterest" parameterType="InterestVO">
+        UPDATE TBL_INTEREST
+        SET INTEREST_TYPE = #{interestType}
+        WHERE ID = #{id}
+    </update>
+
+    <update id="updateInterestDetail" parameterType="InterestDetailVO">
+        UPDATE TBL_INTEREST_DETAIL
+        SET INTEREST_DETAIL_SECTION = #{interestDetailSection}, INTEREST_DETAIL_VALUE = #{interestDetailValue}
+        WHERE ID = #{id}
+    </update>
+
 <!-- DELETE -->
     <delete id="deleteInterestDetailByMemberId" parameterType="Long">
         DELETE FROM TBL_INTEREST_DETAIL

@@ -2,11 +2,15 @@ package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.FollowVO;
 import com.app.personalbuddyback.domain.MemberVO;
+import com.app.personalbuddyback.domain.ProfileCardDTO;
 import com.app.personalbuddyback.repository.FollowDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +41,15 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public List<MemberVO> getMutualFollows(Long memberId) {
         return followDAO.findMutualFollows(memberId);
+    }
+
+    @Override
+    public Optional<ProfileCardDTO> getMemberProfileCard(Long memberId, Long profileCardMemberId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberId", memberId);
+        map.put("profileCardMemberId", profileCardMemberId);
+
+        return followDAO.findProfileCard(map);
     }
 
     @Override

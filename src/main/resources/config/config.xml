@@ -8,7 +8,7 @@
     <typeAliases>
 <!--        회원 정보 관련 테이블        -->
         <typeAlias type="com.app.personalbuddyback.domain.MemberVO" alias="MemberVO" />
-<!--        <typeAlias type="com.app.personalbuddyback.domain.VerificationRequestDTO" alias="VerificationRequestDTO" />-->
+        <typeAlias type="com.app.personalbuddyback.domain.VerificationRequestDTO" alias="VerificationRequestDTO" />
 
 <!--        업적 관련 테이블       -->
         <typeAlias type="com.app.personalbuddyback.domain.AchievementVO" alias="AchievementVO" />
@@ -18,7 +18,7 @@
 
 <!--        알람 테이블       -->
         <typeAlias type="com.app.personalbuddyback.domain.AlertVO" alias="AlertVO" />
-<!--        <typeAlias type="com.app.personalbuddyback.domain.AlertViewDTO " alias="AlertViewDTO" />-->
+        <typeAlias type="com.app.personalbuddyback.domain.AlertViewDTO" alias="AlertViewDTO" />
 
 <!--        게시판 관련 테이블      -->
         <typeAlias type="com.app.personalbuddyback.domain.BoardVO" alias="BoardVO" />

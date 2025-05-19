@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.controller;
 
 import com.app.personalbuddyback.domain.FollowVO;
+import com.app.personalbuddyback.domain.ProfileCardDTO;
 import com.app.personalbuddyback.service.FollowService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,6 +82,27 @@ public class FollowAPI {
     @GetMapping("favorite/get/{followingMemberId}")
     public List<FollowVO> getMyFavorite(@PathVariable Long followingMemberId) {
         return followService.getAllMyFavorite(followingMemberId);
+    }
+
+    @Operation(summary = "프로필 카드 조회", description = "상대 멤버의 정보와, 팔로잉 여부, 즐겨찾기 여부를 가져오는 API")
+    @Parameter(
+            name = "memberId",
+            description = "멤버의 아이디",
+            in = ParameterIn.PATH,
+            schema = @Schema(type = "number"),
+            required = true
+    )
+    @Parameter(
+            name = "profileCardMemberId",
+            description = "프로필 카드에 정보에 해당하는 멤버 아이디",
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "number"),
+            required = true
+    )
+    @ApiResponse(responseCode = "200", description = "프로필 카드 조회 성공")
+    @GetMapping("profile-card/{memberId}")
+    public Optional<ProfileCardDTO> getMemberProfileCard(@PathVariable Long memberId, @RequestParam Long profileCardMemberId) {
+        return followService.getMemberProfileCard(memberId, profileCardMemberId);
     }
 
 //    n번 유저가 팔로우한 상태의 유저의 즐겨찾기를 토글하는 API

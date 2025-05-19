@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.AlertVO;
+import com.app.personalbuddyback.domain.AlertViewDTO;
 import com.app.personalbuddyback.repository.AlertDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public List<AlertVO> getAlerts(Map<String, Object> map) {
+    public List<AlertViewDTO> getAlerts(Map<String, Object> map) {
         return alertDAO.findAll(map);
     }
 

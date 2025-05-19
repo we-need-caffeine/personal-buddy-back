@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.repository;
 
 import com.app.personalbuddyback.domain.AlertVO;
+import com.app.personalbuddyback.domain.AlertViewDTO;
 import com.app.personalbuddyback.mapper.AlertMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,7 @@ public class AlertDAO {
         alertMapper.insert(alertVO);
     }
 //    알림 리스트
-    public List<AlertVO> findAll(Map<String, Object> map) {
+    public List<AlertViewDTO> findAll(Map<String, Object> map) {
         return alertMapper.selectAll(map);
     }
 //    알림 읽음 여부

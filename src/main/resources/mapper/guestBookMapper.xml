@@ -38,7 +38,7 @@
             TG.GUESTBOOK_CREATE_TIME,
             TG.OWNER_MEMBER_ID,
             TG.WRITER_MEMBER_ID,
-            TM.MEMBER_NAME,
+            TM.MEMBER_NICKNAME AS WRITER_NAME,
             TM.MEMBER_IMG_NAME,
             TM.MEMBER_IMG_PATH
         FROM TBL_GUESTBOOK TG

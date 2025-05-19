@@ -45,6 +45,43 @@
             WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
         )
     </select>
+<!--  팔로우 조회 + 상대 프로필 카드  -->
+    <select id="selectProfileCard" parameterType="map" resultType="ProfileCardDTO">
+        SELECT
+            TM.ID,
+            TM.MEMBER_NICKNAME,
+            TM.MEMBER_STATUS_MESSAGE,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH,
+            (
+                SELECT COUNT(ID)
+                FROM TBL_FOLLOW
+                WHERE FOLLOWING_MEMBER_ID = TM.ID
+            ) AS FOLLOWER_COUNT,
+            (
+                SELECT COUNT(ID)
+                FROM TBL_FOLLOW
+                WHERE FOLLOWER_MEMBER_ID = TM.ID
+            ) AS FOLLOWING_COUNT,
+            (
+                SELECT CASE
+                           WHEN COUNT(ID) > 0 THEN 1 ELSE 0 END
+                FROM TBL_FOLLOW
+                WHERE FOLLOWER_MEMBER_ID = #{memberId}
+                  AND FOLLOWING_MEMBER_ID = TM.ID
+                  AND FOLLOW_FAVORITE = 1
+            ) AS FAVORITE,
+            (
+                SELECT CASE
+                           WHEN COUNT(ID) > 0 THEN 1 ELSE 0 END
+                FROM TBL_FOLLOW
+                WHERE FOLLOWER_MEMBER_ID = #{memberId}
+                  AND FOLLOWING_MEMBER_ID = TM.ID
+            ) AS IS_FOLLOW
+        FROM TBL_MEMBER TM
+        WHERE TM.ID = #{profileCardMemberId}
+    </select>
+
 
 <!--  즐겨찾기 토글  -->
 <!--  클릭 할때 현재 팔로잉 여부에 따라 토글  -->
