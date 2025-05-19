@@ -2,9 +2,12 @@ package com.app.personalbuddyback.mapper;
 
 import com.app.personalbuddyback.domain.FollowVO;
 import com.app.personalbuddyback.domain.MemberVO;
+import com.app.personalbuddyback.domain.ProfileCardDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Mapper
 public interface FollowMapper {
@@ -18,6 +21,8 @@ public interface FollowMapper {
     public List<FollowVO> selectFavorite(Long favoriteMemberId);
 //    맞팔 여부 확인
     public List<MemberVO> selectMutualFollows(Long memberId);
+//    해당멤버의 프로필 카드와 함께 팔로우 여부와 즐겨찾기 여부를 가져온다
+    public Optional<ProfileCardDTO> selectProfileCard(Map<String, Object> map);
 //    즐겨찾기 토글
     public void update(FollowVO followVO);
 //    팔로우 취소

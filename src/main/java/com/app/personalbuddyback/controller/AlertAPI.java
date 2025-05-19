@@ -2,6 +2,7 @@ package com.app.personalbuddyback.controller;
 
 
 import com.app.personalbuddyback.domain.AlertVO;
+import com.app.personalbuddyback.domain.AlertViewDTO;
 import com.app.personalbuddyback.service.AlertService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,7 +43,7 @@ public class AlertAPI {
 
 
 //    해당 유저의 모든 알림을 조회하는 API
-    @Operation(summary = "전체 알림 조회", description = "body(alertType)와 해당 유저의 전체 알림을 조회하는 API")
+    @Operation(summary = "전체 알림 조회", description = "해당 유저의 전체 알림을 조회하는 API")
     @Parameter(
             name = "memberId",
             description = "멤버 아이디",
@@ -62,7 +63,7 @@ public class AlertAPI {
     public ResponseEntity<Map<String,Object>> listAlert(@PathVariable Long memberId, @RequestParam(required = false) String alertType) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> response = new HashMap<>();
-        List<AlertVO> alerts = new ArrayList<>();
+        List<AlertViewDTO> alerts = new ArrayList<>();
 
         map.put("receiverMemberId", memberId);
         map.put("alertType", alertType);
@@ -104,7 +105,7 @@ public class AlertAPI {
             schema = @Schema(type = "number"),
             required = true
     )
-    @ApiResponse(responseCode = "200", description = "알림 삭제 성공")
+    @ApiResponse(responseCode = "200", description = "알림 삭제  성공")
     @DeleteMapping("/alert/delete/{id}")
     public void deleteAlert(@PathVariable Long id) {
         alertService.deleteAlertById(id);
