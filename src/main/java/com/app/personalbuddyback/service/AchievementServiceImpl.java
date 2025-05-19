@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +25,19 @@ public class AchievementServiceImpl implements AchievementService {
         achievementDAO.saveAchievement(achievementVO);
     }
 
+    // 최초 회원 가입 시, 진행도 초기 데이터를 넣어놓고, update 로 미션 완료 상태를 관리한다.
     @Override
-    public void createAchievementComplete(AchievementCompleteVO achievementCompleteVO) {
-        achievementDAO.saveAchievementComplete(achievementCompleteVO);
+    public void createAchievementComplete(Long memberId) {
+        List<AchievementVO> achievements = achievementDAO.findAllAchievements();
+
+        for (AchievementVO achievement : achievements) {
+            AchievementCompleteVO achievementCompleteVO = new AchievementCompleteVO();
+
+            achievementCompleteVO.setMemberId(memberId);
+            Long achievementId = achievement.getId();
+            achievementCompleteVO.setAchievementId(achievementId);
+            achievementDAO.saveAchievementComplete(achievementCompleteVO);
+        }
     }
 
     @Override
@@ -34,8 +46,18 @@ public class AchievementServiceImpl implements AchievementService {
     }
 
     @Override
-    public List<AchievementViewDTO> getAllAchievements(Long memberId) {
-        return achievementDAO.findAllAchievements(memberId);
+    public Optional<AchievementVO> getAchievementById(Long id) {
+        return achievementDAO.findAchievementById(id);
+    }
+
+    @Override
+    public List<AchievementVO> getAllAchievements() {
+        return achievementDAO.findAllAchievements();
+    }
+
+    @Override
+    public List<AchievementViewDTO> getAllAchievementsByMemberId(Long memberId) {
+        return achievementDAO.findAllAchievementsById(memberId);
     }
 
     @Override
@@ -54,6 +76,11 @@ public class AchievementServiceImpl implements AchievementService {
     }
 
     @Override
+    public List<Long> getAchievementsIdByScheduleCategory(String achievementScheduleCategory) {
+        return achievementDAO.findAchievementsIdByScheduleCategory(achievementScheduleCategory);
+    }
+
+    @Override
     public void editAchievement(AchievementVO achievementVO) {
         achievementDAO.editAchievement(achievementVO);
     }
@@ -69,8 +96,8 @@ public class AchievementServiceImpl implements AchievementService {
     }
 
     @Override
-    public void deleteAchievement(AchievementVO achievementVO) {
-        achievementDAO.deleteAchievement(achievementVO.getId());
+    public void deleteAchievement(Long id) {
+        achievementDAO.deleteAchievement(id);
     }
 
     @Override
