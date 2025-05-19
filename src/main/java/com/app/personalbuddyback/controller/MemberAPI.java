@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members/api")
@@ -74,6 +76,8 @@ public class MemberAPI {
 
         response.put("message", "로그인 성공!");
         response.put("memberId", foundUser.get());
+        claims.put("email", foundUser.get().getMemberEmail());
+        claims.put("name", foundUser.get().getMemberName());
         String jwtToken = jwtTokenUtil.generateToken(claims);
         response.put("jwtToken", jwtToken);
 
@@ -94,7 +98,6 @@ public class MemberAPI {
 //            유저 정보로 바꾸기
             Claims claims = jwtTokenUtil.parseToken(token);
             String memberEmail = claims.get("email").toString();
-
             Long memberId = memberService.getMemberIdByMemberEmail(memberEmail);
             MemberVO foundUser = memberService.getMemberInfoById(memberId).orElseThrow(() -> {
                 throw new RuntimeException("member profile, Not found User");
