@@ -133,11 +133,4 @@ public class CalendarAPI {
         calendarService.expelCalendarMember(calendarGroupMemberId);
     }
 
-    // ---------------------------- [투두리스트] ----------------------------
-
-
-
-
-
-
 }

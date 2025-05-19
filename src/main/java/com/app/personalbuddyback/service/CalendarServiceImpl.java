@@ -39,7 +39,6 @@ public class CalendarServiceImpl implements CalendarService {
         calendarDAO.saveCalendarMember(calendarMemberVO);
     }
 
-
     // 캘린더 멤버 전체 조회
     @Override
     public List<MemberVO> getCalendarMembers(Long calendarId) {
@@ -63,9 +62,6 @@ public class CalendarServiceImpl implements CalendarService {
     public Optional<CalendarVO> getCalendar(Long calendarId) {
         return calendarDAO.findCalendar(calendarId);
     }
-
-
-
 
     // 캘린더 초대 승인
     @Override

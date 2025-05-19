@@ -14,14 +14,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/todoLists/api/*")
+@RequestMapping("/todo-lists/api/*")
 @Slf4j
 public class TodoListAPI {
 
     private final TodoListService todoListService;
 
     @Operation(summary = "투두리스트 할일 등록", description = "투두리스트에 할일을 등록할 수 있는 API")
-    @PostMapping("/todoLists/register")
+    @PostMapping("register")
     public void registerTodoList(@RequestBody ToDoListVO toDoListVO) {
         todoListService.registerTodoList(toDoListVO);
     }
@@ -34,19 +34,20 @@ public class TodoListAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("/todoLists/{calendarId}")
+    @GetMapping("{calendarId}")
     public List<ToDoListVO> getTodoLists(@PathVariable Long calendarId) {
         return todoListService.getTodoLists(calendarId);
     }
 
     @Operation(summary = "투두리스트 수정", description = "투두리스트 항목을 수정하는 API")
-    @PutMapping("/todoLists")
+    @PutMapping("")
     public void modifyTodoList(@RequestBody ToDoListVO toDoListVO) {
         todoListService.modifyTodoList(toDoListVO);
     }
 
+
     @Operation(summary = "투두리스트 삭제", description = "투두리스트 항목을 삭제하는 API")
-    @DeleteMapping("/todoLists/{todoListId}")
+    @DeleteMapping("{todoListId}")
     public void deleteTodoList(@PathVariable Long todoListId) {
         todoListService.deleteTodoList(todoListId);
     }
