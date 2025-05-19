@@ -8,9 +8,12 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +25,13 @@ public class TodoListAPI {
 
     @Operation(summary = "투두리스트 할일 등록", description = "투두리스트에 할일을 등록할 수 있는 API")
     @PostMapping("register")
-    public void registerTodoList(@RequestBody ToDoListVO toDoListVO) {
-        todoListService.registerTodoList(toDoListVO);
+    public ResponseEntity<Map<String, Object>> registerTodoList(@RequestBody ToDoListVO toDoListVO) {
+        Long savedId = todoListService.registerTodoList(toDoListVO);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", savedId); // 프론트에서 쓸 ID 전달
+
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "투두리스트 전체 조회", description = "투두리스트 전체 할일 목록을 조회하는 API")
