@@ -10,15 +10,25 @@ import java.util.Map;
 import java.util.Objects;
 
 public interface TargetService {
-    public void addTarget(TargetVO targetVO);
+    public void completeTarget(TargetVO targetVO);
 
-    public void createTargetStandard(TargetStandardVO targetStandardVO);
+    public void addTargetStandard(TargetStandardVO targetStandardVO);
 
-    public void pickRandomTargetLottery(RandomTargetLotteryVO randomTargetLotteryVO);
+    public void createRandomTargetLotto(RandomTargetLotteryVO randomTargetLotteryVO);
 
-    public List<TargetViewDTO> getTargetsView(Map<String, Objects> params);
+    public int getTargetCount(TargetVO targetVO);
 
-    public void deleteTarget(Long memberId);
+    public List<TargetViewDTO> getDailyTargets(Long memberId);
 
-    public void deleteRandomTargetLottery(Long memberId);
+    public List<TargetViewDTO> getWeeklyTargets(Long memberId);
+
+    public List<TargetViewDTO> getMonthlyTargets(Long memberId);
+
+    public List<RandomTargetLotteryVO> getDailyRandomTargets(Long memberId);
+
+    public List<RandomTargetLotteryVO> getWeeklyRandomTargets(Long memberId);
+
+    public List<RandomTargetLotteryVO> getMonthlyRandomTargets(Long memberId);
+
+    public void editTargetStandard(TargetStandardVO targetStandardVO);
 }

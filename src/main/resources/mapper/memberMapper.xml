@@ -99,14 +99,14 @@
             <if test="memberEmail != null"> MEMBER_EMAIL = #{memberEmail}, </if>
             <if test="memberPassword != null"> MEMBER_PASSWORD = #{memberPassword}, </if>
             <if test="memberName != null"> MEMBER_NAME = #{memberName}, </if>
-            <if test="memberName != null"> MEMBER_BIRTH = #{memberBirth}, </if>
-            <if test="memberName != null"> MEMBER_GENDER = #{memberGender}, </if>
-            <if test="memberName != null"> MEMBER_PHONE = #{memberPhone}, </if>
+            <if test="memberBirth != null"> MEMBER_BIRTH = #{memberBirth}, </if>
+            <if test="memberGender != null"> MEMBER_GENDER = #{memberGender}, </if>
+            <if test="memberPhone != null"> MEMBER_PHONE = #{memberPhone}, </if>
             <if test="memberNickName != null"> MEMBER_NICKNAME = #{memberNickName}, </if>
-            <if test="memberNickName != null"> MEMBER_STATUS_MESSAGE = #{memberStatusMessage}, </if>
-            <if test="memberNickName != null"> MEMBER_IMG_NAME = #{memberImgName}, </if>
-            <if test="memberNickName != null"> MEMBER_IMG_PATH = #{memberImgPath}, </if>
-            <if test="memberNickName != null"> MEMBER_POINT = #{memberPoint}, </if>
+            <if test="memberStatusMessage != null"> MEMBER_STATUS_MESSAGE = #{memberStatusMessage}, </if>
+            <if test="memberImgName != null"> MEMBER_IMG_NAME = #{memberImgName}, </if>
+            <if test="memberImgPath != null"> MEMBER_IMG_PATH = #{memberImgPath}, </if>
+            <if test="memberPoint != null"> MEMBER_POINT = #{memberPoint}, </if>
             <if test="memberProvider != null"> MEMBER_PROVIDER = #{memberProvider} </if>
         </set>
         WHERE ID = #{id}
