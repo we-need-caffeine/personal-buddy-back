@@ -46,7 +46,7 @@ public class SmsAPI {
 
         boolean isFlag = smsService.verifyAuthCode(code);
         if(isFlag){
-            response.put("message", "인증이 완료되었습니다");
+            response.put("message", "※ 인증이 완료되었습니다");
             response.put("isFlag", isFlag);
             return ResponseEntity.ok(response);
         }else{
