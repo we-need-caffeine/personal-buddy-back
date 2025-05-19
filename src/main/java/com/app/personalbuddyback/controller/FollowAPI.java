@@ -88,7 +88,7 @@ public class FollowAPI {
     @Parameter(
             name = "memberId",
             description = "멤버의 아이디",
-            in = ParameterIn.PATH,
+            in = ParameterIn.QUERY,
             schema = @Schema(type = "number"),
             required = true
     )
@@ -100,8 +100,11 @@ public class FollowAPI {
             required = true
     )
     @ApiResponse(responseCode = "200", description = "프로필 카드 조회 성공")
-    @GetMapping("profile-card/{memberId}")
-    public Optional<ProfileCardDTO> getMemberProfileCard(@PathVariable Long memberId, @RequestParam Long profileCardMemberId) {
+    @GetMapping("profile-card")
+    public Optional<ProfileCardDTO> getMemberProfileCard(
+            @RequestParam(required = true) Long memberId,
+            @RequestParam(required = true) Long profileCardMemberId
+    ) {
         return followService.getMemberProfileCard(memberId, profileCardMemberId);
     }
 
