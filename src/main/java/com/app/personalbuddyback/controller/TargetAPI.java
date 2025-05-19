@@ -100,14 +100,13 @@ public class TargetAPI {
     @Operation(summary = "목표 목록 조회", description = "회원 번호를 통해 목표의 목록을 조회")
     @PostMapping("/target/list/{memberId}")
     public ResponseEntity<Map<String, Object>> getTargetList(@PathVariable Long memberId) {
-        Map<String, Object> targetList = new HashMap<>();
-        targetList.put("dailyTargets", targetService.getDailyTargets(memberId));
-        targetList.put("weeklyTargets", targetService.getWeeklyTargets(memberId));
-        targetList.put("monthlyTargets", targetService.getMonthlyTargets(memberId));
+        Map<String, Object> response = new HashMap<>();
+        response.put("result", true);
+        response.put("dailyTargets", targetService.getDailyTargets(memberId));
+        response.put("weeklyTargets", targetService.getWeeklyTargets(memberId));
+        response.put("monthlyTargets", targetService.getMonthlyTargets(memberId));
 
-        ResponseEntity resp = ResponseEntity.ok(targetList);
-
-        return resp;
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "목표 기준 수정", description = "관리자용 목표 기준 수정")
