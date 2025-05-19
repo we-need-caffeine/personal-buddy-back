@@ -46,7 +46,7 @@
         )
     </select>
 <!--  팔로우 조회 + 상대 프로필 카드  -->
-    <select id="selectProfileCard" parameterType="Map" resultType="ProfileCardDTO">
+    <select id="selectProfileCard" parameterType="map" resultType="ProfileCardDTO">
         SELECT
             TM.ID,
             TM.MEMBER_NICKNAME,
