@@ -8,6 +8,12 @@ import java.util.Optional;
 
 public interface BoardService {
 
+//    게시판 - 게시글 전체 조회
+    public List<BoardDTO> getBoards(Map<String,Object> params);
+
+//    게시판 - 게시글 Hot 전체 조회
+    public List<BoardDTO> getBoardsHot();
+
     // 게시글 전체 목록 조회
     public List<BoardListViewDTO> getAllBoards();
 

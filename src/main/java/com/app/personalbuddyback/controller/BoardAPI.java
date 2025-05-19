@@ -6,9 +6,12 @@ import com.app.personalbuddyback.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +19,45 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/boards/api/*")
+@Slf4j
 public class BoardAPI {
 
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
+
+//    게시판 - 게시글 전체 목록
+    @Operation(summary = "게시글 전체 목록", description = "게시글 전체 목록 API")
+    @GetMapping("/board")
+    public ResponseEntity<Map<String, Object>> getBoards(
+        @RequestParam(required = false) String order,
+        @RequestParam(required = false) String boardHashtag,
+        @RequestParam(required = false) String searchKeyword
+    ) {
+        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+
+        log.info("order : {}", order);
+        log.info("boardHashtag: {}", boardHashtag);
+        log.info("searchKeyword: {}", searchKeyword);
+
+        params.put("order", order);
+        params.put("searchKeyword", searchKeyword);
+
+        if(boardHashtag.equals("관심일정")){
+            params.put("boardHashtag", "#관심 일정");
+        }else if(boardHashtag.equals("자유게시글")){
+            params.put("boardHashtag", "#자유 게시글");
+        }else if(boardHashtag.equals("공유일정")){
+            params.put("boardHashtag", "#공유 일정");
+        }
+
+//        게시글 전체 목록
+        response.put("boards", boardService.getBoards(params));
+//        게시글 hot 목록
+        response.put("hot", boardService.getBoardsHot());
+
+        return ResponseEntity.ok(response);
+    }
 
     // 게시글 전체 목록
     @Operation(summary = "게시글 전체 목록", description = "게시글 전체 목록 API")

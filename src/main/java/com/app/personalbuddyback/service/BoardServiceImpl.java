@@ -17,6 +17,16 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardDAO boardDAO;
 
+    @Override
+    public List<BoardDTO> getBoards(Map<String, Object> params) {
+        return boardDAO.findBoards(params);
+    }
+
+    @Override
+    public List<BoardDTO> getBoardsHot() {
+        return boardDAO.findHotBoards();
+    }
+
     // 게시글 전체 목록 조회
     @Override
     public List<BoardListViewDTO> getAllBoards() {
