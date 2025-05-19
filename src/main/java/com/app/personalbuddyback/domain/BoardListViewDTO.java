@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Component
@@ -23,5 +24,7 @@ public class BoardListViewDTO {
     private String memberNickName; // 멤버 닉네임
     private String memberImgPath; // 게시글 작성자 프로필 이미지 경로
     private String memberImgName; // 게시글 작성자 프로필 이미지 이름
+    private List<BoardCommentViewDTO> comments;
+    private List<BoardImgVO> images;
 
 }

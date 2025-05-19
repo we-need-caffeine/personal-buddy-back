@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import retrofit2.http.Path;
 
 import javax.swing.text.html.Option;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,7 +26,13 @@ public class AchievementAPI {
 
     @Operation(summary = "업적 생성", description = "관리자 용 페이지에서 업적 데이터를 추가하는 API")
     @PostMapping("/achievement/create")
-    public void createAchievement(@RequestBody AchievementVO achievementVO) {
+    public void createAchievement(@RequestBody AchievementVO achievementVO, @RequestBody Map<String, Object> imgFileData) {
+        // 이미지 서비스를 통해서 파일을 업로드 후, 경로를 받아서 추가해야한다.
+        String imgFilePath = imgFileData.get("filePath").toString();
+        String imgFileName = imgFileData.get("fileName").toString();
+
+        achievementVO.setAchievementImgPath(imgFilePath);
+        achievementVO.setAchievementImgName(imgFileName);
         achievementService.createAchievement(achievementVO);
     }
 
@@ -52,20 +55,21 @@ public class AchievementAPI {
     }
 
     @Operation(summary = "회원의 완료된 업적 목록 조회", description = "회원의 완료된 전체 업적 목록")
-    @GetMapping("/achievement/completed/{memberId}")
+    @GetMapping("/achievement/list/completed/{memberId}")
     public List<AchievementViewDTO> getCompletedAchievementsByMemberId(@PathVariable Long memberId) {
         return achievementService.getCompletedAchievements(memberId);
     }
 
     @Operation(summary = "회원의 전시된 업적 목록 조회", description = "회원의 완료된 업적 목록 중 Display 설정된 업적 조회")
-    @GetMapping("/achievement/displayed/{memberId}")
+    @GetMapping("/achievement/list/displayed/{memberId}")
     public List<AchievementViewDTO> getDisplayedAchievementsByMemberId(@PathVariable Long memberId) {
         return achievementService.getDisplayedAchievements(memberId);
     }
 
     @Operation(summary = "회원의 업적 완료 카운트 증가 및 완료 테이블에 추가", description = "")
     @PutMapping("/achievement/achievement-complete/edit")
-    public ResponseEntity achievementCompleteEdit(@RequestBody Map<String, Objects> editData) {
+    public ResponseEntity<Map<String, Object>> achievementCompleteEdit(@RequestBody Map<String, Objects> editData) {
+        Map<String, Object> response = new HashMap<>();
         try {
             Long memberId = Long.valueOf(editData.get("memberId").toString());
             String achievementScheduleCategory = editData.get("scheduleCategory").toString();
@@ -113,10 +117,14 @@ public class AchievementAPI {
                     memberService.edit(memberVO);
                 }
             }
-            return ResponseEntity.ok("업적 완료 회수 처리 완료");
+            response.put("result", true);
+            response.put("message", "업적 완료 추가 처리 완료");
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업적 완료 처리 실패: " + e.getMessage());
+            response.put("result", false);
+            response.put("message", "업적 완료 처리 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
