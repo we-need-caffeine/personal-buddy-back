@@ -7,8 +7,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +77,7 @@ public class BoardAPI {
     @PostMapping("/write")
     public ResponseEntity<?> registerBoard(@RequestBody BoardVO boardVO) {
         try {
+            System.out.println("해시태그: " + boardVO.getBoardHashtag());
             if (boardVO.getBoardTitle() == null || boardVO.getBoardTitle().isBlank()) {
                 throw new IllegalArgumentException("게시글 제목은 필수입니다.");
             }
@@ -113,6 +117,18 @@ public class BoardAPI {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글+이미지 등록 실패" + e.getMessage());
         }
     }
+//    @Operation(summary = "게시글+이미지 등록", description = "게시글+이미지 등록 API")
+//    @ApiResponse(responseCode = "200", description = "게시글+이미지 등록 성공")
+//    @PostMapping(value = "/image-with-write", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> writeBoardImageWithWrite(
+//            @RequestPart("boardVO") BoardVO boardVO,
+//            @RequestPart("images") List<MultipartFile> images
+//    ) {
+//        boardService.writeBoardWithImages(boardVO, images);
+//        return ResponseEntity.ok("게시글+이미지 등록 성공");
+//    }
+
+
 
     // 게시글 수정
     @Operation(summary = "게시글 수정", description = "게시글 수정 API")
