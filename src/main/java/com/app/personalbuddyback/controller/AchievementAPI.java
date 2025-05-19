@@ -26,8 +26,13 @@ public class AchievementAPI {
 
     @Operation(summary = "업적 생성", description = "관리자 용 페이지에서 업적 데이터를 추가하는 API")
     @PostMapping("/achievement/create")
-    public void createAchievement(@RequestBody AchievementVO achievementVO, @RequestBody Map<String, Object> imageFileData) {
-        // 이미지 서비스 추가하여 업로드 후, 경로를 받아서 추가해야한다.
+    public void createAchievement(@RequestBody AchievementVO achievementVO, @RequestBody Map<String, Object> imgFileData) {
+        // 이미지 서비스를 통해서 파일을 업로드 후, 경로를 받아서 추가해야한다.
+        String imgFilePath = imgFileData.get("filePath").toString();
+        String imgFileName = imgFileData.get("fileName").toString();
+
+        achievementVO.setAchievementImgPath(imgFilePath);
+        achievementVO.setAchievementImgName(imgFileName);
         achievementService.createAchievement(achievementVO);
     }
 

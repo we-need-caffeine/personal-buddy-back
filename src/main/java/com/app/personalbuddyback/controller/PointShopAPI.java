@@ -27,8 +27,14 @@ public class PointShopAPI {
 
     @Operation(summary = "아이템 추가", description = "관리자용 아이템 추가")
     @PostMapping("/item/create")
-    public void createItem(@RequestBody ItemVO itemVO, @RequestBody Map<String, Object> imageFile) {
-        // 이미지 서비스 추가하여 업로드 후, 경로를 받아서 추가해야한다.
+    public void createItem(@RequestBody ItemVO itemVO, @RequestBody Map<String, Object> imgFileData) {
+        // 이미지 서비스를 통해서 파일을 업로드 후, 경로를 받아서 추가해야한다.
+        String imgFilePath = imgFileData.get("filePath").toString();
+        String imgFileName = imgFileData.get("fileName").toString();
+
+        itemVO.setItemImgPath(imgFilePath);
+        itemVO.setItemImgName(imgFileName);
+
         pointShopService.addItem(itemVO);
     }
 
