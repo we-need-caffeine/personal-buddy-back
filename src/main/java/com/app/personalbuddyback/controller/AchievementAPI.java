@@ -55,13 +55,13 @@ public class AchievementAPI {
     }
 
     @Operation(summary = "회원의 완료된 업적 목록 조회", description = "회원의 완료된 전체 업적 목록")
-    @GetMapping("/achievement/completed/{memberId}")
+    @GetMapping("/achievement/list/completed/{memberId}")
     public List<AchievementViewDTO> getCompletedAchievementsByMemberId(@PathVariable Long memberId) {
         return achievementService.getCompletedAchievements(memberId);
     }
 
     @Operation(summary = "회원의 전시된 업적 목록 조회", description = "회원의 완료된 업적 목록 중 Display 설정된 업적 조회")
-    @GetMapping("/achievement/displayed/{memberId}")
+    @GetMapping("/achievement/list/displayed/{memberId}")
     public List<AchievementViewDTO> getDisplayedAchievementsByMemberId(@PathVariable Long memberId) {
         return achievementService.getDisplayedAchievements(memberId);
     }
