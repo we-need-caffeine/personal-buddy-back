@@ -2,12 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.TodoListMapper">
 
-    <!-- 투두리스트 등록 -->
     <insert id="insertTodoList" parameterType="ToDoListVO">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT SEQ_TODOLIST.NEXTVAL FROM DUAL
+        </selectKey>
+
         <if test="todoListIsCompleted != null">
             INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, CALENDAR_ID)
             VALUES (
-            SEQ_TODOLIST.NEXTVAL,
+            #{id}, -- selectKey로 받은 값
             #{todoListContent},
             #{calendarId}
             )
@@ -15,7 +18,7 @@
         <if test="todoListIsCompleted == null">
             INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, TODOLIST_IS_COMPLETED, CALENDAR_ID)
             VALUES (
-            SEQ_TODOLIST.NEXTVAL,
+            #{id},
             #{todoListContent},
             #{todoListIsCompleted},
             #{calendarId}
