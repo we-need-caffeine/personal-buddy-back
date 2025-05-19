@@ -101,7 +101,7 @@ public class MemberAPI {
             Long memberId = memberService.getMemberIdByMemberEmail(memberEmail);
             MemberVO foundUser = memberService.getMemberInfoById(memberId).orElseThrow(() -> {
                 throw new RuntimeException("member profile, Not found User");
-            });
+            }); // 반갑구리
 
             foundUser.setMemberPassword(null);
             response.put("currentUser", foundUser);
