@@ -65,18 +65,18 @@
             ) AS FOLLOWING_COUNT,
             (
                 SELECT CASE
-                           WHEN COUNT(ID) > 0 THEN 1 ELSE 0 END
+                    WHEN COUNT(ID) > 0 THEN 1 ELSE 0 END
                 FROM TBL_FOLLOW
                 WHERE FOLLOWER_MEMBER_ID = #{memberId}
-                  AND FOLLOWING_MEMBER_ID = TM.ID
-                  AND FOLLOW_FAVORITE = 1
+                AND FOLLOWING_MEMBER_ID = TM.ID
+                AND FOLLOW_FAVORITE = 1
             ) AS FAVORITE,
             (
                 SELECT CASE
-                           WHEN COUNT(ID) > 0 THEN 1 ELSE 0 END
+                    WHEN COUNT(ID) > 0 THEN 1 ELSE 0 END
                 FROM TBL_FOLLOW
-                WHERE FOLLOWER_MEMBER_ID = #{memberId}
-                  AND FOLLOWING_MEMBER_ID = TM.ID
+                WHERE FOLLOWER_MEMBER_ID = #{profileCardMemberId}
+                AND FOLLOWING_MEMBER_ID = #{memberId}
             ) AS IS_FOLLOW
         FROM TBL_MEMBER TM
         WHERE TM.ID = #{profileCardMemberId}

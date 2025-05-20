@@ -44,6 +44,14 @@
         </if>
     </select>
 
+<!--  알림 카운트  -->
+<!--  읽지 않은 알림을 카운트해주는 쿼리  -->
+    <select id="selectCount" resultType="Integer" parameterType="Long">
+        SELECT COUNT(ID)
+        FROM TBL_ALERT
+        WHERE RECEIVER_MEMBER_ID = #{receiverMemberId} AND ALERT_READ = 0
+    </select>
+
 <!--  읽음 여부 처리  -->
 <!--  유저가 특정 알람을 클릭했을 때, 읽음 여부처리  -->
     <update id="update" parameterType="Long">

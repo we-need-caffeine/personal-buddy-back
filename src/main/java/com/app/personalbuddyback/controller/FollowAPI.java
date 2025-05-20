@@ -120,8 +120,8 @@ public class FollowAPI {
     @Operation(summary = "팔로우 삭제", description = "팔로잉ID와 팔로워ID를 받아 삭제하는 API")
     @ApiResponse(responseCode = "200", description = "팔로우 삭제 성공")
     @DeleteMapping("/follow/delete")
-    public void delete(@RequestBody FollowVO followVO) {
-        followService.deleteUnfollowMember(followVO);
+    public void delete(@RequestParam Long followerMemberId, @RequestParam Long followingMemberId) {
+        followService.deleteUnfollowMember(followerMemberId, followingMemberId);
     }
 
 }

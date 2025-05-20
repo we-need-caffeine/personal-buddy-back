@@ -13,6 +13,8 @@ public interface AlertMapper {
     public void insert(AlertVO alertVO);
 //    알림 리스트
     public List<AlertViewDTO> selectAll(Map<String, Object> map);
+//    읽지않은 알림 조회
+    public Integer selectCount(Long receiverMemberId);
 //    알림 - 읽음 여부
     public void update(Long id);
 //    알림 삭제
