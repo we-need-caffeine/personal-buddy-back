@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -25,13 +23,13 @@ public class BoardAPI {
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
 
-//    게시판 - 게시글 전체 목록
+    //    게시판 - 게시글 전체 목록
     @Operation(summary = "게시글 전체 목록", description = "게시글 전체 목록 API")
     @GetMapping("/board")
     public ResponseEntity<Map<String, Object>> getBoards(
-        @RequestParam(required = false) String order,
-        @RequestParam(required = false) String boardHashtag,
-        @RequestParam(required = false) String searchKeyword
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) String boardHashtag,
+            @RequestParam(required = false) String searchKeyword
     ) {
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> params = new HashMap<>();
@@ -82,21 +80,25 @@ public class BoardAPI {
 
     // 게시글 상세 조회
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회 API")
-    @GetMapping("/post/{id}")
-    public BoardViewDTO getBoardById(@PathVariable Long id) {
-        return boardService.getBoardById(id).orElseThrow();
+    @GetMapping("/post/{boardId}")
+    public ResponseEntity<Map<String, Object>> getBoardById(@PathVariable Long boardId) {
+        Map<String, Object> response = new HashMap<>();
+        //        게시글 + 댓글
+        response.put("board", boardService.getBoardById(boardId));
+        return ResponseEntity.ok(response);
     }
 
     // 게시글 작성
     @Operation(summary = "게시글 작성", description = "게시글 작성 API")
     @ApiResponse(responseCode = "200", description = "게시글 작성 성공")
     @PostMapping("/write")
-    public ResponseEntity writeBoard(@RequestBody BoardVO boardVO) {
+    public ResponseEntity<?> writeBoard(@RequestBody BoardVO boardVO) {
         try {
-            boardService.writeBoard(boardVO);
-            return ResponseEntity.ok("게시글 작성 성공");
+            boardService.writeBoard(boardVO); // boardVO.id가 채워졌을 것
+            return ResponseEntity.ok(boardVO.getId()); // ID 반환
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 작성 실패: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("게시글 작성 실패: " + e.getMessage());
         }
     }
 
@@ -181,8 +183,8 @@ public class BoardAPI {
     // 댓글 전체 목록
     @Operation(summary = "댓글 전체 목록", description = "댓글 전체 목록 API")
     @GetMapping("/post/comment/list")
-    public List<BoardCommentViewDTO> getComments(@RequestParam Map<String, Object> params) {
-        return boardCommentService.getBoardComments(params);
+    public List<BoardCommentViewDTO> getComments(@RequestParam Long boardId) {
+        return boardCommentService.getBoardComments(boardId);
     }
 
     // 댓글 작성

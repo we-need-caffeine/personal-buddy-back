@@ -9,7 +9,7 @@ import java.util.List;
 public interface TodoListMapper {
 
     // 투두리스트 할일 등록
-    public void insertTodoList(ToDoListVO toDoListVO);
+    public Long insertTodoList(ToDoListVO toDoListVO);
 
     // 투두리스트 전체 조회
     public List<ToDoListVO> selectAllTodoListsByCalendarId(Long calendarId);

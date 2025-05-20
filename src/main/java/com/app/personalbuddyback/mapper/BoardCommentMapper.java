@@ -12,7 +12,7 @@ import java.util.Map;
 public interface BoardCommentMapper {
 
     //    게시글 댓글 전체 목록
-    public List<BoardCommentViewDTO> selectBoardCommentsByBoardId(Map<String, Object> params);
+    public List<BoardCommentViewDTO> selectBoardCommentsByBoardId(Long boardId);
 
     //      내가 쓴 댓글 (마이페이지용)
     public List<BoardCommentViewDTO> selectCommentsByMemberId(Long memberId);

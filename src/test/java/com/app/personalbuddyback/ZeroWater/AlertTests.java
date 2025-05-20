@@ -35,17 +35,17 @@ public class AlertTests {
     }
 
     //    2번 유저의 알람 리스트
-//    @Test
-//    public void alertViewTest() {
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("receiverMemberId", 2L);
-////        map.put("alertType", "event");
+    @Test
+    public void alertViewTest() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("receiverMemberId", 2L);
+//        map.put("alertType", "event");
 //        List<AlertVO> alerts = alertMapper.selectAll(map);
-//
+
 //        alerts.forEach(alert -> {
 //            log.info("{}", alert);
 //        });
-//    }
+    }
 
     //    알람 읽음 표시
     @Test

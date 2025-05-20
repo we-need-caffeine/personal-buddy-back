@@ -53,7 +53,7 @@
         FROM TBL_SCHEDULE TBS
         JOIN TBL_CALENDAR TBC
         ON TBS.CALENDAR_ID = TBC.ID
-        WHERE TBC.CALENDAR_MEMBER_ID = #{memberId}
+        WHERE TBC.MEMBER_ID = #{memberId}
     </select>
 
     <!-- 일정 단일 조회 -->

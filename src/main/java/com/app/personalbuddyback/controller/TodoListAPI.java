@@ -8,22 +8,30 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/todoLists/api/*")
+@RequestMapping("/todo-lists/api/*")
 @Slf4j
 public class TodoListAPI {
 
     private final TodoListService todoListService;
 
     @Operation(summary = "투두리스트 할일 등록", description = "투두리스트에 할일을 등록할 수 있는 API")
-    @PostMapping("/todoLists/register")
-    public void registerTodoList(@RequestBody ToDoListVO toDoListVO) {
-        todoListService.registerTodoList(toDoListVO);
+    @PostMapping("register")
+    public ResponseEntity<Map<String, Object>> registerTodoList(@RequestBody ToDoListVO toDoListVO) {
+        Long savedId = todoListService.registerTodoList(toDoListVO);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", savedId); // 프론트에서 쓸 ID 전달
+
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "투두리스트 전체 조회", description = "투두리스트 전체 할일 목록을 조회하는 API")
@@ -34,19 +42,20 @@ public class TodoListAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("/todoLists/{calendarId}")
+    @GetMapping("{calendarId}")
     public List<ToDoListVO> getTodoLists(@PathVariable Long calendarId) {
         return todoListService.getTodoLists(calendarId);
     }
 
     @Operation(summary = "투두리스트 수정", description = "투두리스트 항목을 수정하는 API")
-    @PutMapping("/todoLists")
+    @PutMapping("")
     public void modifyTodoList(@RequestBody ToDoListVO toDoListVO) {
         todoListService.modifyTodoList(toDoListVO);
     }
 
+
     @Operation(summary = "투두리스트 삭제", description = "투두리스트 항목을 삭제하는 API")
-    @DeleteMapping("/todoLists/{todoListId}")
+    @DeleteMapping("{todoListId}")
     public void deleteTodoList(@PathVariable Long todoListId) {
         todoListService.deleteTodoList(todoListId);
     }

@@ -6,6 +6,7 @@ import com.app.personalbuddyback.domain.TargetVO;
 import com.app.personalbuddyback.service.TargetService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/targets/api")
+@Slf4j
 public class TargetAPI {
     private final TargetService targetService;
 
@@ -39,7 +41,6 @@ public class TargetAPI {
     public ResponseEntity<Map<String, Object>> randomTargetLottery(@PathVariable Long memberId) {
         Map<String, Object> response = new HashMap<>();
         String[] categoryList = {"운동", "공부", "업무", "모임", "여가", "식사", "여행", "건강"};
-
         try{
             List<RandomTargetLotteryVO> dailyRandomTargets = targetService.getDailyRandomTargets(memberId);
             List<RandomTargetLotteryVO> weeklyRandomTargets = targetService.getWeeklyRandomTargets(memberId);
@@ -57,7 +58,7 @@ public class TargetAPI {
                 }
                 Collections.shuffle(randomCategoryNums);
 
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 4; i++) {
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
                 }
@@ -76,7 +77,7 @@ public class TargetAPI {
                 }
                 Collections.shuffle(randomCategoryNums);
 
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 4; i++) {
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
                 }
@@ -95,7 +96,7 @@ public class TargetAPI {
                 }
                 Collections.shuffle(randomCategoryNums);
 
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 4; i++) {
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
                 }
@@ -113,7 +114,7 @@ public class TargetAPI {
     }
 
     @Operation(summary = "목표 목록 조회", description = "회원 번호를 통해 목표의 목록을 조회")
-    @GetMapping("/target/list/{memberId}")
+    @PostMapping("/target/list/{memberId}")
     public ResponseEntity<Map<String, Object>> getTargetList(@PathVariable Long memberId) {
         Map<String, Object> response = new HashMap<>();
         response.put("result", true);
