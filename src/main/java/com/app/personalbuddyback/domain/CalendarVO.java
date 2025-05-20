@@ -10,5 +10,5 @@ public class CalendarVO {
     private String calendarTitle;
     private Integer calendarIndex;
     private Integer calendarIsGroup;
-    private Long calendarMemberId;
+    private Long memberId;
 }

@@ -2,16 +2,20 @@ package com.app.personalbuddyback.controller;
 
 import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.service.CalendarService;
+import com.app.personalbuddyback.service.TodoListService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -21,6 +25,16 @@ import java.util.Optional;
 public class CalendarAPI {
 
     private final CalendarService calendarService;
+
+    //    캘린더 일정 데이터 전체 조회
+    @PostMapping("/members/calendars")
+    public ResponseEntity<Map<String, Object>> getCalendarsAll(
+            @RequestBody Long memberId
+    ) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("calendars", calendarService.getCalendarsAll(memberId));
+        return ResponseEntity.ok(response);
+    }
 
     // ---------------------------- [캘린더] ----------------------------
 
@@ -132,12 +146,5 @@ public class CalendarAPI {
     public void expelCalendarMember(@PathVariable Long calendarGroupMemberId) {
         calendarService.expelCalendarMember(calendarGroupMemberId);
     }
-
-    // ---------------------------- [투두리스트] ----------------------------
-
-
-
-
-
 
 }

@@ -14,8 +14,8 @@ public class TodoListDAO {
     private final TodoListMapper todoListMapper;
 
     // 투두리스트 할일 등록
-    public void saveTodoList(ToDoListVO toDoListVO) {
-        todoListMapper.insertTodoList(toDoListVO);
+    public Long saveTodoList(ToDoListVO toDoListVO) {
+       return todoListMapper.insertTodoList(toDoListVO);
     }
 
     // 투두리스트 전체 조회

@@ -6,20 +6,66 @@ import com.app.personalbuddyback.repository.CalendarDAO;
 import com.app.personalbuddyback.repository.ScheduleDAO;
 import com.app.personalbuddyback.repository.TodoListDAO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
+@Slf4j
 public class CalendarServiceImpl implements CalendarService {
 
     private final CalendarDAO calendarDAO;
     private final ScheduleDAO scheduleDAO;
     private final TodoListDAO todoListDAO;
+    private final ScheduleService scheduleService;
+
+    @Override
+    public List<CalendarDTO> getCalendarsAll(Long memberId){
+        List<CalendarDTO> calendars = new ArrayList<>();
+        calendarDAO.findAllCalendarsByMemberId(1L).forEach(calendar -> {
+            List<ScheduleDTO> schedules = new ArrayList<>();
+            CalendarDTO calendarDTO = new CalendarDTO();
+
+//            캘린더
+            calendarDTO.setId(calendar.getId());
+            calendarDTO.setCalendarTitle(calendar.getCalendarTitle());
+            calendarDTO.setCalendarIndex(calendar.getCalendarIndex());
+            calendarDTO.setMemberId(1L);
+
+//            할일 리스트
+            calendarDTO.setTodoLists(todoListDAO.findAllTodoListByCalendarId(calendar.getId()));
+
+//            캘린더를 공유받는 멤버
+            calendarDTO.setSharedMemberLists(calendarDAO.findAllCalendarMembersByCalendarId(calendar.getId()));
+
+//            List 생성, 찾은 유저에 맞는 유저의 정보를 List<SchedulesDTO>로 담아서 한번에 보낸다.
+//            일정 리스트
+            scheduleDAO.findAllSchedulesByMemberId(1L).forEach((member) -> {
+                ScheduleDTO scheduleDTO = new ScheduleDTO();
+                scheduleDTO.setId(member.getId());
+                scheduleDTO.setScheduleTitle(member.getScheduleTitle());
+                scheduleDTO.setScheduleContent(member.getScheduleContent());
+                scheduleDTO.setScheduleStartDate(member.getScheduleStartDate());
+                scheduleDTO.setScheduleEndDate(member.getScheduleEndDate());
+                scheduleDTO.setScheduleCreatedDate(member.getScheduleCreatedDate());
+                scheduleDTO.setScheduleColor(member.getScheduleColor());
+                scheduleDTO.setScheduleCategory(member.getScheduleCategory());
+                scheduleDTO.setScheduleRepeat(member.getScheduleRepeat());
+                scheduleDTO.setCalendarId(member.getCalendarId());
+                scheduleDTO.setScheduleMembers(scheduleDAO.findAllScheduleGroupMembersByScheduleMemberGroupId(calendar.getId()));
+                schedules.add(scheduleDTO);
+            });
+
+            calendarDTO.setScheduleLists(schedules);
+            calendars.add(calendarDTO);
+        });
+
+        return calendars;
+    };
 
     // 캘린더 등록
     @Override
@@ -38,7 +84,6 @@ public class CalendarServiceImpl implements CalendarService {
     public void addCalendarMember(CalendarMemberVO calendarMemberVO) {
         calendarDAO.saveCalendarMember(calendarMemberVO);
     }
-
 
     // 캘린더 멤버 전체 조회
     @Override
@@ -63,9 +108,6 @@ public class CalendarServiceImpl implements CalendarService {
     public Optional<CalendarVO> getCalendar(Long calendarId) {
         return calendarDAO.findCalendar(calendarId);
     }
-
-
-
 
     // 캘린더 초대 승인
     @Override

@@ -207,7 +207,7 @@ public class TargetServiceImpl implements TargetService {
 
     @Override
     public List<RandomTargetLotteryVO> getDailyRandomTargets(Long memberId) {
-        return targetDAO.findWeeklyRandomTargetList(memberId);
+        return targetDAO.findDailyRandomTargetList(memberId);
     }
 
     @Override

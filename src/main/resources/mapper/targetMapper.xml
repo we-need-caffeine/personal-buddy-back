@@ -27,15 +27,15 @@
             #{memberId},
             #{randomTargetLotteryPeriodType},
             <choose>
+                <when test="randomTargetLotteryPeriodType = 일간">
+                    TRUNC(SYSDATE),
+                </when>
                 <when test="randomTargetLotteryPeriodType = 주간">
                     TRUNC(SYSDATE, 'IW'),
                 </when>
                 <when test="randomTargetLotteryPeriodType = 월간">
                     TRUNC(SYSDATE, 'MM'),
                 </when>
-                <otherwise>
-                    TRUNC(SYSDATE),
-                </otherwise>
             </choose>
             #{randomTargetLotteryCategory}
         )

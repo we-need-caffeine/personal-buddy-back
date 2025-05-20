@@ -5,16 +5,12 @@
     <!-- 캘린더 등록 -->
     <insert id="insertCalendar" parameterType="CalendarVO">
         INSERT INTO TBL_CALENDAR (
-        ID, CALENDAR_TITLE, CALENDAR_INDEX, CALENDAR_IS_GROUP, CALENDAR_MEMBER_ID
+        ID, CALENDAR_TITLE, CALENDAR_INDEX, MEMBER_ID
         ) VALUES (
         SEQ_CALENDAR.NEXTVAL,
         #{calendarTitle},
         #{calendarIndex},
-        <choose>
-            <when test="calendarIsGroup != null">#{calendarIsGroup}</when>
-            <otherwise>0</otherwise>
-        </choose>,
-        #{calendarMemberId}
+        #{memberId}
         )
     </insert>
 
@@ -29,14 +25,14 @@
 
     <!-- 캘린더 전체 조회 -->
     <select id="selectAllCalendarsByMemberId" parameterType="Long" resultType="CalendarVO">
-        SELECT ID, CALENDAR_TITLE, CALENDAR_INDEX,
+        SELECT ID, CALENDAR_TITLE, CALENDAR_INDEX, MEMBER_ID
         FROM TBL_CALENDAR
-        WHERE CALENDAR_MEMBER_ID = #{memberId}
+        WHERE MEMBER_ID = #{memberId}
     </select>
 
     <!-- 캘린더 단일 조회 -->
     <select id="selectCalendar" parameterType="Long" resultType="CalendarVO">
-        SELECT ID, CALENDAR_TITLE, CALENDAR_IS_GROUP, CALENDAR_INDEX, TODOLIST_ID
+        SELECT ID, CALENDAR_TITLE, CALENDAR_INDEX, TODOLIST_ID
         FROM TBL_CALENDAR
         WHERE ID = #{id}
     </select>

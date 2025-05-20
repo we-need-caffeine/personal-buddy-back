@@ -8,10 +8,10 @@ import java.util.Optional;
 @Mapper
 public interface BoardMapper {
 
-//    게시판 - 게시글 전체조회
+    //    게시판 - 게시글 전체조회
     public List<BoardDTO> selectBoards(Map<String, Object> params);
 
-//    게시판 - 게시글 Hot 전체조회
+    //    게시판 - 게시글 Hot 전체조회
     public List<BoardDTO> selectHotBoards();
 
 
