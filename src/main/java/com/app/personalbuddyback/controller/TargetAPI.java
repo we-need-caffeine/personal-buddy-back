@@ -122,6 +122,7 @@ public class TargetAPI {
         response.put("monthlyTargets", targetService.getMonthlyTargets(memberId));
 
         return ResponseEntity.ok(response);
+
     }
 
     @Operation(summary = "목표 기준 수정", description = "관리자용 목표 기준 수정")
