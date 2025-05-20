@@ -25,6 +25,9 @@ public interface PointShopService {
     // 장바구니 정보 조회(장바구니 화면에 담을 정보) 아이템 개별 총합 가격
     public List<BuyingItemDTO> getAllCartItems(Long memberId);
 
+    // 장바구니 아이템 단일 조회
+    public Optional<CartVO> getCartItem(Long id);
+
     // 아이템 수정 (관리자)
     public void editItem(ItemVO itemVO);
 
