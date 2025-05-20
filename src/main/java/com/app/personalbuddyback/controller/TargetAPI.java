@@ -57,7 +57,7 @@ public class TargetAPI {
                 }
                 Collections.shuffle(randomCategoryNums);
 
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 4; i++) {
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
                 }
@@ -76,7 +76,7 @@ public class TargetAPI {
                 }
                 Collections.shuffle(randomCategoryNums);
 
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 4; i++) {
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
                 }
@@ -95,7 +95,7 @@ public class TargetAPI {
                 }
                 Collections.shuffle(randomCategoryNums);
 
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 4; i++) {
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
                 }
