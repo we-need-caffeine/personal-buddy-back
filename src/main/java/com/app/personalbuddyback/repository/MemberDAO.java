@@ -43,6 +43,8 @@ public class MemberDAO {
         return memberMapper.selectOne(memberVO);
     }
 
+    public Optional<MemberVO> selectMemberByEmail (String memberEmail) { return memberMapper.selectMemberByEmail(memberEmail); }
+
 //    이메일로 회원 아이디 조회
     public Long selectIdByEmail(String email) {
         return memberMapper.selectIdByEmail(email);

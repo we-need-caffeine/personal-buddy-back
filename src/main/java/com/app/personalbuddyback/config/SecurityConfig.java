@@ -26,7 +26,6 @@ import java.util.Map;
 @Slf4j
 public class SecurityConfig {
 
-    private final MemberService memberService;
     private final JwtTokenUtil jwtTokenUtil;
 
     @Bean
