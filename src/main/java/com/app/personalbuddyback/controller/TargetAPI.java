@@ -6,7 +6,6 @@ import com.app.personalbuddyback.domain.TargetVO;
 import com.app.personalbuddyback.service.TargetService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,103 +28,90 @@ public class TargetAPI {
     }
 
     @Operation(summary = "목표의 기준치 추가 (관리자용)", description = "목표 완료 여부를 판단할 기준 테이블 정보 추가")
-    @PostMapping("/target/standard/add")
+    @PostMapping("/target-standard/add")
     public void addTargetStandard(@RequestBody TargetStandardVO targetStandardVO) {
         targetService.addTargetStandard(targetStandardVO);
     }
 
-    @Operation(summary = "매일,매주,매월 시작일에 선정할 목표 생성 및 조회", description = "매일 / 매주 첫 째날 / 매월 1일 기준 데이터 생성 및 없다면 추가 후 조회")
-    @PostMapping("/target/random-target/list/{memberId}")
-    public ResponseEntity<Map<String, Object>> randomTargetLottery(@PathVariable Long memberId) {
-        Map<String, Object> response = new HashMap<>();
+    @Operation(summary = "매일,매주,매월 시작일에 선정할 목표 조회 및 생성", description = "매일 / 매주 첫 째날 / 매월 1일 기준 데이터 생성 및 없다면 추가")
+    @PostMapping("/target/random-target/{memberId}")
+    public void randomTargetLottery(@PathVariable Long memberId) {
         String[] categoryList = {"운동", "공부", "업무", "모임", "여가", "식사", "여행", "건강"};
 
-        try{
-            List<RandomTargetLotteryVO> dailyRandomTargets = targetService.getDailyRandomTargets(memberId);
-            List<RandomTargetLotteryVO> weeklyRandomTargets = targetService.getWeeklyRandomTargets(memberId);
-            List<RandomTargetLotteryVO> monthlyRandomTargets = targetService.getMonthlyRandomTargets(memberId);
+        List<RandomTargetLotteryVO> dailyRandomTargets = targetService.getDailyRandomTargets(memberId);
+        List<RandomTargetLotteryVO> weeklyRandomTargets = targetService.getWeeklyRandomTargets(memberId);
+        List<RandomTargetLotteryVO> monthlyRandomTargets = targetService.getMonthlyRandomTargets(memberId);
 
-            if(dailyRandomTargets.size() == 0) {
-                RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
+        if(dailyRandomTargets.size() == 0) {
+            RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
 
-                randomTargetLotteryVO.setMemberId(memberId);
-                randomTargetLotteryVO.setRandomTargetLotteryPeriodType("일간");
+            randomTargetLotteryVO.setMemberId(memberId);
+            randomTargetLotteryVO.setRandomTargetLotteryPeriodType("일간");
 
-                List<Integer> randomCategoryNums = new ArrayList<>();
-                for(int i = 0; i < categoryList.length; i++) {
-                    randomCategoryNums.add(i);
-                }
-                Collections.shuffle(randomCategoryNums);
-
-                for(int i = 0; i < 3; i++) {
-                    randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
-                    targetService.createRandomTargetLotto(randomTargetLotteryVO);
-                }
+            List<Integer> randomCategoryNums = new ArrayList<>();
+            for(int i = 0; i < categoryList.length; i++) {
+                randomCategoryNums.add(i);
             }
-            response.put("dailyRandomTargets", dailyRandomTargets);
+            Collections.shuffle(randomCategoryNums);
 
-            if(weeklyRandomTargets.size() == 0) {
-                RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
-
-                randomTargetLotteryVO.setMemberId(memberId);
-                randomTargetLotteryVO.setRandomTargetLotteryPeriodType("주간");
-
-                List<Integer> randomCategoryNums = new ArrayList<>();
-                for(int i = 0; i < categoryList.length; i++) {
-                    randomCategoryNums.add(i);
-                }
-                Collections.shuffle(randomCategoryNums);
-
-                for(int i = 0; i < 3; i++) {
-                    randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
-                    targetService.createRandomTargetLotto(randomTargetLotteryVO);
-                }
+            for(int i = 0; i < 3; i++) {
+                randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
+                targetService.createRandomTargetLotto(randomTargetLotteryVO);
             }
-            response.put("weeklyRandomTargets", weeklyRandomTargets);
-
-            if(monthlyRandomTargets.size() == 0) {
-                RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
-
-                randomTargetLotteryVO.setMemberId(memberId);
-                randomTargetLotteryVO.setRandomTargetLotteryPeriodType("월간");
-
-                List<Integer> randomCategoryNums = new ArrayList<>();
-                for(int i = 0; i < categoryList.length; i++) {
-                    randomCategoryNums.add(i);
-                }
-                Collections.shuffle(randomCategoryNums);
-
-                for(int i = 0; i < 3; i++) {
-                    randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
-                    targetService.createRandomTargetLotto(randomTargetLotteryVO);
-                }
-            }
-            response.put("monthlyRandomTargets", monthlyRandomTargets);
-            response.put("result", true);
-            response.put("message", "랜덤 목표 목록 생성 및 조회 완료");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("result", false);
-            response.put("message", "랜덤 목표 목록 생성 및 조회 실패");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 
+        if(weeklyRandomTargets.size() == 0) {
+            RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
+
+            randomTargetLotteryVO.setMemberId(memberId);
+            randomTargetLotteryVO.setRandomTargetLotteryPeriodType("주간");
+
+            List<Integer> randomCategoryNums = new ArrayList<>();
+            for(int i = 0; i < categoryList.length; i++) {
+                randomCategoryNums.add(i);
+            }
+            Collections.shuffle(randomCategoryNums);
+
+            for(int i = 0; i < 3; i++) {
+                randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
+                targetService.createRandomTargetLotto(randomTargetLotteryVO);
+            }
+        }
+
+        if(monthlyRandomTargets.size() == 0) {
+            RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
+
+            randomTargetLotteryVO.setMemberId(memberId);
+            randomTargetLotteryVO.setRandomTargetLotteryPeriodType("월간");
+
+            List<Integer> randomCategoryNums = new ArrayList<>();
+            for(int i = 0; i < categoryList.length; i++) {
+                randomCategoryNums.add(i);
+            }
+            Collections.shuffle(randomCategoryNums);
+
+            for(int i = 0; i < 3; i++) {
+                randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
+                targetService.createRandomTargetLotto(randomTargetLotteryVO);
+            }
+        }
     }
 
     @Operation(summary = "목표 목록 조회", description = "회원 번호를 통해 목표의 목록을 조회")
-    @GetMapping("/target/list/{memberId}")
+    @PostMapping("/target/list/{memberId}")
     public ResponseEntity<Map<String, Object>> getTargetList(@PathVariable Long memberId) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("result", true);
-        response.put("dailyTargets", targetService.getDailyTargets(memberId));
-        response.put("weeklyTargets", targetService.getWeeklyTargets(memberId));
-        response.put("monthlyTargets", targetService.getMonthlyTargets(memberId));
+        Map<String, Object> targetList = new HashMap<>();
+        targetList.put("dailyTargets", targetService.getDailyTargets(memberId));
+        targetList.put("weeklyTargets", targetService.getWeeklyTargets(memberId));
+        targetList.put("monthlyTargets", targetService.getMonthlyTargets(memberId));
 
-        return ResponseEntity.ok(response);
+        ResponseEntity resp = ResponseEntity.ok(targetList);
+
+        return resp;
     }
 
     @Operation(summary = "목표 기준 수정", description = "관리자용 목표 기준 수정")
-    @PutMapping("/target/standard/edit")
+    @PostMapping("/target/standard/edit")
     public void editTargetStandard(@RequestBody TargetStandardVO targetStandardVO) {
         targetService.editTargetStandard(targetStandardVO);
     }

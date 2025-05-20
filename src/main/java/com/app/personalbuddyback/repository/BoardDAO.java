@@ -13,12 +13,12 @@ import java.util.Optional;
 public class BoardDAO {
     private final BoardMapper boardMapper;
 
-//   게시판 - 게시글 전체 조회
+    //   게시판 - 게시글 전체 조회
     public List<BoardDTO> findBoards(Map<String, Object> params) {
         return boardMapper.selectBoards(params);
     }
 
-//    게시글 - 게시글 HOT 전체 조회
+    //    게시글 - 게시글 HOT 전체 조회
     public List<BoardDTO> findHotBoards() {
         return boardMapper.selectHotBoards();
     }
