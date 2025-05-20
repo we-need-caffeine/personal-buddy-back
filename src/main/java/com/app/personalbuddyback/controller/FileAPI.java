@@ -4,6 +4,7 @@ import com.app.personalbuddyback.domain.ItemVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnailator;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +90,9 @@ public class FileAPI {
         File file = new File(filePath);
         Map<String, Object> response = new HashMap<>();
 
+        System.out.println("imgFile = " + imgFile.getOriginalFilename());
+        System.out.println("dataType = " + dataType);
+
         if(!file.exists()){
             file.mkdirs();
         }
@@ -97,11 +101,11 @@ public class FileAPI {
         imgFile.transferTo(new File(filePath, uuid + "_" + imgFile.getOriginalFilename()));
         String fileName = uuid + "_" + imgFile.getOriginalFilename();
 
-        // 썸네일
-        if(imgFile.getContentType().startsWith("image")){
-            FileOutputStream out = new FileOutputStream(new File(filePath, "t_" + uuid + "_" + imgFile.getOriginalFilename()));
-            Thumbnailator.createThumbnail(imgFile.getInputStream(), out, 100, 100);
-            out.close();
+        if (imgFile.getContentType().startsWith("image")) {
+            File thumbnailFile = new File(filePath, "t_" + fileName);
+            Thumbnails.of(imgFile.getInputStream())
+                    .size(100, 100)
+                    .toFile(thumbnailFile);
         }
 
         response.put("filePath", filePath);
