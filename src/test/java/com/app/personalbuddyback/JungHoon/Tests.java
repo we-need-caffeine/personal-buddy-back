@@ -5,6 +5,7 @@ import com.app.personalbuddyback.mapper.CalendarMapper;
 import com.app.personalbuddyback.repository.CalendarDAO;
 import com.app.personalbuddyback.repository.ScheduleDAO;
 import com.app.personalbuddyback.repository.TodoListDAO;
+import com.app.personalbuddyback.service.BoardService;
 import com.app.personalbuddyback.service.CalendarService;
 import com.app.personalbuddyback.service.ScheduleService;
 import com.app.personalbuddyback.service.TodoListService;
@@ -33,6 +34,14 @@ public class Tests {
 
     @Autowired
     private ScheduleDAO scheduleDAO;
+
+    @Autowired
+    private BoardService boardService;
+
+    @Test
+    public void commentsTest(){
+        log.info(" 댓글까지 {}:", boardService.getBoardById(1L).toString());
+    }
 
     @Test
     public void test() {

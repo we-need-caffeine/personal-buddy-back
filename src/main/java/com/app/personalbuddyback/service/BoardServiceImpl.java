@@ -1,11 +1,14 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.*;
+import com.app.personalbuddyback.mapper.BoardMapper;
+import com.app.personalbuddyback.repository.BoardCommentDAO;
 import com.app.personalbuddyback.repository.BoardDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +19,7 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardDAO boardDAO;
+    private final BoardCommentDAO boardCommentDAO;
 
     @Override
     public List<BoardDTO> getBoards(Map<String, Object> params) {
@@ -54,7 +58,25 @@ public class BoardServiceImpl implements BoardService {
     // 게시글 상세 조회
     @Override
     public Optional<BoardViewDTO> getBoardById(Long id) {
-        return boardDAO.findById(id);
+        BoardViewDTO boardViewDTO = new BoardViewDTO();
+
+        boardDAO.findById(id).ifPresent(board -> {
+            boardViewDTO.setId(board.getId());
+            boardViewDTO.setBoardTitle(board.getBoardTitle());
+            boardViewDTO.setBoardContent(board.getBoardContent());
+            boardViewDTO.setBoardImgPath(board.getBoardImgPath());
+            boardViewDTO.setBoardImgName(board.getBoardImgName());
+            boardViewDTO.setBoardContentViews(board.getBoardContentViews());
+            boardViewDTO.setBoardLikeCount(board.getBoardLikeCount());
+            boardViewDTO.setBoardCreateDate(board.getBoardCreateDate());
+            boardViewDTO.setBoardComments(board.getBoardComments());
+            boardViewDTO.setMemberId(board.getMemberId());
+            boardViewDTO.setMemberNickName(board.getMemberNickName());
+            boardViewDTO.setMemberImgPath(board.getMemberImgPath());
+            boardViewDTO.setMemberImgName(board.getMemberImgName());
+            boardViewDTO.setBoardComments(boardCommentDAO.findComments(board.getId()));
+        });
+        return Optional.ofNullable(boardViewDTO);
     }
 
     // 게시글 작성
