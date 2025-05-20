@@ -35,31 +35,15 @@
         JOIN TBL_MEMBER TBM
         ON TBB.MEMBER_ID = TBM.ID
         <choose>
-            <when test="boardHashtag != null and boardHashtag != '' and searchKeyword != null and searchKeyword != ''">
-                WHERE TBB.BOARD_HASHTAG = #{boardHashtag}
-                AND (
-                TBB.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-                OR TBB.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
-                )
-            </when>
-
             <when test="boardHashtag != null and boardHashtag != '' and (searchKeyword == null or searchKeyword == '')">
                 WHERE TBB.BOARD_HASHTAG = #{boardHashtag}
             </when>
-
             <when test="(boardHashtag == null or boardHashtag == '') and searchKeyword != null and searchKeyword != ''">
-                WHERE TBB.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-                OR TBB.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+                WHERE TBB.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%' OR TBB.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
             </when>
-<!--            <when test="boardHashtag != null and boardHashtag != '' and (searchKeyword == null or searchKeyword == '')">-->
-<!--                WHERE TBB.BOARD_HASHTAG = #{boardHashtag}-->
-<!--            </when>-->
-<!--            <when test="(boardHashtag == null or boardHashtag == '') and searchKeyword != null and searchKeyword != ''">-->
-<!--                WHERE TBB.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%' OR TBB.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'-->
-<!--            </when>-->
-<!--            <when test="boardHashtag != null and boardHashtag != '' and searchKeyword != null and searchKeyword != ''">-->
-<!--                WHERE TBB.BOARD_HASHTAG = #{boardHashtag} AND TBB.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%' OR TBB.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'-->
-<!--            </when>-->
+            <when test="boardHashtag != null and boardHashtag != '' and searchKeyword != null and searchKeyword != ''">
+                WHERE TBB.BOARD_HASHTAG = #{boardHashtag} AND TBB.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%' OR TBB.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+            </when>
             <otherwise>
 
             </otherwise>
