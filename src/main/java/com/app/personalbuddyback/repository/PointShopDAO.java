@@ -48,6 +48,11 @@ public class PointShopDAO {
         return pointShopMapper.selectAllCartItems(memberId);
     }
 
+    // 장바구니 아이템 단일 조회
+    public Optional<CartVO> findCartItemById(Long id) {
+        return pointShopMapper.selectCartItemById(id);
+    }
+
     // 아이템 수정 (관리자)
     public void updateItem(ItemVO itemVO) {
         pointShopMapper.updateItem(itemVO);
