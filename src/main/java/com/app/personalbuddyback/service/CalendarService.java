@@ -1,11 +1,16 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface CalendarService {
+
+    // 캘린더 서비스 전체 조회
+    public List<CalendarDTO> getCalendarsAll(Long memberId);
 
     // 캘린더 등록
     public void registerCalendar(CalendarVO calendarVO);
