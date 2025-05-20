@@ -109,7 +109,6 @@ public class TargetAPI {
             response.put("message", "랜덤 목표 목록 생성 및 조회 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
     }
 
     @Operation(summary = "목표 목록 조회", description = "회원 번호를 통해 목표의 목록을 조회")
