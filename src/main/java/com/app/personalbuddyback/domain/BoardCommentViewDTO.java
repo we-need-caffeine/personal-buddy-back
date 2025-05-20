@@ -19,6 +19,5 @@ public class BoardCommentViewDTO {
     private String memberImgName; // 댓글 작성자 프로필 이미지 이름
 
     // 베스트 댓글
-    // private Long boardCommentId; 좋아요 수 많은 댓글이 베댓
     private int boardCommentLikeCount; // 댓글 좋아요 수
 }
