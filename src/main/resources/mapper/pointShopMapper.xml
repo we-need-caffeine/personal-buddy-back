@@ -87,12 +87,6 @@
             AND TBC.MEMBER_ID = #{memberId}
     </select>
 
-    <select id="selectCartItemById" parameterType="Long" resultType="CartVO">
-        SELECT ID, ITEM_ID, MEMBER_ID, CART_ITEM_COUNT
-        FROM TBL_CART
-        WHERE ID = #{id}
-    </select>
-
 <!--    아이템 수정 (관리자)  -->
     <update id="updateItem" parameterType="ItemVO">
         UPDATE TBL_ITEM
