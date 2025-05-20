@@ -8,7 +8,7 @@ import java.util.Map;
 public interface BoardCommentService {
 
     // 댓글 전체 목록 조회
-    public List<BoardCommentViewDTO> getBoardComments(Map<String, Object> params);
+    public List<BoardCommentViewDTO> getBoardComments(Long boardId);
 
     // 마이페이지 (내가 쓴 댓글)
     public List<BoardCommentViewDTO> getCommentsByMemberId(Long memberId);

@@ -18,8 +18,8 @@ public class BoardCommentDAO {
 
 
     // 게시글 댓글 전체 목록
-    public List<BoardCommentViewDTO> findComments(Map<String, Object> params) {
-        return boardCommentMapper.selectBoardCommentsByBoardId(params);
+    public List<BoardCommentViewDTO> findComments(Long boardId) {
+        return boardCommentMapper.selectBoardCommentsByBoardId(boardId);
     }
 
     // 댓글 작성

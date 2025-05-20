@@ -20,8 +20,8 @@ public class BoardCommentServiceImpl implements BoardCommentService {
 
     // 댓글 전체 목록 조회
     @Override
-    public List<BoardCommentViewDTO> getBoardComments(Map<String, Object> params) {
-        return boardCommentDAO.findComments(params);
+    public List<BoardCommentViewDTO> getBoardComments(Long boardId) {
+        return boardCommentDAO.findComments(boardId);
     }
 
     // 마이페이지 (내가 쓴 댓글)

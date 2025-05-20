@@ -28,7 +28,7 @@ public class BoardCommentMapperTests {
         Map<String, Object> params = new HashMap<>();
         params.put("boardId", 1L);
         params.put("sort", "like");
-        List<BoardCommentViewDTO> comments = boardCommentMapper.selectBoardCommentsByBoardId(params);
+        List<BoardCommentViewDTO> comments = boardCommentMapper.selectBoardCommentsByBoardId(1L);
         if (comments == null || comments.isEmpty()) {
             log.info("댓글이 없습니다.");
             return;
