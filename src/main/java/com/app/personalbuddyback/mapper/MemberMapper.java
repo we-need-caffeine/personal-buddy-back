@@ -25,6 +25,8 @@ public interface MemberMapper {
 //    로그인
     public Long selectOne(MemberVO memberVO);
 
+    public Optional<MemberVO> selectMemberByEmail(String memberEmail);
+
 //    이메일로 아이디 조회
     public Long selectIdByEmail(String email);
 

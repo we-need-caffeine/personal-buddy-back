@@ -57,6 +57,13 @@
         WHERE MEMBER_EMAIL = #{memberEmail} AND MEMBER_PASSWORD = #{memberPassword}
     </select>
 
+<!-- 이메일로 회원 정보 조회 (암호화 비밀번호 변경) -->
+    <select id="selectMemberByEmail" parameterType="String" resultType="MemberVO">
+        SELECT ID, MEMBER_EMAIL, MEMBER_PASSWORD
+        FROM TBL_MEMBER
+        WHERE MEMBER_EMAIL = #{memberEmail}
+    </select>
+
 <!-- 이메일로 회원 정보 조회 -->
     <select id="selectIdByEmail" parameterType="String" resultType="Long">
         SELECT ID
