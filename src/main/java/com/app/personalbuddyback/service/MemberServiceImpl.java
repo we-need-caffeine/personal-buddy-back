@@ -3,6 +3,7 @@ package com.app.personalbuddyback.service;
 import com.app.personalbuddyback.domain.MemberVO;
 import com.app.personalbuddyback.repository.MemberDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberDAO memberDAO;
+    private final PasswordEncoder passwordEncoder;
     //    회원가입
     @Override
     public void join(MemberVO memberVO) {
@@ -47,7 +49,15 @@ public class MemberServiceImpl implements MemberService {
     //    로그인
     @Override
     public Long login(MemberVO memberVO) {
-        return memberDAO.selectOne(memberVO);
+        Optional<MemberVO> foundMember = memberDAO.selectMemberByEmail(memberVO.getMemberEmail());
+
+        if (foundMember.isEmpty()) return null;
+
+        if (!passwordEncoder.matches(memberVO.getMemberPassword(), foundMember.get().getMemberPassword())) {
+            return null;
+        }
+
+        return foundMember.get().getId();
     }
 
     @Override
