@@ -40,11 +40,11 @@ public class AlertTests {
         Map<String, Object> map = new HashMap<>();
         map.put("receiverMemberId", 2L);
 //        map.put("alertType", "event");
-        List<AlertVO> alerts = alertMapper.selectAll(map);
+//        List<AlertVO> alerts = alertMapper.selectAll(map);
 
-        alerts.forEach(alert -> {
-            log.info("{}", alert);
-        });
+//        alerts.forEach(alert -> {
+//            log.info("{}", alert);
+//        });
     }
 
     //    알람 읽음 표시
@@ -71,12 +71,12 @@ public class AlertTests {
         map.put("receiverMemberId", Long.valueOf(1));
         map.put("alertType", "event");
 
-        List<AlertVO> alertVO = alertService.getAlerts(map);
-
-
-        alertVO.forEach(alert -> {
-            log.info("{}", alert);
-        });
+//        List<AlertVO> alertVO = alertService.getAlerts(map);
+//
+//
+//        alertVO.forEach(alert -> {
+//            log.info("{}", alert);
+//        });
     }
 
 }

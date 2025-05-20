@@ -8,10 +8,11 @@
         </selectKey>
 
         <if test="todoListIsCompleted != null">
-            INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, CALENDAR_ID)
+            INSERT INTO TBL_TODOLIST (ID, TODOLIST_CONTENT, TODOLIST_IS_COMPLETED, CALENDAR_ID)
             VALUES (
             #{id}, -- selectKey로 받은 값
             #{todoListContent},
+            #{todoListIsCompleted},
             #{calendarId}
             )
         </if>
@@ -20,7 +21,7 @@
             VALUES (
             #{id},
             #{todoListContent},
-            #{todoListIsCompleted},
+            DEFAULT,
             #{calendarId}
             )
         </if>

@@ -20,11 +20,11 @@
 
     <!-- 일정 공유 멤버 전체 조회 -->
     <select id="selectAllScheduleGroupMembersByScheduleMemberGroupId" parameterType="Long" resultType="MemberVO">
-        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
-        FROM TBL_SCHEDULE_GROUP_MEMBER TBSGM
-                 JOIN TBL_MEMBER TBM
-                      ON TBSGM.MEMBER_ID = TBM.ID
-        WHERE TBSGM.SCHEDULE_MEMBER_GROUP_ID = #{scheduleMemberGroupId}
+        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH, TBM.MEMBER_IMG_NAME
+        FROM TBL_SCHEDULE_MEMBER TBSM
+        JOIN TBL_MEMBER TBM
+        ON TBSM.MEMBER_ID = TBM.ID
+        WHERE TBSM.SCHEDULE_ID = #{scheduleId}
     </select>
 
     <!-- 일정 그룹 멤버 삭제 -->
