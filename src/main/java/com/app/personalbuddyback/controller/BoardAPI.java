@@ -91,12 +91,13 @@ public class BoardAPI {
     @Operation(summary = "게시글 작성", description = "게시글 작성 API")
     @ApiResponse(responseCode = "200", description = "게시글 작성 성공")
     @PostMapping("/write")
-    public ResponseEntity writeBoard(@RequestBody BoardVO boardVO) {
+    public ResponseEntity<?> writeBoard(@RequestBody BoardVO boardVO) {
         try {
-            boardService.writeBoard(boardVO);
-            return ResponseEntity.ok("게시글 작성 성공");
+            boardService.writeBoard(boardVO); // boardVO.id가 채워졌을 것
+            return ResponseEntity.ok(boardVO.getId()); // ID 반환
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 작성 실패: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("게시글 작성 실패: " + e.getMessage());
         }
     }
 
