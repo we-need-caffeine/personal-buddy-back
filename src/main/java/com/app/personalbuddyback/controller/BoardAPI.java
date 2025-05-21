@@ -34,10 +34,6 @@ public class BoardAPI {
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> params = new HashMap<>();
 
-        log.info("order : {}", order);
-        log.info("boardHashtag: {}", boardHashtag);
-        log.info("searchKeyword: {}", searchKeyword);
-
         params.put("order", order);
         params.put("searchKeyword", searchKeyword);
 
