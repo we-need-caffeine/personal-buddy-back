@@ -62,6 +62,7 @@ public class PointShopServiceImpl implements PointShopService {
         MemberVO member = memberDAO.selectMemberById(memberId).orElseThrow(() -> {
             return new RuntimeException("멤버 정보가 없습니다.");
         });
+
         member.setMemberPoint(member.getMemberPoint() - totalPrice);
         memberDAO.update(member);
 
@@ -94,6 +95,11 @@ public class PointShopServiceImpl implements PointShopService {
     @Override
     public List<PointShopViewDTO> getPointShopItems(Long memberId) {
         return pointShopDAO.findPointShopItems(memberId);
+    }
+
+    @Override
+    public Optional<CartVO> getCartItem(Long id) {
+        return pointShopDAO.findCartItemById(id);
     }
 
     @Override

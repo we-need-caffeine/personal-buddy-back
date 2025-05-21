@@ -38,10 +38,10 @@ public class SmsAPI {
         return smsService.sendEmailVerification(memberEmail);
     }
 
-    @Operation(summary = "인증번호 확인", description = "인증번호 확인 API")
-    @ApiResponse(responseCode = "200", description = "인증 성공")
-    @PostMapping("verifyCode")
-    public ResponseEntity<Map<String, Object>> verifyCode(@RequestBody String code){
+    @Operation(summary = "이메일 인증번호 확인", description = "이메일 인증번호 확인 API")
+    @ApiResponse(responseCode = "200", description = "이메일 인증 성공")
+    @PostMapping("email/verifyCode")
+    public ResponseEntity<Map<String, Object>> emailVerifyCode(@RequestBody String code){
         Map<String,Object> response = new HashMap<>();
 
         boolean isFlag = smsService.verifyAuthCode(code);
@@ -50,7 +50,25 @@ public class SmsAPI {
             response.put("isFlag", isFlag);
             return ResponseEntity.ok(response);
         }else{
-            response.put("message", "인증 번호를 확인해주세요😅");
+            response.put("message", "※ 인증 번호를 확인해주세요");
+            response.put("isFlag", isFlag);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+    }
+
+    @Operation(summary = "핸드폰 인증번호 확인", description = "핸드폰 인증번호 확인 API")
+    @ApiResponse(responseCode = "200", description = "핸드폰 인증 성공")
+    @PostMapping("phone/verifyCode")
+    public ResponseEntity<Map<String, Object>> phoneVerifyCode(@RequestBody String code){
+        Map<String,Object> response = new HashMap<>();
+
+        boolean isFlag = smsService.verifyAuthCode(code);
+        if(isFlag){
+            response.put("message", "※ 인증이 완료되었습니다");
+            response.put("isFlag", isFlag);
+            return ResponseEntity.ok(response);
+        }else{
+            response.put("message", "※ 인증 번호를 확인해주세요");
             response.put("isFlag", isFlag);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }

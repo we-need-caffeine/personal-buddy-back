@@ -4,7 +4,7 @@
 
     <!--    Board Comment  -->
     <!--    게시글 댓글 전체 목록-->
-    <select id="selectBoardCommentsByBoardId" parameterType="map" resultType="BoardCommentViewDTO">
+    <select id="selectBoardCommentsByBoardId" parameterType="Long" resultType="BoardCommentViewDTO">
         SELECT TBC.ID, TBC.BOARD_COMMENT_CONTENT, TBC.BOARD_COMMENT_CREATE_DATE,
         TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH,
         (
@@ -15,14 +15,7 @@
         FROM TBL_BOARD_COMMENT TBC
         JOIN TBL_MEMBER TBM ON TBC.MEMBER_ID = TBM.ID
         WHERE TBC.BOARD_ID = #{boardId}
-        <choose>
-            <when test="sort == 'like'">
-                ORDER BY BOARD_COMMENT_LIKE_COUNT DESC
-            </when>
-            <otherwise>
-                ORDER BY TBC.BOARD_COMMENT_CREATE_DATE DESC
-            </otherwise>
-        </choose>
+        ORDER BY TBC.BOARD_COMMENT_CREATE_DATE DESC
     </select>
 
     <!--    내가 쓴 댓글 ( 마이페이지용) -->

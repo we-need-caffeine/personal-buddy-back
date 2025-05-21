@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -35,10 +33,6 @@ public class BoardAPI {
     ) {
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> params = new HashMap<>();
-
-        log.info("order : {}", order);
-        log.info("boardHashtag: {}", boardHashtag);
-        log.info("searchKeyword: {}", searchKeyword);
 
         params.put("order", order);
         params.put("searchKeyword", searchKeyword);
@@ -82,9 +76,12 @@ public class BoardAPI {
 
     // 게시글 상세 조회
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회 API")
-    @GetMapping("/post/{id}")
-    public BoardViewDTO getBoardById(@PathVariable Long id) {
-        return boardService.getBoardById(id).orElseThrow();
+    @GetMapping("/post/{boardId}")
+    public ResponseEntity<Map<String, Object>> getBoardById(@PathVariable Long boardId) {
+        Map<String, Object> response = new HashMap<>();
+        //        게시글 + 댓글
+        response.put("board", boardService.getBoardById(boardId));
+        return ResponseEntity.ok(response);
     }
 
     // 게시글 작성
@@ -182,8 +179,8 @@ public class BoardAPI {
     // 댓글 전체 목록
     @Operation(summary = "댓글 전체 목록", description = "댓글 전체 목록 API")
     @GetMapping("/post/comment/list")
-    public List<BoardCommentViewDTO> getComments(@RequestParam Map<String, Object> params) {
-        return boardCommentService.getBoardComments(params);
+    public List<BoardCommentViewDTO> getComments(@RequestParam Long boardId) {
+        return boardCommentService.getBoardComments(boardId);
     }
 
     // 댓글 작성

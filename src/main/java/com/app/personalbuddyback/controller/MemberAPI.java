@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +27,17 @@ public class MemberAPI {
 
     private final MemberService memberService;
     private final JwtTokenUtil jwtTokenUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "회원가입", description = "회원가입 API")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
     @PostMapping("join")
     public void join(@RequestBody MemberVO memberVO) {
+        String password = memberVO.getMemberPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+
+        memberVO.setMemberPassword(encodedPassword);
+
         memberService.join(memberVO);
     }
 
@@ -75,7 +83,7 @@ public class MemberAPI {
         }
 
         response.put("message", "로그인 성공!");
-        response.put("memberId", foundUser.get());
+        response.put("memberId", foundUser.get().getId());
         claims.put("email", foundUser.get().getMemberEmail());
         claims.put("name", foundUser.get().getMemberName());
         String jwtToken = jwtTokenUtil.generateToken(claims);

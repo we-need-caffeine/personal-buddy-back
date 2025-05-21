@@ -25,4 +25,7 @@ public class BoardViewDTO {
     private String memberImgPath; // 게시글 작성자 프로필 이미지 경로
     private String memberImgName; // 게시글 작성자 프로필 이미지 이름
 
+//    댓글
+    private List<BoardCommentViewDTO> boardComments;
+
 }
