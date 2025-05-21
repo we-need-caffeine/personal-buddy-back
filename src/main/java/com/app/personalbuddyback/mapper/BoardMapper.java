@@ -60,3 +60,5 @@ public interface BoardMapper {
     //    게시글 좋아요 여부 체크(로그인이 된 유저가 좋아요를 눌렸는지)
     public int checkBoardLike(BoardLikeVO boardLikeVO);
 }
+
+
