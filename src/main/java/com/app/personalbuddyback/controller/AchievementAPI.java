@@ -7,6 +7,7 @@ import com.app.personalbuddyback.service.MemberService;
 import com.app.personalbuddyback.service.PointService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/achievements/api")
+@Slf4j
 public class AchievementAPI {
     private final AchievementService achievementService;
     private final PointService pointService;
@@ -42,6 +44,7 @@ public class AchievementAPI {
     @Operation(summary = "업적 전체 목록 조회", description = "전체 업적 목록")
     @GetMapping("/achievement/list")
     public List<AchievementVO> getAllAchievements(){
+
         return achievementService.getAllAchievements();
     }
 
