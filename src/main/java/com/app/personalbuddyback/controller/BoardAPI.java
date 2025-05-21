@@ -71,6 +71,14 @@ public class BoardAPI {
     @Operation(summary = "게시글 검색 + 정렬 + 해시태그 필터링", description = "게시글 검색 + 정렬 + 해시태그 필터링 API")
     @GetMapping("/search")
     public List<BoardListViewDTO> getBoardsBySearch(@RequestParam Map<String, Object> params) {
+
+        String searchKeyword = (String) params.get("searchKeyword");
+
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            List<String> keywords = Arrays.asList(searchKeyword.trim().split("\\s+"));
+            params.put("keywords", keywords); //
+        }
+
         return boardService.getBoardsBySearch(params);
     }
 
@@ -81,6 +89,7 @@ public class BoardAPI {
         Map<String, Object> response = new HashMap<>();
         //        게시글 + 댓글
         response.put("board", boardService.getBoardById(boardId));
+//        response.put("images", boardService.getBoardImages(boardId));
         return ResponseEntity.ok(response);
     }
 
@@ -90,8 +99,8 @@ public class BoardAPI {
     @PostMapping("/write")
     public ResponseEntity<?> writeBoard(@RequestBody BoardVO boardVO) {
         try {
-            boardService.writeBoard(boardVO); // boardVO.id가 채워졌을 것
-            return ResponseEntity.ok(boardVO.getId()); // ID 반환
+            boardService.writeBoard(boardVO);
+            return ResponseEntity.ok(boardVO.getId());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("게시글 작성 실패: " + e.getMessage());
@@ -109,9 +118,25 @@ public class BoardAPI {
     //  게시글과 이미지들을 함께 등록 (트랜잭션 처리)
     @Operation(summary = "게시글+이미지 등록", description = "게시글+이미지 등록 API")
     @ApiResponse(responseCode = "200", description = "게시글+이미지 등록 성공")
-    @PostMapping("/image-with-write")
-    public void writeBoardImageWithWrite(@RequestBody List<BoardImgVO> boardImgVO, @RequestBody BoardVO boardVO) {
-        boardService.writeBoardWithImages(boardVO, boardImgVO);
+//    @PostMapping("/image-with-write")
+//    public void writeBoardImageWithWrite(@RequestBody List<BoardImgVO> boardImgVO, @RequestBody BoardVO boardVO) {
+//        boardService.writeBoardWithImages(boardVO, boardImgVO);
+//    }
+    @PostMapping(value = "/image-with-write", consumes = "multipart/form-data")
+    public ResponseEntity<?> writeBoardImageWithWrite(
+            @RequestPart("board") BoardVO boardVO,
+            @RequestPart("images") List<BoardImgVO> boardImgVOList
+    ) {
+        // 1. 게시글 먼저 등록
+        boardService.writeBoard(boardVO); // boardVO 안에 ID 생성됨
+
+        // 2. 각 이미지에 boardId 넣고 저장
+        for (BoardImgVO img : boardImgVOList) {
+            img.setBoardId(boardVO.getId()); // 게시글 ID 주입
+            boardService.addBoardImage(img); // 이미지 1개 저장
+        }
+
+        return ResponseEntity.ok("성공");
     }
 
     // 게시글 수정
