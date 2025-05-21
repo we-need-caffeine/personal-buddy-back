@@ -46,11 +46,7 @@ public class TargetAPI {
             List<RandomTargetLotteryVO> weeklyRandomTargets = targetService.getWeeklyRandomTargets(memberId);
             List<RandomTargetLotteryVO> monthlyRandomTargets = targetService.getMonthlyRandomTargets(memberId);
 
-            if(dailyRandomTargets.size() == 0) {
-                RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
-
-                randomTargetLotteryVO.setMemberId(memberId);
-                randomTargetLotteryVO.setRandomTargetLotteryPeriodType("일간");
+            if(dailyRandomTargets.isEmpty()) {
 
                 List<Integer> randomCategoryNums = new ArrayList<>();
                 for(int i = 0; i < categoryList.length; i++) {
@@ -59,17 +55,20 @@ public class TargetAPI {
                 Collections.shuffle(randomCategoryNums);
 
                 for(int i = 0; i < 4; i++) {
+                    RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
+
+                    randomTargetLotteryVO.setMemberId(memberId);
+                    randomTargetLotteryVO.setRandomTargetLotteryPeriodType("일간");
+
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
+                    dailyRandomTargets.add(randomTargetLotteryVO);
                 }
+
             }
             response.put("dailyRandomTargets", dailyRandomTargets);
 
-            if(weeklyRandomTargets.size() == 0) {
-                RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
-
-                randomTargetLotteryVO.setMemberId(memberId);
-                randomTargetLotteryVO.setRandomTargetLotteryPeriodType("주간");
+            if(weeklyRandomTargets.isEmpty()) {
 
                 List<Integer> randomCategoryNums = new ArrayList<>();
                 for(int i = 0; i < categoryList.length; i++) {
@@ -78,17 +77,19 @@ public class TargetAPI {
                 Collections.shuffle(randomCategoryNums);
 
                 for(int i = 0; i < 4; i++) {
+                    RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
+
+                    randomTargetLotteryVO.setMemberId(memberId);
+                    randomTargetLotteryVO.setRandomTargetLotteryPeriodType("주간");
+
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
+                    weeklyRandomTargets.add(randomTargetLotteryVO);
                 }
             }
             response.put("weeklyRandomTargets", weeklyRandomTargets);
 
-            if(monthlyRandomTargets.size() == 0) {
-                RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
-
-                randomTargetLotteryVO.setMemberId(memberId);
-                randomTargetLotteryVO.setRandomTargetLotteryPeriodType("월간");
+            if(monthlyRandomTargets.isEmpty()) {
 
                 List<Integer> randomCategoryNums = new ArrayList<>();
                 for(int i = 0; i < categoryList.length; i++) {
@@ -97,10 +98,17 @@ public class TargetAPI {
                 Collections.shuffle(randomCategoryNums);
 
                 for(int i = 0; i < 4; i++) {
+                    RandomTargetLotteryVO randomTargetLotteryVO = new RandomTargetLotteryVO();
+
+                    randomTargetLotteryVO.setMemberId(memberId);
+                    randomTargetLotteryVO.setRandomTargetLotteryPeriodType("월간");
+
                     randomTargetLotteryVO.setRandomTargetLotteryCategory(categoryList[randomCategoryNums.get(i)]);
                     targetService.createRandomTargetLotto(randomTargetLotteryVO);
+                    monthlyRandomTargets.add(randomTargetLotteryVO);
                 }
             }
+
             response.put("monthlyRandomTargets", monthlyRandomTargets);
             response.put("result", true);
             response.put("message", "랜덤 목표 목록 생성 및 조회 완료");
