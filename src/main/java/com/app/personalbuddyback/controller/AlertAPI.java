@@ -30,11 +30,13 @@ public class AlertAPI {
 
 
 //    알림을 보내는 API
+//    테스트용이고 실무용으로는 서비스에서 alertDAO 받아서 전송
     @Operation(summary = "알림 전송", description = "해당 유저에게 알림을 보내는 API")
     @ApiResponse(responseCode = "200", description = "알림 전송 성공")
     @PostMapping("/alert/send")
     public void sendAlert(@RequestBody AlertVO alertVO) {
 //        alertType : (정의된 컬럼의 타입으로 전송)
+//        alertMessage : 알림의 메세지
 //        alertParam : 해당 알림의 타입에 따른 id값 없으면 null
 //        receiverMemberId : 해당 알림을 받는 유저
 //        senderMemberId : 해당 알림을 보내는 유저(운영자 혹은 이벤트면 Null)
@@ -48,7 +50,7 @@ public class AlertAPI {
             name = "memberId",
             description = "멤버 아이디",
             schema = @Schema(type = "number"),
-            in = ParameterIn.PATH,
+            in = ParameterIn.QUERY,
             required = true
     )
     @Parameter(
@@ -59,27 +61,24 @@ public class AlertAPI {
             required = false
     )
     @ApiResponse(responseCode = "200", description = "알림 전체 조회 성공")
-    @GetMapping("/alert/list/{memberId}")
-    public ResponseEntity<Map<String,Object>> listAlert(@PathVariable Long memberId, @RequestParam(required = false) String alertType) {
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> response = new HashMap<>();
-        List<AlertViewDTO> alerts = new ArrayList<>();
-
-        map.put("receiverMemberId", memberId);
-        map.put("alertType", alertType);
-        alerts = alertService.getAlerts(map);
-
-        if (!alerts.isEmpty()) {
-            response.put("message", "알림 조회 성공");
-            response.put("data", alerts);
-            return ResponseEntity.ok().body(response);
-        } else {
-            response.put("message", "알림 조회 실패");
-            response.put("data", alerts);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
+    @GetMapping("/alert/list")
+    public List<AlertViewDTO> listAlert(@RequestParam Long memberId, @RequestParam(required = false) String alertType) {
+        return alertService.getAlerts(memberId, alertType);
     }
 
+//    해당 멤버가 읽지않은 알림을 전체 조회하는 API
+    @Parameter(
+            name = "receiverMemberId",
+            description = "로그인된 멤버의 아이디",
+            schema = @Schema(type = "number"),
+            in = ParameterIn.PATH,
+            required = true
+    )
+    @ApiResponse(responseCode = "200", description = "읽지않은 알람의 수를 조회 성공")
+    @GetMapping("/alert/count/{receiverMemberId}")
+    public Integer getCountNotReadAlerts(Long receiverMemberId) {
+        return alertService.getNotReadAlerts(receiverMemberId);
+    }
 
 //    알림을 읽음처리하는 API
     @Operation(summary = "알림 읽음처리", description = "클릭한 알림의 ID를 받아 읽음처리하는 API")

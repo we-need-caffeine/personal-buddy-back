@@ -6,11 +6,13 @@ import com.app.personalbuddyback.domain.ChatVO;
 import com.app.personalbuddyback.repository.ChattingDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class ChattingServiceImpl implements ChattingService {
 
     private final ChattingDAO chattingDAO;

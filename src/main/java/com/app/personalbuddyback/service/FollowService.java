@@ -25,5 +25,5 @@ public interface FollowService {
     //    즐겨찾기 토글
     void updateToggleFollowing(FollowVO followVO);
     //    팔로우 취소
-    void deleteUnfollowMember(FollowVO followVO);
+    void deleteUnfollowMember(Long followerMemberId, Long followingMemberId);
 }
