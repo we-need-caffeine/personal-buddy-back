@@ -23,6 +23,10 @@ public class AlertDAO {
     public List<AlertViewDTO> findAll(Map<String, Object> map) {
         return alertMapper.selectAll(map);
     }
+//    읽지않은 알림 조회
+    public Integer getCount(Long receiverMemberId) {
+        return alertMapper.selectCount(receiverMemberId);
+    };
 //    알림 읽음 여부
     public void update(Long id){
         alertMapper.update(id);

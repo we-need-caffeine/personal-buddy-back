@@ -27,7 +27,7 @@ public class GuestBookAPI {
         guestBookService.writeGuestBook(guestBookVO);
     }
 
-//    방명록 조회
+//    방명록 조회 카운트용
     @Operation(summary = "방명록 조회", description = "해당 유저에게 달린 방명록들을 조회하는 API")
     @Parameter(
             name = "ownerMemberId",
@@ -37,9 +37,10 @@ public class GuestBookAPI {
             required = true
     )
     @ApiResponse(responseCode = "200", description = "방명록 조회 성공")
-    @GetMapping("/guestbook/list/{ownerMemberId}")
-    public List<GuestBookVO> getList(@PathVariable Long ownerMemberId) {
-        return guestBookService.getAllGuestBooksByMemberId(ownerMemberId);
+    @GetMapping("/guestbook/count/{ownerMemberId}")
+    public Integer getList(@PathVariable Long ownerMemberId) {
+        List<GuestBookVO> guestBookVO = guestBookService.getAllGuestBooksByMemberId(ownerMemberId);
+        return guestBookVO.size();
     }
 
 //    방명록 페이지네이션
@@ -47,20 +48,20 @@ public class GuestBookAPI {
     @Parameter(
             name = "ownerMemberId",
             description = "방명록 주인의 아이디",
-            in = ParameterIn.PATH,
+            in = ParameterIn.QUERY,
             schema = @Schema(type = "number"),
             required = true
     )
     @Parameter(
             name = "page",
             description = "현재 페이지",
-            in = ParameterIn.PATH,
+            in = ParameterIn.QUERY,
             schema = @Schema(type = "number"),
             required = true
     )
     @ApiResponse(responseCode = "200", description = "방명록 페이지 조회 성공")
-    @GetMapping("/guestbook/list/page/{ownerMemberId}/{page}")
-    public List<GuestBookViewDTO> getOnePage(@PathVariable Long ownerMemberId, @PathVariable Integer page) {
+    @GetMapping("/guestbook/list")
+    public List<GuestBookViewDTO> getOnePage(@RequestParam Long ownerMemberId, @RequestParam Integer page) {
         return  guestBookService.getGuestBooksOnePageByMemberIdAndPage(ownerMemberId, page);
     }
 

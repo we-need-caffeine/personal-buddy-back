@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -20,7 +22,7 @@ import java.util.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/files/api/*")
+@RequestMapping("/files/api")
 public class FileAPI {
     // 파일 업로드의 경우
     // 화면단에서 제일 먼저 요청을 받는다.
@@ -49,7 +51,7 @@ public class FileAPI {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
 
-    @PostMapping("files-upload")
+    @PostMapping("/files-upload")
     public ResponseEntity<Map<String, Object>> uploadFiles(@RequestParam("imgFiles") List<MultipartFile> imgFiles, @RequestParam("dataType") String dataType) throws IOException {
         String filePath = "C:/personalbuddy/images/" + dataType + "/" + getDatePath();
         Map<String, Object> response = new HashMap<>();
@@ -83,7 +85,7 @@ public class FileAPI {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("file-upload")
+    @PostMapping("/file-upload")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("imgFile") MultipartFile imgFile, @RequestParam("dataType") String dataType) throws IOException {
         String filePath = "C:/personalbuddy/images/" + dataType;
@@ -115,9 +117,11 @@ public class FileAPI {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("display")
     @ResponseBody
-    public byte[] displayEventImg(String filePath, String fileName) throws IOException {
-        return FileCopyUtils.copyToByteArray(new File(filePath + fileName));
+    @GetMapping("/display")
+    public byte[] displayEventImg(@RequestParam("filePath") String filePath, @RequestParam("fileName") String fileName) throws IOException {
+        String basePath = "C:/personalbuddy";
+        String fullPath = basePath + "/" + filePath + "/" + fileName;
+        return FileCopyUtils.copyToByteArray(new File(fullPath));
     }
 }

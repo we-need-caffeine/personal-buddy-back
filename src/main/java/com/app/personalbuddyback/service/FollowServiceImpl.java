@@ -6,6 +6,7 @@ import com.app.personalbuddyback.domain.ProfileCardDTO;
 import com.app.personalbuddyback.repository.FollowDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class FollowServiceImpl implements FollowService {
 
     private final FollowDAO followDAO;
@@ -58,7 +60,10 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public void deleteUnfollowMember(FollowVO followVO) {
+    public void deleteUnfollowMember(Long followerMemberId, Long followingMemberId) {
+        FollowVO followVO = new FollowVO();
+        followVO.setFollowerMemberId(followerMemberId);
+        followVO.setFollowingMemberId(followingMemberId);
         followDAO.delete(followVO);
     }
 }
