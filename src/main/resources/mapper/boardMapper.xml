@@ -139,6 +139,8 @@
             AND (
             <foreach item="keyword" collection="keywords" separator="OR">
                 BOARD_TITLE LIKE '%' || #{keyword} || '%'
+                OR BOARD_HASHTAG LIKE '%' || #{keyword} || '%'
+                OR MEMBER_NICKNAME LIKE '%' || #{keyword} || '%'
             </foreach>
             )
         </if>
@@ -164,13 +166,40 @@
     <!--    Board Post  -->
     <!--    게시글 상세 조회 -->
     <select id="selectBoardById" parameterType="Long" resultType="BoardViewDTO">
-        SELECT ID, BOARD_TITLE, BOARD_CONTENT, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_UPDATE_DATE,
-               BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
-               MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
-               BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_THUMBNAIL_URL
-        FROM VW_BOARD_LIST
-        WHERE ID = #{id}
+        SELECT
+            TBB.ID,
+            TBB.BOARD_TITLE,
+            TBB.BOARD_CONTENT,
+            TBB.BOARD_CONTENT_CREATE_DATE AS boardCreateDate,
+            TBB.BOARD_CONTENT_VIEWS AS boardContentViews,
+            TBB.BOARD_HASHTAG,
+            TBM.ID AS memberId,
+            TBM.MEMBER_NICKNAME AS memberNickName,
+            TBM.MEMBER_IMG_PATH AS memberImgPath,
+            TBM.MEMBER_IMG_NAME AS memberImgName,
+            (
+            SELECT COUNT(ID) FROM TBL_BOARD_COMMENT WHERE BOARD_ID = TBB.ID
+            ) AS boardCommentCount,
+            (
+            SELECT COUNT(ID) FROM TBL_BOARD_LIKE WHERE BOARD_ID = TBB.ID
+            ) AS boardLikeCount,
+            (
+             SELECT BOARD_IMG_PATH
+             FROM TBL_BOARD_IMG
+             WHERE BOARD_ID = TBB.ID
+             FETCH FIRST 1 ROWS ONLY
+            ) AS boardImgPath,
+            (
+             SELECT BOARD_IMG_NAME
+             FROM TBL_BOARD_IMG
+             WHERE BOARD_ID = TBB.ID
+             FETCH FIRST 1 ROWS ONLY
+            ) AS boardImgName
+        FROM TBL_BOARD TBB
+            JOIN TBL_MEMBER TBM ON TBB.MEMBER_ID = TBM.ID
+        WHERE TBB.ID = #{id}
     </select>
+
 
     <!-- 특정 멤버 게시글 조회 -->
     <select id="selectBoardsByMemberId" parameterType="Long" resultType="BoardListViewDTO">

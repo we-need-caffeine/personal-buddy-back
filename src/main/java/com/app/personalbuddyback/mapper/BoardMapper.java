@@ -27,7 +27,7 @@ public interface BoardMapper {
     //    게시글 검색 + 정렬 + 해시태그 필터링
     public List<BoardListViewDTO> selectBoardListBySearch(Map<String,Object> params);
 
-    //    게시글 상세 조회 (글 정보 + 작성자 정보 + 댓글수 + 좋아요수)
+    //    게시글 상세 조회 (글 정보 + 작성자 정보 + 댓글수 + 좋아요수 )
     public Optional<BoardViewDTO> selectBoardById(Long id);
 
     //    게시글 작성
