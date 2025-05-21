@@ -2,6 +2,7 @@ package com.app.personalbuddyback.DyunDyun.mapper.board;
 
 import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.mapper.BoardMapper;
+import com.app.personalbuddyback.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,15 @@ public class BoardMapperTests {
 
     @Autowired
     private BoardMapper boardMapper;
+
+    @Autowired
+    private BoardService boardService;
+
+    @Test
+    public void getBoardTest(){
+        log.info("getBoardTest : {}", boardService.getBoardById(1L));
+    }
+
 
     //    게시글 전체 목록 조회 테스트
     @Test
