@@ -48,7 +48,7 @@ public class TodoListAPI {
     }
 
     @Operation(summary = "투두리스트 수정", description = "투두리스트 항목을 수정하는 API")
-    @PutMapping("")
+    @PutMapping("update")
     public void modifyTodoList(@RequestBody ToDoListVO toDoListVO) {
         todoListService.modifyTodoList(toDoListVO);
     }
