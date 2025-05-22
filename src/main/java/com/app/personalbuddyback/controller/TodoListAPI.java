@@ -25,13 +25,9 @@ public class TodoListAPI {
 
     @Operation(summary = "투두리스트 할일 등록", description = "투두리스트에 할일을 등록할 수 있는 API")
     @PostMapping("register")
-    public ResponseEntity<Map<String, Object>> registerTodoList(@RequestBody ToDoListVO toDoListVO) {
-        Long savedId = todoListService.registerTodoList(toDoListVO);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("id", savedId); // 프론트에서 쓸 ID 전달
-
-        return ResponseEntity.ok(result);
+    public Long registerTodoList(@RequestBody ToDoListVO toDoListVO) {
+        todoListService.registerTodoList(toDoListVO);
+        return toDoListVO.getId();
     }
 
     @Operation(summary = "투두리스트 전체 조회", description = "투두리스트 전체 할일 목록을 조회하는 API")
