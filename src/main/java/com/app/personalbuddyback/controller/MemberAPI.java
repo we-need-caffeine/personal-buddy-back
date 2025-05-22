@@ -149,7 +149,7 @@ public class MemberAPI {
 
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API")
     @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공")
-    @PutMapping("/edit/password")
+    @PutMapping("/password/edit")
     public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody MemberVO memberVO) {
         Map<String, Object> response = new HashMap<>();
         Long id = memberVO.getId();
@@ -159,6 +159,11 @@ public class MemberAPI {
             response.put("message", "존재하지 않는 회원입니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
+        String password = memberVO.getMemberPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+
+        memberVO.setMemberPassword(encodedPassword);
 
         memberService.editPassword(memberVO); // 실제 update 쿼리 실행
 
