@@ -2,6 +2,7 @@
 
 package com.app.personalbuddyback.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

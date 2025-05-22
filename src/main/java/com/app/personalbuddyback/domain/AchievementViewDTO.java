@@ -30,4 +30,6 @@ public class AchievementViewDTO {
     private int achievementCurrentMissionCount;
     @Schema(description = "대표 업적 표시 정보", required = true, example = "1 : 대표 업적 표시 O / 0 : 대표업적 표시 X")
     private int memberAchievementDisplay;
+    @Schema(description = "업적 완료 상태", required = true, example = "1 : 업적 완료 / 0 : 업적 미완료")
+    private int achievementCompleted;
 }
