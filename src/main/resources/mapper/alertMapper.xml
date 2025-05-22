@@ -53,10 +53,10 @@
     </select>
 
 <!--  읽음 여부 처리  -->
-<!--  유저가 특정 알람을 클릭했을 때, 읽음 여부처리  -->
+<!--  유저가 헤더의 알람버튼을 클릭했을 때, 모든 알림을 읽음 여부처리  -->
     <update id="update" parameterType="Long">
         UPDATE TBL_ALERT SET ALERT_READ = 1
-        WHERE ID = #{id}
+        WHERE RECEIVER_MEMBER_ID = #{memberId}
     </update>
 
 <!--  알림 삭제  -->

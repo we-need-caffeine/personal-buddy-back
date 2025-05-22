@@ -40,8 +40,8 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public void updateAlertReadById(Long id) {
-        alertDAO.update(id);
+    public void updateAlertReadByMemberId(Long memberId) {
+        alertDAO.update(memberId);
     }
 
     @Override
