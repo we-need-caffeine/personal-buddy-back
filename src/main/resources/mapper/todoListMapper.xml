@@ -29,7 +29,7 @@
 
     <!-- 투두리스트 전체 조회 -->
     <select id = "selectAllTodoListsByCalendarId" parameterType="Long" resultType="ToDoListVO">
-        SELECT TODOLIST_CONTENT, TODOLIST_IS_COMPLETED
+        SELECT ID,TODOLIST_CONTENT, TODOLIST_IS_COMPLETED
         FROM TBL_TODOLIST
         WHERE CALENDAR_ID = #{calendarId}
     </select>
