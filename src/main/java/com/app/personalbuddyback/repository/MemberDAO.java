@@ -56,7 +56,7 @@ public class MemberDAO {
     }
 
 //    이메일 찾기 (회원 이메일 조회)
-    public String selectEmailByNameAndPhone(MemberVO memberVO) {
+    public Optional<MemberVO> selectEmailByNameAndPhone(MemberVO memberVO) {
         return memberMapper.selectEmailByNameAndPhone(memberVO);
     }
 

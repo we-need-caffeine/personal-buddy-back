@@ -124,9 +124,9 @@ public class MemberAPI {
     @Operation(summary = "이메일 찾기", description = "이메일 찾기 API")
     @ApiResponse(responseCode = "200", description = "이메일 찾기 성공")
     @PostMapping("find/email")
-    public void findEmail(@RequestBody MemberVO memberVO) {
-        memberService.findEmail(memberVO);
-
+    public ResponseEntity<Optional<MemberVO>> findEmail(@RequestBody MemberVO memberVO) {
+        Optional<MemberVO> foundUser = memberService.findEmail(memberVO);
+        return ResponseEntity.ok(foundUser);
     }
 
     @Operation(summary = "비밀번호 찾기", description = "비밀번호 찾기 API")

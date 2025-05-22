@@ -79,8 +79,8 @@
     </select>
 
 <!-- 이메일 찾기 (회원 이메일 조회) -->
-    <select id="selectEmailByNameAndPhone" parameterType="MemberVO" resultType="String">
-        SELECT MEMBER_EMAIL
+    <select id="selectEmailByNameAndPhone" parameterType="MemberVO" resultType="MemberVO">
+        SELECT MEMBER_EMAIL, MEMBER_CREATE_DATE
         FROM TBL_MEMBER
         WHERE MEMBER_NAME = #{memberName} AND MEMBER_PHONE = #{memberPhone}
     </select>
