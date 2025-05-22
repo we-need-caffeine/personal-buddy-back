@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.ZeroWater;
 
 import com.app.personalbuddyback.domain.FollowVO;
+import com.app.personalbuddyback.domain.ProfileCardDTO;
 import com.app.personalbuddyback.mapper.FollowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @Slf4j
@@ -25,18 +28,6 @@ public class FollowTests {
         followVO.setFollowingMemberId(4L);
 
         followMapper.insert(followVO);
-    }
-    //    팔로워 리스트 포기
-    @Test
-    public void selectFollowerTest() {
-        List<FollowVO> followerList = followMapper.selectFollower(1L);
-        log.info(followerList.toString());
-    }
-    //    팔로우 리스트 보기
-    @Test
-    public void selectFollowTest() {
-        List<FollowVO> followList = followMapper.selectFollowing(2L);
-        log.info(followList.toString());
     }
     //    즐겨찾기 토글
     @Test
@@ -56,5 +47,35 @@ public class FollowTests {
         followVO.setFollowingMemberId(2L);
 
         followMapper.delete(followVO);
+    }
+
+    @Test
+    public void followerListTest() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("myId", 2L);
+        map.put("searchNickname", "홍길동");
+//        map.put("filterType", "follow");
+        map.put("filterType", "favorite");
+
+        List<ProfileCardDTO> profileCardDTO = followMapper.selectFollowerList(map);
+
+        profileCardDTO.forEach(profileCardDTO1 -> {
+            log.info("추출한 멤버 : {}", profileCardDTO1);
+        });
+
+    }
+
+    @Test
+    public void followListTest() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("myId", 2L);
+        map.put("searchNickname", "홍길동");
+//        map.put("filterType", "favorite");
+
+        List<ProfileCardDTO> profileCardDTO = followMapper.selectFollowList(map);
+
+        profileCardDTO.forEach(profileCardDTO1 -> {
+            log.info("추출한 멤버 : {}", profileCardDTO1);
+        });
     }
 }
