@@ -26,13 +26,21 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public List<FollowVO> getAllMyFollower(Long followerMemberId) {
-        return followDAO.findFollower(followerMemberId);
+    public List<ProfileCardDTO> getAllMyFollowers(Long myId, String searchNickname, String filterType) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("myId", myId);
+        params.put("searchNickname", searchNickname);
+        params.put("filterType", filterType);
+        return followDAO.findAllFollowers(params);
     }
 
     @Override
-    public List<FollowVO> getAllMyFollowing(Long followingMemberId) {
-        return followDAO.findFollowing(followingMemberId);
+    public List<ProfileCardDTO> getAllMyFollows(Long myId, String searchNickname, String filterType) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("myId", myId);
+        params.put("searchNickname", searchNickname);
+        params.put("filterType", filterType);
+        return followDAO.findAllFollows(params);
     }
 
     @Override

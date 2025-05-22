@@ -14,12 +14,12 @@ public interface AlertService {
 //    받는 멤버 아이디와 동적 쿼리로 알림 타입에 따른 조회결과 변경
     public List<AlertViewDTO> getAlerts(Long memberId, String alertType);
 
-    //    읽지않은 알림 조회
+//    읽지않은 알림 조회
     public Integer getNotReadAlerts(Long receiverMemberId);
 
-    //    알림 읽음 처리
+//    알림 읽음 처리
 //    유저가 특정 알람을 클릭했을 때, 읽음 여부처리
-    public void updateAlertReadById(Long id);
+    public void updateAlertReadByMemberId(Long memberId);
 
 //    해당 알림 삭제
 //    알림의 id값으로 삭제

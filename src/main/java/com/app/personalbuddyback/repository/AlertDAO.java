@@ -28,8 +28,8 @@ public class AlertDAO {
         return alertMapper.selectCount(receiverMemberId);
     };
 //    알림 읽음 여부
-    public void update(Long id){
-        alertMapper.update(id);
+    public void update(Long memberId){
+        alertMapper.update(memberId);
     }
 //    알림 개별 삭제
     public void delete(Long id) {

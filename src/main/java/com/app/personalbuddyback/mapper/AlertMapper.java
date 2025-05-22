@@ -16,7 +16,7 @@ public interface AlertMapper {
 //    읽지않은 알림 조회
     public Integer selectCount(Long receiverMemberId);
 //    알림 - 읽음 여부
-    public void update(Long id);
+    public void update(Long memberId);
 //    알림 삭제
     public void delete(Long id);
 //    알림 전체 삭제
