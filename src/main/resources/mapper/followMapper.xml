@@ -9,19 +9,58 @@
     </insert>
 
 <!--  팔로워 리스트 보기  -->
-<!--  유저를 구독한 사람들의 리스트  -->
-    <select id="selectFollower" parameterType="Long" resultType="FollowVO">
-        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE, FOLLOWING_DATE
-        FROM TBL_FOLLOW
-        WHERE FOLLOWER_MEMBER_ID = #{followerMemberId}
+<!--  나를 구독한 사람들의 리스트  -->
+    <select id="selectFollowerList" parameterType="map" resultType="ProfileCardDTO">
+        SELECT
+            TM.ID,
+            TM.MEMBER_NICKNAME,
+            TM.MEMBER_STATUS_MESSAGE,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH,
+            CASE
+                WHEN TF2.ID IS NOT NULL THEN 1 ELSE 0
+            END AS IS_FOLLOW,
+            TF2.FOLLOW_FAVORITE AS FAVORITE
+        FROM TBL_FOLLOW TF
+        JOIN TBL_MEMBER TM
+        ON TF.FOLLOWING_MEMBER_ID = TM.ID
+        LEFT JOIN TBL_FOLLOW TF2
+        ON TF2.FOLLOWING_MEMBER_ID = #{myId}
+        AND TF2.FOLLOWER_MEMBER_ID = TM.ID
+        WHERE TF.FOLLOWER_MEMBER_ID = #{myId}
+        <if test="searchNickname != null and searchNickname != ''">
+            AND TM.MEMBER_NICKNAME LIKE '%' || #{searchNickname} || '%'
+        </if>
+        <if test="filterType == 'follow'">
+            AND TF2.ID IS NOT NULL
+        </if>
+        <if test="filterType == 'favorite'">
+            AND TF2.FOLLOW_FAVORITE = 1
+        </if>
+        ORDER BY TF.FOLLOWING_DATE DESC
     </select>
 
 <!--  팔로우 리스트 보기  -->
-<!--  유저가 구독한 사람들의 리스트  -->
-    <select id="selectFollowing" parameterType="Long" resultType="FollowVO">
-        SELECT ID, FOLLOWER_MEMBER_ID, FOLLOWING_MEMBER_ID, FOLLOW_FAVORITE, FOLLOWING_DATE
-        FROM TBL_FOLLOW
-        WHERE FOLLOWING_MEMBER_ID = #{followingMemberId}
+<!--  내가 구독한 사람들의 리스트  -->
+    <select id="selectFollowList" parameterType="map" resultType="ProfileCardDTO">
+        SELECT
+            TM.ID,
+            TM.MEMBER_NICKNAME,
+            TM.MEMBER_STATUS_MESSAGE,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH,
+            TF.FOLLOW_FAVORITE AS FAVORITE
+        FROM TBL_FOLLOW TF
+        JOIN TBL_MEMBER TM
+        ON TF.FOLLOWING_MEMBER_ID = #{myId}
+        WHERE TF.FOLLOWER_MEMBER_ID = TM.ID
+        <if test="searchNickname != null and searchNickname != ''">
+            AND TM.MEMBER_NICKNAME LIKE '%' || #{searchNickname} || '%'
+        </if>
+        <if test="filterType == 'favorite'">
+            AND TF.FOLLOW_FAVORITE = 1
+        </if>
+        ORDER BY TF.FOLLOWING_DATE DESC
     </select>
 
 <!--  즐겨찾기 조회  -->
@@ -56,12 +95,12 @@
             (
                 SELECT COUNT(ID)
                 FROM TBL_FOLLOW
-                WHERE FOLLOWING_MEMBER_ID = TM.ID
+                WHERE FOLLOWER_MEMBER_ID = TM.ID
             ) AS FOLLOWER_COUNT,
             (
                 SELECT COUNT(ID)
                 FROM TBL_FOLLOW
-                WHERE FOLLOWER_MEMBER_ID = TM.ID
+                WHERE FOLLOWING_MEMBER_ID = TM.ID
             ) AS FOLLOWING_COUNT,
             (
                 SELECT CASE

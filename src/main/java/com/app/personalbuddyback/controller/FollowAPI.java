@@ -47,34 +47,70 @@ public class FollowAPI {
         followService.followMember(followVO);
     }
 
-//    n번 유저를 팔로우한 모든 유저를 찾는 API
+//    나를 구독한 모든 유저를 찾는 API
     @Operation(summary = "팔로워 리스트", description = "n번 유저를 구독한 유저들의 리스트를 가져오는 API")
     @Parameter(
-            name = "followerMemberId",
-            description = "구독된 유저의 아이디",
-            in = ParameterIn.PATH,
+            name = "myId",
+            description = "로그인된 아이디",
+            in = ParameterIn.QUERY,
             schema = @Schema(type = "number"),
             required = true
+    )
+    @Parameter(
+            name = "searchNickname",
+            description = "닉네임 인풋값",
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "string"),
+            required = false
+    )
+    @Parameter(
+            name = "filterType",
+            description = "필터 타입 빈문자열, follow, favorite",
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "string"),
+            required = false
     )
     @ApiResponse(responseCode = "200", description = "n번 유저의 구독자 리스트 가져오기 성공")
-    @GetMapping("follower/list/{followerMemberId}")
-    public List<FollowVO> getMyFollower(@PathVariable Long followerMemberId) {
-        return followService.getAllMyFollower(followerMemberId);
+    @GetMapping("follower/list")
+    public List<ProfileCardDTO> getMyFollower(
+            @RequestParam Long myId,
+            @RequestParam(required = false) String searchNickname,
+            @RequestParam(required = false) String filterType
+    ) {
+        return followService.getAllMyFollowers(myId, searchNickname, filterType);
     }
 
-//    n번 유저가 팔로우한 모든 유저를 찾는 API
+//    내가 구독한 모든 유저를 찾는 API
     @Operation(summary = "팔로잉 리스트", description = "n번 유저가 구독한 유저들의 리스트를 가져오는 API")
     @Parameter(
-            name = "followingMemberId",
-            description = "구독한 유저의 아이디",
-            in = ParameterIn.PATH,
+            name = "myId",
+            description = "로그인된 아이디",
+            in = ParameterIn.QUERY,
             schema = @Schema(type = "number"),
             required = true
     )
+    @Parameter(
+            name = "searchNickname",
+            description = "닉네임 인풋값",
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "string"),
+            required = false
+    )
+    @Parameter(
+            name = "filterType",
+            description = "필터 타입 favorite",
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "string"),
+            required = false
+    )
     @ApiResponse(responseCode = "200", description = "n번 유저가 구독한 유저의 리스트 가져오기 성공")
-    @GetMapping("follow/list/{followingMemberId}")
-    public List<FollowVO> getMyFollowing(@PathVariable Long followingMemberId) {
-        return followService.getAllMyFollowing(followingMemberId);
+    @GetMapping("follow/list")
+    public List<ProfileCardDTO> getMyFollowing(
+            @RequestParam Long myId,
+            @RequestParam(required = false) String searchNickname,
+            @RequestParam(required = false) String filterType
+    ) {
+        return followService.getAllMyFollows(myId, searchNickname, filterType);
     }
 
     @Operation(summary = "즐겨찾기 리스트", description = "팔로잉 되어있는 유저 중, 즐겨찾기 여부가 1인 유저를 가져오는 API")

@@ -76,23 +76,23 @@ public class AlertAPI {
     )
     @ApiResponse(responseCode = "200", description = "읽지않은 알람의 수를 조회 성공")
     @GetMapping("/alert/count/{receiverMemberId}")
-    public Integer getCountNotReadAlerts(Long receiverMemberId) {
+    public Integer getCountNotReadAlerts(@PathVariable Long receiverMemberId) {
         return alertService.getNotReadAlerts(receiverMemberId);
     }
 
 //    알림을 읽음처리하는 API
-    @Operation(summary = "알림 읽음처리", description = "클릭한 알림의 ID를 받아 읽음처리하는 API")
+    @Operation(summary = "알림 읽음처리", description = "해당 유저에게 달린 모든 알림을 읽음 처리하는 API")
     @Parameter(
-            name = "id",
-            description = "알림 아이디",
+            name = "memberId",
+            description = "로그인한 유저의 아이디",
             in = ParameterIn.PATH,
             schema = @Schema(type = "number"),
             required = true
     )
     @ApiResponse(responseCode = "200", description = "알림 읽음처리 성공")
-    @PutMapping("/alert/read/{id}")
-    public void readingAlert(@PathVariable Long id) {
-        alertService.updateAlertReadById(id);
+    @PutMapping("/alert/read/{memberId}")
+    public void readingAlert(@PathVariable Long memberId) {
+        alertService.updateAlertReadByMemberId(memberId);
     }
 
 //    알림을 삭제하는 API
