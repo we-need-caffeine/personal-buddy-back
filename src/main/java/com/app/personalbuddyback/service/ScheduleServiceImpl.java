@@ -4,6 +4,7 @@ import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.repository.CalendarDAO;
 import com.app.personalbuddyback.repository.ScheduleDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 @Service
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
-public class            ScheduleServiceImpl implements ScheduleService {
+public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleDAO scheduleDAO;
     private final CalendarDAO calendarDAO;
@@ -36,6 +37,12 @@ public class            ScheduleServiceImpl implements ScheduleService {
             }
         }
         scheduleDAO.saveSchedule(scheduleSaveDTO);
+    }
+
+    // 색상조회
+    @Override
+    public List<String> getColors() {
+        return  List.of("#01CD74", "#4AB3F7", "#F35F8C", "#B38BDC", "#3FC2C8");
     }
 
     // 일정 멤버 등록

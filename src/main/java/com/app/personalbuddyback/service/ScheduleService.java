@@ -13,6 +13,9 @@ public interface ScheduleService {
     // 일정 멤버 등록
     public void addScheduleMember(ScheduleGroupMemberVO scheduleGroupMemberVO);
 
+    // 색상 조회
+    public List<String> getColors();
+
     // 일정 멤버 조회
     public List<MemberVO> getScheduleMembers(Long scheduleMemberGroupId);
 

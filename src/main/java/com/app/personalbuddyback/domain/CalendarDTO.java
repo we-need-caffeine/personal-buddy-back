@@ -15,6 +15,7 @@ public class CalendarDTO {
     private Integer calendarIndex;
     private Long memberId;
 
+
 //    할일 리스트
     private List<ToDoListVO> todoLists;
 
@@ -24,4 +25,6 @@ public class CalendarDTO {
 //    일정 리스트
     private List<ScheduleDTO> scheduleLists;
 
+//    초대 가능 팔로잉 리스트
+    private List<MemberVO> canInviteMemberLists;
 }

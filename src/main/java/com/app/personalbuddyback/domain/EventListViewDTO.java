@@ -11,7 +11,8 @@ public class EventListViewDTO {
     private Long id; // 이벤트 ID
     private String eventTitle; // 이벤트 제목
     private String eventDescription; // 이벤트 설명
-    private String thumbnailUrl; // 썸네일 대표 이미지
+    private String eventImgPath; // 대표 이미지 경로
+    private String eventImgName; // 대표 이미지 이름
     private String eventStartDate; // 시작날짜
     private String eventEndDate; // 종료 날짜
     private int eventViews; // 조회수
