@@ -31,7 +31,7 @@ public interface MemberService {
     public int checkMemberEmailByNameAndPhone(MemberVO memberVO);
 
 //    이메일 찾기 (회원 이메일 조회)
-    public String findEmail(MemberVO memberVO);
+    public Optional<MemberVO> findEmail(MemberVO memberVO);
 
 //    비밀번호 찾기 (이름과 이메일이 일치하는 회원 존재 여부 확인)
     public int checkMemberByNameAndEmail(MemberVO memberVO);

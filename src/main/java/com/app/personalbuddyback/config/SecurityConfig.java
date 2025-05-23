@@ -109,7 +109,7 @@ public class SecurityConfig {
                                             }
 //                                아니라면 신규 가입
                                         }else{
-                                            redirectUrl = "http://localhost:3000/member/login?provider=" + provider + "&email=" + email;
+                                            redirectUrl = "http://localhost:3000/member/join?provider=" + provider + "&email=" + email;
                                         }
                                         response.sendRedirect(redirectUrl);
                                     }

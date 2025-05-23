@@ -25,7 +25,7 @@ public class SmsAPI {
 
     @Operation(summary = "핸드폰 문자 인증", description = "핸드폰 문자 인증 API")
     @ApiResponse(responseCode = "200", description = "핸드폰 문자 인증번호 전송 성공")
-    @PostMapping("sendSms")
+    @PostMapping("sms/send")
     public ResponseEntity<Map<String, Object>> sendSms(@RequestBody String memberPhone) {
 
         return smsService.transferMessage(memberPhone);
@@ -33,14 +33,14 @@ public class SmsAPI {
 
     @Operation(summary = "이메일 인증", description = "이메일 인증 API")
     @ApiResponse(responseCode = "200", description = "이메일 인증번호 전송 성공")
-    @PostMapping("sendEmail")
+    @PostMapping("email/send")
     public ResponseEntity<Map<String, Object>> sendEmail(@RequestBody String memberEmail) {
         return smsService.sendEmailVerification(memberEmail);
     }
 
     @Operation(summary = "이메일 인증번호 확인", description = "이메일 인증번호 확인 API")
     @ApiResponse(responseCode = "200", description = "이메일 인증 성공")
-    @PostMapping("email/verifyCode")
+    @PostMapping("email/verify-code")
     public ResponseEntity<Map<String, Object>> emailVerifyCode(@RequestBody String code){
         Map<String,Object> response = new HashMap<>();
 
@@ -58,7 +58,7 @@ public class SmsAPI {
 
     @Operation(summary = "핸드폰 인증번호 확인", description = "핸드폰 인증번호 확인 API")
     @ApiResponse(responseCode = "200", description = "핸드폰 인증 성공")
-    @PostMapping("phone/verifyCode")
+    @PostMapping("phone/verify-code")
     public ResponseEntity<Map<String, Object>> phoneVerifyCode(@RequestBody String code){
         Map<String,Object> response = new HashMap<>();
 

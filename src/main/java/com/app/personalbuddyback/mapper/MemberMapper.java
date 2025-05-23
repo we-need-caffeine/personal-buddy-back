@@ -34,7 +34,7 @@ public interface MemberMapper {
     public int selectCountIdByNameAndPhone(MemberVO memberVO);
 
 //    이메일 찾기 (회원 이메일 조회)
-    public String selectEmailByNameAndPhone(MemberVO memberVO);
+    public Optional<MemberVO> selectEmailByNameAndPhone(MemberVO memberVO);
 
 //    비밀번호 찾기 (이름과 이메일이 일치하는 회원 존재 여부 확인)
     public int selectCountIdByNameAndEmail(MemberVO memberVO);
