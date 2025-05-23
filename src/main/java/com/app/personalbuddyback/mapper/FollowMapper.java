@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface FollowMapper {
 //    팔로워 추가
     public void insert(FollowVO followVO);
-//    나를 구독한 유저
-    public List<FollowVO> selectFollower(Long followerMemberId);
+//    나를 구독한 유저의 리스트
+    public List<ProfileCardDTO> selectFollowerList(Map<String, Object> map);
 //    내가 구독한 유저
-    public List<FollowVO> selectFollowing(Long followingMemberId);
+    public List<ProfileCardDTO> selectFollowList(Map<String, Object> map);
 //    즐겨찾기 한 유저의 리스트
     public List<FollowVO> selectFavorite(Long favoriteMemberId);
 //    맞팔 여부 확인

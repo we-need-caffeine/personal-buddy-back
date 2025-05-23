@@ -1,14 +1,12 @@
 package com.app.personalbuddyback.repository;
 
-import com.app.personalbuddyback.domain.ItemVO;
-import com.app.personalbuddyback.domain.TreeCustomizingVO;
-import com.app.personalbuddyback.domain.TreeVO;
-import com.app.personalbuddyback.domain.TreeViewDTO;
+import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.mapper.MyTreeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,8 +29,8 @@ public class MyTreeDAO {
     }
 
     // 멤버의 성장나무 전체 아이템 리스트 조회
-    public List<TreeViewDTO> findAllTreeCustomizing(Long memberId){
-        return myTreeMapper.selectAllTreeCustomizingByMemberId(memberId);
+    public List<TreeItemListDTO> findAllTreeCustomizing(Map<String, Object> params){
+        return myTreeMapper.selectAllTreeCustomizingByMemberId(params);
     }
 
     // 멤버의 전시된 나무 아이템 목록 조회

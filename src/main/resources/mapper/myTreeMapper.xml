@@ -27,21 +27,69 @@
     </select>
 
 <!--    멤버의 성장나무 전체 아이템 리스트 조회     -->
-    <select id="selectAllTreeCustomizingByMemberId" parameterType="Long" resultType="TreeViewDTO">
+    <select id="selectAllTreeCustomizingByMemberId" parameterType="map" resultType="TreeItemListDTO">
         SELECT
-            ID,
-            MEMBER_ID,
-            ITEM_ID,
-            TREE_CUSTOMIZING_ID,
-            TREE_CUSTOMIZING_POSITION_X,
-            TREE_CUSTOMIZING_POSITION_Y,
-            TREE_CUSTOMIZING_APPLY,
-            ITEM_NAME,
-            ITEM_TYPE,
-            ITEM_IMG_PATH,
-            ITEM_IMG_NAME
-        FROM VW_MEMBER_TREE
-        WHERE MEMBER_ID = #{memberId}
+            VWT.MEMBER_ID,
+            VWT.ITEM_ID,
+            VWT.TREE_CUSTOMIZING_POSITION_X,
+            VWT.TREE_CUSTOMIZING_POSITION_Y,
+            VWT.ITEM_NAME,
+            VWT.ITEM_TYPE,
+            VWT.ITEM_IMG_PATH,
+            VWT.ITEM_IMG_NAME,
+            VWT.ITEM_SIZE_WIDTH,
+            VWT.ITEM_SIZE_HEIGHT,
+            VWI.TOTAL_COUNT,
+            VWI.APPLIED_COUNT,
+            VWI.NOT_APPLIED_COUNT
+        FROM VW_MEMBER_TREE_ITEM_COUNT_SUMMARY VWI
+            JOIN(
+                SELECT
+                    ID,
+                    MEMBER_ID,
+                    ITEM_ID,
+                    TREE_CUSTOMIZING_POSITION_X,
+                    TREE_CUSTOMIZING_POSITION_Y,
+                    ITEM_NAME,
+                    ITEM_TYPE,
+                    ITEM_IMG_PATH,
+                    ITEM_IMG_NAME,
+                    ITEM_SIZE_WIDTH,
+                    ITEM_SIZE_HEIGHT
+                FROM (
+                     SELECT
+                         ID,
+                         MEMBER_ID,
+                         ITEM_ID,
+                         TREE_CUSTOMIZING_POSITION_X,
+                         TREE_CUSTOMIZING_POSITION_Y,
+                         ITEM_NAME,
+                         ITEM_TYPE,
+                         ITEM_IMG_PATH,
+                         ITEM_IMG_NAME,
+                         ITEM_SIZE_WIDTH,
+                         ITEM_SIZE_HEIGHT,
+                         ROW_NUMBER() OVER (PARTITION BY MEMBER_ID, ITEM_ID ORDER BY ID) AS RN
+                     FROM VW_MEMBER_TREE
+                 )
+                WHERE RN = 1
+            ) VWT
+            ON VWI.ITEM_ID = VWT.ITEM_ID
+        WHERE VWT.MEMBER_ID = #{memberId}
+        <choose>
+            <when test="itemType != null and itemType == '스티커'">
+                AND VMT.ITEM_TYPE = #{itemType}
+            </when>
+            <when test="itemType != null and itemType == '나무'">
+                AND VMT.ITEM_TYPE = #{itemType}
+            </when>
+            <when test="itemType != null and itemType == '배경'">
+                AND VMT.ITEM_TYPE = #{itemType}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
     </select>
 
 <!--    멤버의 전시된 나무 아이템 목록 조회   -->
@@ -57,7 +105,9 @@
             ITEM_NAME,
             ITEM_TYPE,
             ITEM_IMG_PATH,
-            ITEM_IMG_NAME
+            ITEM_IMG_NAME,
+            ITEM_SIZE_WIDTH,
+            ITEM_SIZE_HEIGHT
         FROM VW_MEMBER_TREE
         WHERE MEMBER_ID = #{memberId}
         AND TREE_CUSTOMIZING_APPLY = 1

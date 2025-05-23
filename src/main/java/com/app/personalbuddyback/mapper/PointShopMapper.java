@@ -4,6 +4,7 @@ import com.app.personalbuddyback.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Mapper
@@ -24,7 +25,7 @@ public interface PointShopMapper {
     public Optional<ItemVO> selectItemById(Long id);
 
     // 소유하고 있는 아이템 구분할 수 있는 데이터 조회 (포인트 샵 화면)
-    public List<PointShopViewDTO> selectPointShopItems(Long memberId);
+    public List<PointShopViewDTO> selectPointShopItems(Map<String, Object> params);
 
     // 장바구니 정보 조회(장바구니 화면에 담을 정보) 아이템 개별 총합 가격
     public List<BuyingItemDTO> selectAllCartItems(Long memberId);

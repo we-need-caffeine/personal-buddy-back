@@ -4,7 +4,17 @@
 <!--    포인트샵 아이템 추가 (관리자)     -->
     <insert id="insertItem" parameterType="ItemVO">
         INSERT INTO TBL_ITEM
-        VALUES (SEQ_ITEM.NEXTVAL, #{itemName}, #{itemType}, #{itemPrice}, #{itemImgPath}, #{itemImgName})
+        VALUES
+        (
+            SEQ_ITEM.NEXTVAL,
+            #{itemName},
+            #{itemType},
+            #{itemPrice},
+            #{itemImgPath},
+            #{itemImgName},
+            #{itemSizeWidth},
+            #{itemSizeHeight}
+        )
     </insert>
 
 <!--    아이템 구매 추가  -->
@@ -27,7 +37,9 @@
             ITEM_TYPE,
             ITEM_PRICE,
             ITEM_IMG_PATH,
-            ITEM_IMG_NAME
+            ITEM_IMG_NAME,
+            ITEM_SIZE_WIDTH,
+            ITEM_SIZE_HEIGHT
         FROM TBL_ITEM
         <choose>
             <when test="itemType != null">
@@ -44,20 +56,24 @@
             ITEM_TYPE,
             ITEM_PRICE,
             ITEM_IMG_PATH,
-            ITEM_IMG_NAME
+            ITEM_IMG_NAME,
+            ITEM_SIZE_WIDTH,
+            ITEM_SIZE_HEIGHT
         FROM TBL_ITEM
         WHERE ID = #{id}
     </select>
 
 <!--    소유하고 있는 아이템 구분할 수 있는 데이터 조회 (포인트 샵 화면)     -->
-    <select id="selectPointShopItems" parameterType="Long" resultType="PointShopViewDTO">
+    <select id="selectPointShopItems" parameterType="map" resultType="PointShopViewDTO">
         SELECT
-            TBI.ID,
+            DISTINCT (TBI.ID),
             TBI.ITEM_NAME,
             TBI.ITEM_TYPE,
             TBI.ITEM_PRICE,
             TBI.ITEM_IMG_PATH,
             TBI.ITEM_IMG_NAME,
+            TBI.ITEM_SIZE_WIDTH,
+            TBI.ITEM_SIZE_HEIGHT,
             CASE
                 WHEN VMT.MEMBER_ID IS NOT NULL THEN 1
                 ELSE 0
@@ -66,6 +82,20 @@
             LEFT JOIN VW_MEMBER_TREE VMT
             ON VMT.MEMBER_ID = #{memberID}
             AND TBI.ID = VMT.ITEM_ID
+        <choose>
+            <when test="itemType != null and itemType == '스티커'">
+                AND VMT.ITEM_TYPE = #{itemType}
+            </when>
+            <when test="itemType != null and itemType == '나무'">
+                AND VMT.ITEM_TYPE = #{itemType}
+            </when>
+            <when test="itemType != null and itemType == '배경'">
+                AND VMT.ITEM_TYPE = #{itemType}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
     </select>
 
 <!--    장바구니 정보 조회(장바구니 화면에 담을 정보) 아이템 개별 총합 가격      -->
@@ -102,6 +132,8 @@
             <if test="itemPrice != null"> ITEM_PRICE = #{itemPrice}, </if>
             <if test="itemImgPath != null"> ITEM_IMG_PATH = #{itemImgPath}, </if>
             <if test="itemImgName != null"> ITEM_IMG_NAME = #{itemImgName}, </if>
+            <if test="itemSizeWidth != null"> ITEM_SIZE_WIDTH = #{itemSizeWidth}, </if>
+            <if test="itemSizeHeight != null"> ITEM_SIZE_HEIGHT = #{itemSizeHeight}, </if>
         </set>
         WHERE ID = #{id}
     </update>
