@@ -18,7 +18,8 @@ public class TodoListServiceImpl implements TodoListService {
 
     @Override
     public Long registerTodoList(ToDoListVO toDoListVO) {
-      return todoListDAO.saveTodoList(toDoListVO);
+
+        return todoListDAO.saveTodoList(toDoListVO);
     }
 
     // 투두리스트 전체 등록
