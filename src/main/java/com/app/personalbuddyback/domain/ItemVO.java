@@ -12,4 +12,6 @@ public class ItemVO {
     private String itemImgPath;
     private String itemImgName;
     private String itemType;
+    private int itemSizeWidth;
+    private int itemSizeHeight;
 }

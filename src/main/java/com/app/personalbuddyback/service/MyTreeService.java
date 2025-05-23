@@ -1,18 +1,16 @@
 package com.app.personalbuddyback.service;
 
-import com.app.personalbuddyback.domain.ItemVO;
-import com.app.personalbuddyback.domain.TreeCustomizingVO;
-import com.app.personalbuddyback.domain.TreeVO;
-import com.app.personalbuddyback.domain.TreeViewDTO;
+import com.app.personalbuddyback.domain.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MyTreeService {
     // 멤버 - 성장나무 연결 테이블 추가 (회원 가입 시 최초 추가)
     public void registerMemberTree(TreeVO treeVO);
 
     // 멤버의 성장나무 전체 아이템 리스트 조회
-    public List<TreeViewDTO> getAllTreeCustomizing(Long memberId);
+    public List<TreeItemListDTO> getAllTreeCustomizing(Map<String, Object> params);
 
     // 멤버의 전시된 나무 아이템 목록 조회
     public List<TreeViewDTO> getAppliedTreeCustomizing(Long memberId);

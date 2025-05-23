@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -93,8 +94,8 @@ public class PointShopServiceImpl implements PointShopService {
     }
 
     @Override
-    public List<PointShopViewDTO> getPointShopItems(Long memberId) {
-        return pointShopDAO.findPointShopItems(memberId);
+    public List<PointShopViewDTO> getPointShopItems(Map<String, Object> params) {
+        return pointShopDAO.findPointShopItems(params);
     }
 
     @Override

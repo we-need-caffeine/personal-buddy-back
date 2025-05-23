@@ -1,12 +1,10 @@
 package com.app.personalbuddyback.mapper;
 
-import com.app.personalbuddyback.domain.ItemVO;
-import com.app.personalbuddyback.domain.TreeCustomizingVO;
-import com.app.personalbuddyback.domain.TreeVO;
-import com.app.personalbuddyback.domain.TreeViewDTO;
+import com.app.personalbuddyback.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Mapper
@@ -22,7 +20,7 @@ public interface MyTreeMapper {
     public Long selectTreeIdByMemberId(Long memberId);
     
     //멤버의 성장나무 전체 아이템 리스트 조회
-    public List<TreeViewDTO> selectAllTreeCustomizingByMemberId(Long memberId);
+    public List<TreeItemListDTO> selectAllTreeCustomizingByMemberId(Map<String, Object> params);
 
     // 멤버의 전시된 나무 아이템 목록 조회
     public List<TreeViewDTO> selectAppliedTreeCustomizingByMemberId(Long memberId);

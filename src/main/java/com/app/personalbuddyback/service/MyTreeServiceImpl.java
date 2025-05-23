@@ -1,5 +1,6 @@
 package com.app.personalbuddyback.service;
 
+import com.app.personalbuddyback.domain.TreeItemListDTO;
 import com.app.personalbuddyback.domain.TreeVO;
 import com.app.personalbuddyback.domain.TreeViewDTO;
 import com.app.personalbuddyback.repository.MyTreeDAO;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -23,8 +25,8 @@ public class MyTreeServiceImpl implements MyTreeService {
     }
 
     @Override
-    public List<TreeViewDTO> getAllTreeCustomizing(Long memberId) {
-        return myTreeDAO.findAllTreeCustomizing(memberId);
+    public List<TreeItemListDTO> getAllTreeCustomizing(Map<String, Object> params) {
+        return myTreeDAO.findAllTreeCustomizing(params);
     }
 
     @Override
