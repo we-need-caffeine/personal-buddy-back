@@ -35,13 +35,14 @@ public class CalendarServiceImpl implements CalendarService {
             calendarDTO.setCalendarTitle(calendar.getCalendarTitle());
             calendarDTO.setCalendarIndex(calendar.getCalendarIndex());
             calendarDTO.setMemberId(1L);
-
 //            할일 리스트
             calendarDTO.setTodoLists(todoListDAO.findAllTodoListByCalendarId(calendar.getId()));
 
 //            캘린더를 공유받는 멤버
             calendarDTO.setSharedMemberLists(calendarDAO.findAllCalendarMembersByCalendarId(calendar.getId()));
 
+//            캘린더 초대 가능 멤버
+            calendarDTO.setCanInviteMemberLists(calendarDAO.findMutualFollowingsByMemberId(memberId));
 //            List 생성, 찾은 유저에 맞는 유저의 정보를 List<SchedulesDTO>로 담아서 한번에 보낸다.
 //            일정 리스트
             scheduleDAO.findAllSchedulesByMemberId(1L).forEach((member) -> {

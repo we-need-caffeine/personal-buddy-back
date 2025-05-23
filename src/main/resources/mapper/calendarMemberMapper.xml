@@ -27,7 +27,7 @@
 
     <!--  팔로잉 전체 조회  -->
     <select id="selectAllMutualFollowingsByMemberId" parameterType="Long" resultType="MemberVO">
-        SELECT TBF1.FOLLOWING_MEMBER_ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH
+        SELECT TBF1.FOLLOWING_MEMBER_ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH, TBM.MEMBER_IMG_NAME
         FROM TBL_FOLLOW TBF1
                  JOIN TBL_MEMBER TBM
                       ON TBF1.FOLLOWING_MEMBER_ID = TBM.ID
