@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -39,8 +40,8 @@ public class PointShopDAO {
     }
 
     // 소유하고 있는 아이템 구분할 수 있는 데이터 조회 (포인트 샵 화면)
-    public List<PointShopViewDTO> findPointShopItems(Long memberId) {
-        return pointShopMapper.selectPointShopItems(memberId);
+    public List<PointShopViewDTO> findPointShopItems(Map<String, Object> params) {
+        return pointShopMapper.selectPointShopItems(params);
     }
 
     // 장바구니 정보 조회(장바구니 화면에 담을 정보) 아이템 개별 총합 가격

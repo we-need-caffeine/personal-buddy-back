@@ -1,5 +1,6 @@
 package com.app.personalbuddyback.controller;
 
+import com.app.personalbuddyback.domain.TreeItemListDTO;
 import com.app.personalbuddyback.domain.TreeVO;
 import com.app.personalbuddyback.domain.TreeViewDTO;
 import com.app.personalbuddyback.service.MyTreeService;
@@ -28,18 +29,18 @@ public class MyTreeAPI {
     }
 
     @Operation(summary = "회원의 성장나무 아이템 전체 목록 조회", description = "아이템 목록으로 뿌려줄 데이터")
-    @GetMapping("/tree/list/{memberId}")
-    public ResponseEntity<Map<String, Object>> getAllTrees(@PathVariable Long memberId) {
+    @PostMapping("/tree/list")
+    public ResponseEntity<Map<String, Object>> getAllTrees(@RequestBody Map<String, Object> params) {
         Map<String, Object> response = new HashMap<>();
         try{
-            List<TreeViewDTO> memberTrees = myTreeService.getAllTreeCustomizing(memberId);
+            List<TreeItemListDTO> memberTreeItemList = myTreeService.getAllTreeCustomizing(params);
             response.put("result", true);
-            response.put("trees", memberTrees);
-            response.put("message", "회원 성장나무 조회 완료");
+            response.put("memberTreeItemList", memberTreeItemList);
+            response.put("message", "회원 성장나무 아이템 조회 완료");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("result", false);
-            response.put("message", "회원 성장나무 조회 실패");
+            response.put("message", "회원 성장나무 아이템 조회 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

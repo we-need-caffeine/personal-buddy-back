@@ -57,9 +57,9 @@ public class PointShopAPI {
     }
 
     @Operation(summary = "개인화 된 포인트샵 조회 화면", description = "소유하고 있는 목록에 대한 내용을 포함한 포인트샵 전체 목록")
-    @GetMapping("/item/list/{memberId}")
-    public List<PointShopViewDTO> getMemberPointShopView(@PathVariable Long memberId){
-        return pointShopService.getPointShopItems(memberId);
+    @GetMapping("/item/list")
+    public List<PointShopViewDTO> getMemberPointShopView(@RequestBody Map<String, Object> params){
+        return pointShopService.getPointShopItems(params);
     }
 
     @Operation(summary = "아이템 구매", description = "사용자 아이템 구매")

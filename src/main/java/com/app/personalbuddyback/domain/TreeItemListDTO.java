@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-public class TreeViewDTO {
+public class TreeItemListDTO {
     // 전체 아이템 목록
     private Long id; // Tree id (나무 정보를 가지고 올 수 있는 id)
     private Long memberId; // member id (해당 나무정보를 들고있는 멤버를 확인하는 id)
@@ -20,7 +20,6 @@ public class TreeViewDTO {
     private String itemImgName; // item 의 이미지 파일 이름
     private int itemSizeWidth;
     private int itemSizeHeight;
-    // 집계 내용
     private int totalCount;
     private int appliedCount;
     private int notAppliedCount;
