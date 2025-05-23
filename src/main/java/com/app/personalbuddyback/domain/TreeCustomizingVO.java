@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 public class TreeCustomizingVO {
     private Long id;
     private Long itemId;
-    private String treeCustomizingPositionX;
-    private String treeCustomizingPositionY;
+    private int treeCustomizingPositionX;
+    private int treeCustomizingPositionY;
     private int treeCustomizingApply;
     private Long treeId;
 }

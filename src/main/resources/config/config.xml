@@ -36,6 +36,8 @@
         <typeAlias type="com.app.personalbuddyback.domain.CartVO" alias="CartVO" />
         <typeAlias type="com.app.personalbuddyback.domain.BuyingItemDTO" alias="BuyingItemDTO" />
         <typeAlias type="com.app.personalbuddyback.domain.PointShopViewDTO" alias="PointShopViewDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.TreeItemCountDTO" alias="TreeItemCountDTO" />
+        <typeAlias type="com.app.personalbuddyback.domain.TreeItemListDTO" alias="TreeItemListDTO" />
 
 <!--        성장나무 관련 테이블     -->
         <typeAlias type="com.app.personalbuddyback.domain.TreeVO" alias="TreeVO" />
