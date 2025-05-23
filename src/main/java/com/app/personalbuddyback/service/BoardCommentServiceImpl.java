@@ -72,3 +72,4 @@ public class BoardCommentServiceImpl implements BoardCommentService {
         return boardCommentDAO.findBestCommentsByBoardId(boardId);
     }
 }
+
