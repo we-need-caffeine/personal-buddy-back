@@ -28,6 +28,11 @@ public class EventDAO {
         return eventMapper.selectAvailableEvents();
     }
 
+//    // 이벤트 전체 조회(진행중 + 커밍순 모두 조회)
+//    public List<EventListViewDTO> findAllEvents() {
+//        return eventMapper.selectAllEvents();
+//    }
+
     // 이벤트 상세 정보 조회
     public EventViewDTO findEventDetail(Long id) {
         return eventMapper.selectEventDetail(id);

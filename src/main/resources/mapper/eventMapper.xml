@@ -16,7 +16,8 @@
     <!-- 커밍순 이벤트 리스트 -->
     <select id="selectComingEvents" resultType="EventListViewDTO">
         SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE,
-               EVENT_VIEWS, EVENT_GET_POINT, THUMBNAIL_URL, JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
+               EVENT_VIEWS, EVENT_GET_POINT,EVENT_IMG_PATH, EVENT_IMG_NAME,
+            JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
         FROM VW_EVENT_LIST
         WHERE EVENT_START_DATE > SYSDATE
         ORDER BY EVENT_START_DATE
@@ -25,7 +26,7 @@
     <!-- 참여 가능한 이벤트 리스트 -->
     <select id="selectAvailableEvents" resultType="EventListViewDTO">
         SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE,
-               EVENT_VIEWS, EVENT_GET_POINT, THUMBNAIL_URL, JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
+               EVENT_VIEWS, EVENT_GET_POINT, EVENT_IMG_PATH, EVENT_IMG_NAME, JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
         FROM VW_EVENT_LIST
         WHERE SYSDATE BETWEEN EVENT_START_DATE AND EVENT_END_DATE
         ORDER BY EVENT_START_DATE
@@ -34,10 +35,20 @@
     <!-- 이벤트 상세 정보 조회 -->
     <select id="selectEventDetail" parameterType="long" resultType="EventViewDTO">
         SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE, EVENT_VIEWS,
-               EVENT_GET_POINT, THUMBNAIL_URL, JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
+               EVENT_GET_POINT, EVENT_IMG_PATH, EVENT_IMG_NAME, JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
         FROM VW_EVENT_LIST
         WHERE ID = #{id}
     </select>
+
+<!--    // 모든 리스트 조회-->
+<!--    <select id="selectAllEvents" resultType="EventListViewDTO">-->
+<!--        SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE,-->
+<!--               EVENT_VIEWS, EVENT_GET_POINT, EVENT_IMG_PATH, EVENT_IMG_NAME,-->
+<!--               JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT-->
+<!--        FROM VW_EVENT_LIST-->
+<!--        WHERE EVENT_END_DATE >= SYSDATE  &#45;&#45; 오늘 이후까지 살아 있는 애들 모두-->
+<!--        ORDER BY EVENT_START_DATE-->
+<!--    </select>-->
 
     <!-- 조회수 증가 -->
     <update id="updateEventView" parameterType="long">
