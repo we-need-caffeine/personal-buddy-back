@@ -21,6 +21,9 @@ public interface EventMapper {
     // 이벤트 상세 조회
     public EventViewDTO selectEventDetail(Long id);
 
+//    // 모든 이벤트
+//    public List<EventListViewDTO> selectAllEvents();
+
     // 조회수 1 증가
     public void updateEventView(Long id);
 

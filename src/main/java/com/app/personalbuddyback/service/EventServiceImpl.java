@@ -35,6 +35,12 @@ public class EventServiceImpl implements EventService {
         return eventDAO.findAvailableEvents();
     }
 
+//    // 모든 이벤트 조회
+//    @Override
+//    public List<EventListViewDTO> getAllEvents() {
+//        return eventDAO.findAllEvents();
+//    }
+
     // 이벤트 상세 조회
     @Override
     public Optional<EventViewDTO> getEventDetail(Long id) {
