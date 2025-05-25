@@ -4,6 +4,9 @@
 
     <!-- 회원가입 -->
     <insert id="insert" parameterType="MemberVO">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            SELECT SEQ_MEMBER.NEXTVAL FROM DUAL
+        </selectKey>
         INSERT INTO TBL_MEMBER (
             ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_BIRTH, MEMBER_GENDER,
             MEMBER_PHONE, MEMBER_NICKNAME, MEMBER_STATUS_MESSAGE, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
@@ -11,7 +14,7 @@
             MEMBER_TERM_LOCATION_AGREE, MEMBER_TERM_PROMOTION_AGREE, MEMBER_PROVIDER
         )
         VALUES (
-            SEQ_MEMBER.NEXTVAL, #{memberEmail}, #{memberPassword}, #{memberName}, #{memberBirth},
+            #{id}, #{memberEmail}, #{memberPassword}, #{memberName}, #{memberBirth},
             #{memberGender}, #{memberPhone}, #{memberNickName}, #{memberStatusMessage}, #{memberImgName},
             #{memberImgPath}, #{memberPoint}, #{memberAdmin}, SYSDATE, #{memberTermServiceAgree},
             #{memberTermInformationAgree}, #{memberTermLocationAgree}, #{memberTermPromotionAgree}, #{memberProvider}

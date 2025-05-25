@@ -1,7 +1,10 @@
 package com.app.personalbuddyback.controller;
 
+import com.app.personalbuddyback.domain.AchievementVO;
+import com.app.personalbuddyback.domain.MemberAchievementVO;
 import com.app.personalbuddyback.domain.MemberVO;
-import com.app.personalbuddyback.service.MemberService;
+import com.app.personalbuddyback.domain.TreeVO;
+import com.app.personalbuddyback.service.*;
 import com.app.personalbuddyback.util.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +31,8 @@ public class MemberAPI {
     private final MemberService memberService;
     private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
+    private final MyTreeService myTreeService;
+    private final AchievementService achievementService;
 
     @Operation(summary = "회원가입", description = "회원가입 API")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
@@ -39,6 +44,13 @@ public class MemberAPI {
         memberVO.setMemberPassword(encodedPassword);
 
         memberService.join(memberVO);
+        Long memberId = memberVO.getId();
+        TreeVO treeVO = new TreeVO();
+
+        treeVO.setMemberId(memberId);
+
+        myTreeService.registerMemberTree(treeVO);
+        achievementService.createAchievementComplete(memberId);
     }
 
     @Operation(summary = "이메일 중복 조회", description = "이메일 중복 조회 API")
@@ -52,7 +64,7 @@ public class MemberAPI {
 
     @Operation(summary = "전화번호 중복 조회", description = "전화번호 중복 조회 API")
     @ApiResponse(responseCode = "200", description = "조회 성공")
-    @GetMapping("check/phone")
+    @GetMapping("phone/check")
     public ResponseEntity<Boolean> checkPhone(@RequestParam String phone) {
         boolean isPhoneDuplicate = memberService.checkPhoneDuplicate(phone) > 0;
 
@@ -61,7 +73,7 @@ public class MemberAPI {
 
     @Operation(summary = "닉네임 중복 조회", description = "닉네임 중복 조회 API")
     @ApiResponse(responseCode = "200", description = "조회 성공")
-    @GetMapping("check/nickname")
+    @GetMapping("nickname/check")
     public ResponseEntity<Boolean> checkNickname(@RequestParam String nickname) {
         boolean isNickNameDuplicate = memberService.checkNickNameDuplicate(nickname) > 0;
 
