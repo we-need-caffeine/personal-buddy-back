@@ -25,6 +25,8 @@ public class ScheduleDTO {
 
     private String scheduleColor;
     private String scheduleCategory;
+    private Long scheduleSubCategoryId;
+    private Long scheduleCategoryId;
     private Integer scheduleRepeat;
     private Long calendarId;
     private List<MemberVO> scheduleMembers;

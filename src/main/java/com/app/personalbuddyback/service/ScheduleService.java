@@ -11,7 +11,7 @@ public interface ScheduleService {
     public void registerSchedule(ScheduleSaveDTO scheduleSaveDTO);
 
     // 일정 멤버 등록
-    public void addScheduleMember(ScheduleGroupMemberVO scheduleGroupMemberVO);
+    public void addScheduleMember(ScheduleMemberVO scheduleMemberVO);
 
     // 색상 조회
     public List<String> getColors();

@@ -38,11 +38,13 @@ public class CalendarAPI {
 
     // ---------------------------- [캘린더] ----------------------------
 
-    @Operation(summary = "캘린더 등록", description = "새 캘린더를 등록할 수 있는 API")
     @PostMapping("/register")
-    public void registerCalendar(@RequestBody CalendarVO calendarVO) {
+    public ResponseEntity<Map<String, Object>> registerCalendar(@RequestBody CalendarVO calendarVO) {
         log.info("calendarVO = {}", calendarVO);
-        calendarService.registerCalendar(calendarVO);
+        Long calendarId = calendarService.registerCalendar(calendarVO); // 등록 후 ID 리턴
+        Map<String, Object> response = new HashMap<>();
+        response.put("calendarId", calendarId);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "캘린더 전체 조회", description = "캘린더 전체를 조회할 수 있는 API")
@@ -72,13 +74,13 @@ public class CalendarAPI {
     }
 
     @Operation(summary = "캘린더 수정", description = "기존 캘린더 정보를 수정하는 API")
-    @PutMapping("/calendars")
+    @PutMapping("/update")
     public void modifyCalendar(@RequestBody CalendarVO calendarVO) {
         calendarService.modifyCalendar(calendarVO);
     }
 
     @Operation(summary = "캘린더 삭제", description = "캘린더와 연관된 모든 데이터를 포함하여 삭제하는 API")
-    @DeleteMapping("/calendars/{calendarId}")
+    @DeleteMapping("/delete/{calendarId}")
     public void deleteCalendar(@PathVariable Long calendarId) {
         calendarService.deleteCalendar(calendarId);
     }
@@ -87,8 +89,8 @@ public class CalendarAPI {
 
     @Operation(summary = "캘린더 초대", description = "공유 캘린더에 초대할 수 있는 API")
     @PostMapping("/invites")
-    public void inviteCalendar(@RequestBody CalendarInviteVO calendarInviteVO) {
-        calendarService.inviteCalendar(calendarInviteVO);
+    public void inviteCalendar(@RequestBody List<CalendarInviteVO> calendarInviteList) {
+        calendarService.inviteCalendar(calendarInviteList); // 리스트 전달
     }
 
     @Operation(summary = "캘린더 멤버 등록", description = "공유 캘린더 멤버에 등록할 수 있는 API")
@@ -110,7 +112,7 @@ public class CalendarAPI {
         return calendarService.getCalendarMembers(calendarId);
     }
 
-    @Operation(summary = "캘린더 추가 가능 멤버 전체 조회", description = "캘린더 추가 멤버 전체를 조회할 수 있는 API")
+    @Operation(summary = "캘린더 추가 멤버 전체 조회", description = "캘린더 추가 멤버 전체를 조회할 수 있는 API")
     @Parameter(
             name = "memberId",
             description = "캘린더 ID",
