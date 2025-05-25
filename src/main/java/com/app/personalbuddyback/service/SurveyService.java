@@ -10,5 +10,7 @@ public interface SurveyService {
 
     public List<InterestDTO> interestList(Long id);
 
+    public int selectCountByMemberId(Long memberId);
+
     public void deleteInterest(Long memberId);
 }
