@@ -2,8 +2,10 @@ package com.app.personalbuddyback.mapper;
 
 import com.app.personalbuddyback.domain.CalendarInviteVO;
 import com.app.personalbuddyback.domain.CalendarMemberVO;
+import com.app.personalbuddyback.domain.InviteMemberDTO;
 import com.app.personalbuddyback.domain.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,7 +18,10 @@ public interface CalendarMemberMapper {
     // 캘린더 멤버 등록
     public void insertCalendarMember(CalendarMemberVO calendarMemberVO);
 
-    // 팔로잉 전체 조회 By MemberId
+    // 캘린더 멤버 추가 초대 조회
+    public List<InviteMemberDTO> selectInvitableCalendarMembers( Long memberId, Long calendarId);
+
+    // 캘린더 멤버 초대 조회
     public List<MemberVO> selectAllMutualFollowingsByMemberId(Long memberId);
 
     // 캘린더 멤버 전체 조회

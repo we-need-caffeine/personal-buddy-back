@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-public class ScheduleGroupMemberVO {
+public class ScheduleMemberVO {
     private Long  id;
     private Long  memberId;
-    private Long  scheduleMemberGroupId;
+    private Long scheduleId;
 }

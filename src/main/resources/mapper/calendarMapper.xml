@@ -4,10 +4,14 @@
 
     <!-- 캘린더 등록 -->
     <insert id="insertCalendar" parameterType="CalendarVO">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT SEQ_CALENDAR.NEXTVAL FROM DUAL
+        </selectKey>
+
         INSERT INTO TBL_CALENDAR (
         ID, CALENDAR_TITLE, CALENDAR_INDEX, MEMBER_ID
         ) VALUES (
-        SEQ_CALENDAR.NEXTVAL,
+        #{id},
         #{calendarTitle},
         #{calendarIndex},
         #{memberId}

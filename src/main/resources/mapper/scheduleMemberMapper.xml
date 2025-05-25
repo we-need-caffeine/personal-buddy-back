@@ -12,10 +12,10 @@
         VALUES (#{id})
     </insert>
 
-    <!-- 일정 그룹 멤버 등록  -->
-    <insert id="insertScheduleGroupMember" parameterType="ScheduleGroupMemberVO">
-        INSERT INTO TBL_SCHEDULE_GROUP_MEMBER (ID, MEMBER_ID, SCHEDULE_MEMBER_GROUP_ID)
-        VALUES (SEQ_SCHEDULE_GROUP_MEMBER.NEXTVAL, #{memberId}, #{scheduleMemberGroupId})
+    <!-- 일정 멤버 등록  -->
+    <insert id="insertScheduleMember" parameterType="ScheduleMemberVO">
+        INSERT INTO TBL_SCHEDULE_MEMBER (ID, MEMBER_ID, SCHEDULE_ID)
+        VALUES (SEQ_SCHEDULE_MEMBER.NEXTVAL, #{memberId}, #{scheduleId})
     </insert>
 
     <!-- 일정 공유 멤버 전체 조회 -->

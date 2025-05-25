@@ -13,7 +13,7 @@ public interface ScheduleMapper {
     public void insertSchedule(ScheduleSaveDTO scheduleSaveDTO);
 
     // 일정 전체 조회
-    public List<ScheduleVO> selectAllSchedulesByMemberId(Long memberId);
+    public List<ScheduleVO> selectAllSchedulesByCalendarId(Long calendarId);
 
     // 일정 단일 조회
     public Optional<ScheduleViewDTO> selectSchedule(Long scheduleId);

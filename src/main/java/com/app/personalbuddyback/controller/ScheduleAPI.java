@@ -55,7 +55,7 @@ public class ScheduleAPI {
         return scheduleService.getSchedule(scheduleId);
     }
 
-    @Operation(summary = "일정 대분류 조회", description = "일정 대분류를 조회할 수 있는 API")
+    @Operation(summary = "일정 색 조회", description = "일정에 쓰이는 색목록을 조회할 수 있는 API")
     @GetMapping("colors")
     public List<String> getColors() {
         return scheduleService.getColors();
@@ -97,8 +97,8 @@ public class ScheduleAPI {
 
     @Operation(summary = "공유 일정 멤버 등록", description = "공유 일정 멤버에 등록할 수 있는 API")
     @PostMapping("members")
-    public void addScheduleMember(@RequestBody ScheduleGroupMemberVO scheduleGroupMemberVO) {
-        scheduleService.addScheduleMember(scheduleGroupMemberVO);
+    public void addScheduleMember(@RequestBody ScheduleMemberVO scheduleMemberVO) {
+        scheduleService.addScheduleMember(scheduleMemberVO);
     }
 
     @Operation(summary = "공유 일정 멤버 조회", description = "공유 일정 멤버 목록을 조회할 수 있는 API")
