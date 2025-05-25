@@ -41,14 +41,14 @@
     </select>
 
 <!--    // 모든 리스트 조회-->
-<!--    <select id="selectAllEvents" resultType="EventListViewDTO">-->
-<!--        SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE,-->
-<!--               EVENT_VIEWS, EVENT_GET_POINT, EVENT_IMG_PATH, EVENT_IMG_NAME,-->
-<!--               JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT-->
-<!--        FROM VW_EVENT_LIST-->
-<!--        WHERE EVENT_END_DATE >= SYSDATE  &#45;&#45; 오늘 이후까지 살아 있는 애들 모두-->
-<!--        ORDER BY EVENT_START_DATE-->
-<!--    </select>-->
+    <select id="selectAllEvents" resultType="EventListViewDTO">
+        SELECT ID, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_START_DATE, EVENT_END_DATE,
+               EVENT_VIEWS, EVENT_GET_POINT, EVENT_IMG_PATH, EVENT_IMG_NAME,
+               JOIN_COUNT, COMMENT_COUNT, EVENT_LIKE_COUNT
+        FROM VW_EVENT_LIST
+        WHERE EVENT_END_DATE >= SYSDATE  -- 오늘 이후까지 살아 있는 애들 모두
+        ORDER BY EVENT_START_DATE
+    </select>
 
     <!-- 조회수 증가 -->
     <update id="updateEventView" parameterType="long">
