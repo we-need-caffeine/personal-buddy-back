@@ -27,13 +27,13 @@ public class ScheduleDAO {
     }
 
     // 일정 그룹 멤버 등록
-    public void saveScheduleGroupMember(ScheduleGroupMemberVO scheduleGroupMemberVO) {
-        scheduleMemberMapper.insertScheduleGroupMember(scheduleGroupMemberVO);
+    public void saveScheduleMember(ScheduleMemberVO scheduleMemberVO) {
+        scheduleMemberMapper.insertScheduleMember(scheduleMemberVO);
     }
 
     // 일정 전체 조회 By MemberId
-    public List<ScheduleVO> findAllSchedulesByMemberId(Long memberId) {
-        return scheduleMapper.selectAllSchedulesByMemberId(memberId);
+    public List<ScheduleVO> findAllSchedulesByCalendarId(Long calendarId) {
+        return scheduleMapper.selectAllSchedulesByCalendarId(calendarId);
     }
 
     // 일정 단일 조회

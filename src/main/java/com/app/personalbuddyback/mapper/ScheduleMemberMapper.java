@@ -1,9 +1,10 @@
 package com.app.personalbuddyback.mapper;
 
 import com.app.personalbuddyback.domain.MemberVO;
-import com.app.personalbuddyback.domain.ScheduleGroupMemberVO;
 import com.app.personalbuddyback.domain.ScheduleMemberGroupVO;
+import com.app.personalbuddyback.domain.ScheduleMemberVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,8 +14,13 @@ public interface ScheduleMemberMapper {
     // 일정 멤버 그룹 등록
     public void insertScheduleMemberGroup(ScheduleMemberGroupVO scheduleMemberGroupVO);
 
+    @Mapper
+    public interface CalendarMapper {
+        List<MemberVO> selectInvitableCalendarMembers(Long memberId,
+                                                      Long calendarId);
+    }
     // 일정 그룹 멤버 등록
-    public void insertScheduleGroupMember(ScheduleGroupMemberVO scheduleGroupMemberVO);
+    public void insertScheduleMember(ScheduleMemberVO scheduleMemberVO);
 
     // 일정 그룹 멤버 전체 조회
     public List<MemberVO> selectAllScheduleGroupMembersByScheduleMemberGroupId(Long scheduleMemberGroupId);

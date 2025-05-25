@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface CalendarMapper {
 
     // 캘린더 등록
-    public void insertCalendar(CalendarVO calendarVO);
+    public Long insertCalendar(CalendarVO calendarVO);
 
     // 캘린더 전체 조회 ByMemberId
     public List<CalendarVO> selectAllCalendarsByMemberId(Long memberId);

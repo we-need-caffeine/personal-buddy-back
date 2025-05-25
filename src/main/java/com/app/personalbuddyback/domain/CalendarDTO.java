@@ -26,5 +26,5 @@ public class CalendarDTO {
     private List<ScheduleDTO> scheduleLists;
 
 //    초대 가능 팔로잉 리스트
-    private List<MemberVO> canInviteMemberLists;
+    private List<InviteMemberDTO> canInviteMemberLists;
 }

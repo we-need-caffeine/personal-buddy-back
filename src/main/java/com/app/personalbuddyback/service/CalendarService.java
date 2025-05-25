@@ -13,10 +13,10 @@ public interface CalendarService {
     public List<CalendarDTO> getCalendarsAll(Long memberId);
 
     // 캘린더 등록
-    public void registerCalendar(CalendarVO calendarVO);
+    public Long registerCalendar(CalendarVO calendarVO);
 
     // 캘린더 초대
-    public void inviteCalendar(CalendarInviteVO calendarInviteVO);
+    public void inviteCalendar(List<CalendarInviteVO> invites);
 
     // 캘린더 멤버 등록
     public void addCalendarMember(CalendarMemberVO calendarMemberVO);
@@ -24,7 +24,7 @@ public interface CalendarService {
     // 캘린더 멤버 조회
     public List<MemberVO> getCalendarMembers(Long calendarId);
 
-    // 팔로잉 전체 조회
+    // 캘린더 멤버 초대 조회
     public List<MemberVO> getMutualFollowings(Long memberId);
 
     // 캘린더 전체 조회
