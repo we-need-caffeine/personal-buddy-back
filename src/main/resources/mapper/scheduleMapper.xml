@@ -4,12 +4,15 @@
 
     <!-- 일정 등록 -->
     <insert id="insertSchedule" parameterType="ScheduleSaveDTO">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT SEQ_SCHEDULE.NEXTVAL FROM DUAL
+        </selectKey>
         INSERT INTO TBL_SCHEDULE (
         ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
-        SCHEDULE_CREATED_DATE, SCHEDULE_COLOR, SCHEDULE_CATEGORY_ID, SCHEDULE_SUBCATEGORY_ID,
-        SCHEDULE_REPEAT, CALENDAR_ID, SCHEDULE_MEMBER_GROUP_ID
+        SCHEDULE_CREATED_DATE, SCHEDULE_LOCATION, SCHEDULE_COLOR, SCHEDULE_CATEGORY_ID, SCHEDULE_SUBCATEGORY_ID,
+        SCHEDULE_REPEAT, CALENDAR_ID
         ) VALUES (
-        SEQ_SCHEDULE.NEXTVAL,
+        #{id},
         #{scheduleTitle},
         #{scheduleContent},
         #{scheduleStartDate},
@@ -23,19 +26,18 @@
             <otherwise>'green'</otherwise>
         </choose>,
         #{scheduleCategoryId},
-        #{scheduleSubcategoryId},
+        #{scheduleSubCategoryId},
         <choose>
             <when test="scheduleRepeat != null">#{scheduleRepeat}</when>
             <otherwise>0</otherwise>
         </choose>,
-        #{calendarId},
-        #{scheduleMemberGroupId}
+        #{calendarId}
         )
     </insert>
 
     <!-- 일정 대분류 전체 조회 -->
     <select id="selectAllScheduleCategories" resultType="ScheduleCategoryVO">
-        SELECT ID, SCHEDULE_CATEGORY_TITLE
+        SELECT SCHEDULE_CATEGORY_TITLE
         FROM TBL_SCHEDULE_CATEGORY
     </select>
 
@@ -47,19 +49,17 @@
     </select>
 
     <!-- 일정 전체 조회 -->
-    <select id="selectAllSchedulesByMemberId" parameterType="Long" resultType="ScheduleVO">
+    <select id="selectAllSchedulesByCalendarId" parameterType="Long" resultType="ScheduleVO">
         SELECT TBS.ID, TBS.SCHEDULE_TITLE, TBS.SCHEDULE_CONTENT, TBS.SCHEDULE_START_DATE, TBS.SCHEDULE_END_DATE,
                TBS.SCHEDULE_CREATED_DATE, TBS.SCHEDULE_COLOR, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID
         FROM TBL_SCHEDULE TBS
-        JOIN TBL_CALENDAR TBC
-        ON TBS.CALENDAR_ID = TBC.ID
-        WHERE TBC.MEMBER_ID = #{memberId}
+        WHERE TBS.CALENDAR_ID = #{calendarId}
     </select>
 
     <!-- 일정 단일 조회 -->
     <select id="selectSchedule" parameterType="Long" resultType="ScheduleViewDTO">
         SELECT TBS.ID, TBS.SCHEDULE_TITLE, TBS.SCHEDULE_CONTENT, TBS.SCHEDULE_START_DATE, TBS.SCHEDULE_END_DATE, TBS.SCHEDULE_CREATED_DATE,
-               TBS.SCHEDULE_COLOR, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID, TBS.SCHEDULE_MEMBER_GROUP_ID, TBSS.SCHEDULE_SUBCATEGORY_TITLE
+               TBS.SCHEDULE_COLOR, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID, TBSS.SCHEDULE_SUBCATEGORY_TITLE
         FROM TBL_SCHEDULE TBS
         JOIN TBL_SCHEDULE_SUBCATEGORY TBSS
         ON TBS.SCHEDULE_SUBCATEGORY_ID = TBSS.ID

@@ -2,16 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.CalendarMemberMapper">
 
-    <!--  캘린더 초대 등록 -->
     <insert id="insertCalendarInvite" parameterType="CalendarInviteVO">
-        INSERT INTO TBL_CALENDAR_INVITE (ID, CALENDAR_INVITE_INVITED_MEMBER_ID, CALENDAR_INVITE_HOST_ID, CALENDAR_INVITE_IS_APPROVED, CALENDAR_ID)
-        VALUES (
-        SEQ_CALENDAR_INVITE.NEXTVAL,
-        <if test="calendarInviteInvitedMemberId != null">#{calendarInviteInvitedMemberId}</if>,
-        #{calendarInviteHostId},
-        #{calendarInviteIsApproved},
-        #{calendarId}
+        INSERT INTO TBL_CALENDAR_INVITE (
+            ID,
+            CALENDAR_INVITE_INVITED_MEMBER_ID,
+            CALENDAR_INVITE_HOST_ID,
+            CALENDAR_INVITE_IS_APPROVED,
+            CALENDAR_ID
         )
+        VALUES (
+                   SEQ_CALENDAR_INVITE.NEXTVAL,
+                   #{calendarInviteInvitedMemberId},
+                   #{calendarInviteHostId},
+                   #{calendarInviteIsApproved},
+                   #{calendarId}
+               )
     </insert>
 
     <!-- 캘린더 멤버 등록 -->
@@ -25,9 +30,9 @@
         )
     </insert>
 
-    <!--  팔로잉 전체 조회  -->
+    <!-- 켈린더 멤버 초대 조회 -->
     <select id="selectAllMutualFollowingsByMemberId" parameterType="Long" resultType="MemberVO">
-        SELECT TBF1.FOLLOWING_MEMBER_ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH, TBM.MEMBER_IMG_NAME
+        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH, TBM.MEMBER_IMG_NAME
         FROM TBL_FOLLOW TBF1
                  JOIN TBL_MEMBER TBM
                       ON TBF1.FOLLOWING_MEMBER_ID = TBM.ID
@@ -37,6 +42,43 @@
             FROM TBL_FOLLOW TBF2
             WHERE TBF2.FOLLOWING_MEMBER_ID = #{memberId}
         )
+    </select>
+
+    <!-- 켈린더 멤버 추가 초대 조회 -->
+    <select id="selectInvitableCalendarMembers" parameterType="map" resultType="MemberVO">
+        SELECT
+            TBM.ID AS MEMBER_ID,
+            TBM.MEMBER_NAME,
+            TBM.MEMBER_IMG_PATH,
+            TBM.MEMBER_IMG_NAME,
+            CASE
+                WHEN TBCI.CALENDAR_INVITE_IS_APPROVED = 0 THEN '초대대기중'
+                ELSE NULL
+                END AS INVITE_STATUS
+        FROM TBL_MEMBER TBM
+
+                 -- 상호 팔로우
+                 JOIN TBL_FOLLOW F1
+                      ON F1.FOLLOWING_MEMBER_ID = TBM.ID
+                          AND F1.FOLLOWER_MEMBER_ID = #{memberId}
+
+                 JOIN TBL_FOLLOW F2
+                      ON F2.FOLLOWER_MEMBER_ID = TBM.ID
+                          AND F2.FOLLOWING_MEMBER_ID = #{memberId}
+
+            -- 초대 여부
+                 LEFT JOIN TBL_CALENDAR_INVITE TBCI
+                           ON TBCI.CALENDAR_ID = #{calendarId}
+                               AND TBCI.CALENDAR_INVITE_INVITED_MEMBER_ID = TBM.ID
+
+        -- 이미 멤버인 사람은 제외
+        WHERE TBM.ID NOT IN (
+            SELECT MEMBER_ID
+            FROM TBL_CALENDAR_MEMBER
+            WHERE CALENDAR_ID = #{calendarId}
+        )
+          -- 자기 자신 제외
+          AND TBM.ID != #{memberId}
     </select>
 
     <!-- 캘린더 멤버 전체 조회 -->

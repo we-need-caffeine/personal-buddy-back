@@ -17,8 +17,8 @@ public class CalendarDAO {
     private final CalendarMemberMapper calendarMemberMapper;
 
     // 캘린더 등록
-    public void saveCalendar(CalendarVO calendarVO) {
-        calendarMapper.insertCalendar(calendarVO);
+    public Long saveCalendar(CalendarVO calendarVO) {
+        return calendarMapper.insertCalendar(calendarVO);
     }
 
     // 캘린더 초대 그룹 등록
@@ -31,11 +31,15 @@ public class CalendarDAO {
         calendarMemberMapper.insertCalendarMember(calendarMemberVO);
     }
 
-    // 팔로잉 전체 조회
-    public List<MemberVO> findMutualFollowingsByMemberId(Long memberId) {
-        return calendarMemberMapper.selectAllMutualFollowingsByMemberId(memberId);
+    // 켈린더 멤버 추가 초대 조회
+    public List<InviteMemberDTO> findInvitableCalendarMembers(Long memberId, Long calendarId) {
+        return calendarMemberMapper.selectInvitableCalendarMembers(memberId, calendarId);
     }
 
+    // 켈린더 멤버 초대 조회
+    public List<MemberVO> findAllMutualFollowingsByMemberId(Long memberId) {
+        return calendarMemberMapper.selectAllMutualFollowingsByMemberId(memberId);
+    }
     // 캘린더 단일 조회
     public Optional<CalendarVO> findCalendar(Long calendarId) {
         return calendarMapper.selectCalendar(calendarId);

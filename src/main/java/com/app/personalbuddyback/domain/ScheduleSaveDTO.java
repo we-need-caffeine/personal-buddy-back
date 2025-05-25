@@ -16,12 +16,11 @@ public class ScheduleSaveDTO {
     private Date scheduleEndDate;
     private Date scheduleCreatedDate;
     private String scheduleColor;
-    private String scheduleCategory;
+    private String scheduleLocation;
     private Integer scheduleRepeat;
     private Long calendarId;
-    private Long scheduleMemberGroupId;
 
-    private String scheduleCategoryId;
-    private String scheduleSubCategoryId;
+    private Long scheduleCategoryId;
+    private Long scheduleSubCategoryId;
     private List<Long> memberIds;
 }

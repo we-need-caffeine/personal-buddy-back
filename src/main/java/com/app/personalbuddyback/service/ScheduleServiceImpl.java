@@ -22,21 +22,21 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 일정 등록
     @Override
     public void registerSchedule(ScheduleSaveDTO scheduleSaveDTO) {
-        ScheduleMemberGroupVO scheduleMemberGroupVO = new ScheduleMemberGroupVO();
-        scheduleDAO.saveScheduleMemberGroup(scheduleMemberGroupVO);
-        Long groupId = scheduleMemberGroupVO.getId();
-        scheduleSaveDTO.setScheduleMemberGroupId(groupId);
+        // 1. 먼저 스케줄을 등록해서 scheduleId를 받아옴
+        scheduleDAO.saveSchedule(scheduleSaveDTO);
+        Long scheduleId = scheduleSaveDTO.getId();  // selectKey로 설정된 ID
 
+        // 2. 스케줄 멤버 등록
         List<Long> memberIds = scheduleSaveDTO.getMemberIds();
         if (memberIds != null && !memberIds.isEmpty()) {
-            for(Long memberId : memberIds) {
-                ScheduleGroupMemberVO scheduleGroupMemberVO = new ScheduleGroupMemberVO();
-                scheduleGroupMemberVO.setMemberId(memberId);
-                scheduleGroupMemberVO.setScheduleMemberGroupId(groupId);
-                scheduleDAO.saveScheduleGroupMember(scheduleGroupMemberVO);
+            for (Long memberId : memberIds) {
+                ScheduleMemberVO scheduleMemberVO = new ScheduleMemberVO();
+                scheduleMemberVO.setMemberId(memberId);
+                scheduleMemberVO.setScheduleId(scheduleId);
+
+                scheduleDAO.saveScheduleMember(scheduleMemberVO);
             }
         }
-        scheduleDAO.saveSchedule(scheduleSaveDTO);
     }
 
     // 색상조회
@@ -47,8 +47,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // 일정 멤버 등록
     @Override
-    public void addScheduleMember(ScheduleGroupMemberVO scheduleGroupMemberVO) {
-        scheduleDAO.saveScheduleGroupMember(scheduleGroupMemberVO);
+    public void addScheduleMember(ScheduleMemberVO scheduleMemberVO) {
+        scheduleDAO.saveScheduleMember(scheduleMemberVO);
     }
 
     // 일정 멤버 조회
@@ -81,7 +81,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 일정 전체 조회
     @Override
     public List<ScheduleVO> getSchedules(Long memberId) {
-        return scheduleDAO.findAllSchedulesByMemberId(memberId);
+        return scheduleDAO.findAllSchedulesByCalendarId(memberId);
     }
 
     // 일정 단일 조회
@@ -109,23 +109,21 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         scheduleDAO.updateSchedule(scheduleSaveDTO);
 
-        Long groupId = scheduleSaveDTO.getScheduleMemberGroupId();
-
-        if (groupId != null) {
-            // 기존 공유 멤버 제거
-            scheduleDAO.deleteAllScheduleGroupMembersByScheduleMemberGroupId(groupId);
-
-            List<Long> memberIds = scheduleSaveDTO.getMemberIds();
-            // 새 공유 멤버 추가
-            if (memberIds != null && !memberIds.isEmpty()) {
-                for (Long memberId : memberIds) {
-                    ScheduleGroupMemberVO memberVO = new ScheduleGroupMemberVO();
-                    memberVO.setMemberId(memberId);
-                    memberVO.setScheduleMemberGroupId(groupId);
-                    scheduleDAO.saveScheduleGroupMember(memberVO);
-                }
-            }
-        }
+//        if (groupId != null) {
+//            // 기존 공유 멤버 제거
+//            scheduleDAO.deleteAllScheduleGroupMembersByScheduleMemberGroupId(groupId);
+//
+//            List<Long> memberIds = scheduleSaveDTO.getMemberIds();
+//            // 새 공유 멤버 추가
+//            if (memberIds != null && !memberIds.isEmpty()) {
+//                for (Long memberId : memberIds) {
+//                    ScheduleMemberVO memberVO = new ScheduleMemberVO();
+//                    memberVO.setMemberId(memberId);
+//                    memberVO.setScheduleMemberGroupId(groupId);
+//                    scheduleDAO.saveScheduleGroupMember(memberVO);
+//                }
+//            }
+//        }
     }
 
     // 일정 멤버 추방
