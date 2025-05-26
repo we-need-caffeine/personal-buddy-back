@@ -125,6 +125,13 @@ public class BoardServiceImpl implements BoardService {
     // 게시글 삭제
     @Override
     public void removeBoard(Long id) {
+        // 1. 댓글 삭제 (만약 댓글도 FK로 연결되어 있으면)
+        boardCommentDAO.deleteByBoardId(id);
+
+        // 2. 이미지 삭제
+        boardDAO.deleteImages(id);
+
+        // 3. 게시글 삭제 (자식 다 지우고 부모 지우기)
         boardDAO.deleteBoard(id);
     }
 

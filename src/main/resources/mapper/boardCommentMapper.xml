@@ -61,6 +61,12 @@
         WHERE ID = #{id}
     </delete>
 
+    <!-- 게시글 ID 기준으로 댓글 전체 삭제 -->
+    <delete id="deleteByBoardId" parameterType="long">
+        DELETE FROM TBL_BOARD_COMMENT
+        WHERE BOARD_ID = #{boardId}
+    </delete>
+
     <!--    댓글 좋아요-->
     <insert id="insertBoardCommentLike" parameterType="BoardCommentLikeVO">
         INSERT INTO TBL_BOARD_COMMENT_LIKE(

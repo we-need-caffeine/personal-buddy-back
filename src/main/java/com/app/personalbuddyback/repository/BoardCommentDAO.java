@@ -42,6 +42,11 @@ public class BoardCommentDAO {
         boardCommentMapper.deleteBoardComment(id);
     }
 
+    // 게시글에 달린 모든 댓글 삭제
+    public void deleteByBoardId(Long boardId) {
+        boardCommentMapper.deleteByBoardId(boardId);
+    }
+
     // 댓글 좋아요
     public void saveLikeComment(BoardCommentLikeVO likeVO) {
         boardCommentMapper.insertBoardCommentLike(likeVO);
