@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,11 @@ public interface BoardService {
 
     // 게시글 이미지 단일 삭제
     public void removeBoardImageById(Long id);
+
+    // 게시글 이미지 파일명으로 단일 삭제
+    void removeBoardImageByName(String name);
+
+    void saveBoardImage(Long boardId, MultipartFile image);
 
     // 게시글 단독 삭제
     public void removeBoard(Long id);

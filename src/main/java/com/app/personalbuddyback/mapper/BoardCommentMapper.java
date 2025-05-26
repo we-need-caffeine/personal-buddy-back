@@ -26,6 +26,9 @@ public interface BoardCommentMapper {
     //    댓글 삭제
     public void deleteBoardComment(Long id);
 
+    // 게시글 ID 기준으로 댓글 전체 삭제
+    void deleteByBoardId(Long boardId);
+
     //    댓글 좋아요
     public void insertBoardCommentLike(BoardCommentLikeVO boardCommentLikeVO);
 

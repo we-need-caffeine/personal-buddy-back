@@ -72,7 +72,7 @@
                 SELECT COUNT(ID)
                 FROM TBL_BOARD_LIKE
                 WHERE BOARD_ID = TBB.ID
-            ) AS BORAD_LIKE_COUNT,
+            ) AS BOARD_LIKE_COUNT,
             (
                 SELECT COUNT(ID)
                 FROM TBL_BOARD_COMMENT
@@ -93,7 +93,7 @@
         FROM TBL_BOARD TBB
                  JOIN TBL_MEMBER TBM
                       ON TBB.MEMBER_ID = TBM.ID
-        ORDER BY BORAD_LIKE_COUNT DESC
+        ORDER BY BOARD_LIKE_COUNT DESC
             FETCH FIRST 10 ROWS ONLY
     </select>
 
@@ -257,6 +257,12 @@
     <delete id="deleteBoardImageById" parameterType="Long">
         DELETE FROM TBL_BOARD_IMG
         WHERE ID = #{id}
+    </delete>
+
+    <!-- 파일 이름으로 게시글 이미지 삭제 -->
+    <delete id="deleteBoardImageByName" parameterType="String">
+        DELETE FROM TBL_BOARD_IMG
+        WHERE BOARD_IMG_NAME = #{boardImgName}
     </delete>
 
     <!--    게시글 삭제-->
