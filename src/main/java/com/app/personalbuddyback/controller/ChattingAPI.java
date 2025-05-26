@@ -29,7 +29,6 @@ public class ChattingAPI {
     // 메시지 송신 및 수신하는 API
     @MessageMapping("message")
     public void receiveChatting(@Payload ChatVO chatVO) {
-        log.info("Received chatting message: {}", chatVO);
         // 채팅 기록을 저장하고 채팅방에 마지막 메세지와 시간을 기록하는 서비스
         chattingService.saveChatAndUpdateChatRoomLastMessage(chatVO);
         // 해당 채팅방 구독자에게 메시지 전송

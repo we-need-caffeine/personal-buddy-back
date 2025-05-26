@@ -26,7 +26,7 @@ public interface ChattingMapper {
 //    채팅 작성
     public void insertChat (ChatVO chatVO);
 //    채팅방 마지막 채팅내역 업데이트
-    public void updateChatRoom (ChatRoomVO chatRoomVO);
+    public void updateChatRoom (ChatVO ChatVO);
 //    채팅방 숨기기
     public void updateHideChatRoom (Map<String, Object> map);
 //    채팅방 보이기
