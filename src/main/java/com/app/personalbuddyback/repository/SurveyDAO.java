@@ -25,6 +25,8 @@ public class SurveyDAO {
         return surveyMapper.selectAllInterest(id);
     }
 
+    public int selectCountByMemberId(Long memberId) { return surveyMapper.selectCountByMemberId(memberId); }
+
     public void deleteInterestDetail(Long memberId) {
         surveyMapper.deleteInterestDetailByMemberId(memberId);
     }

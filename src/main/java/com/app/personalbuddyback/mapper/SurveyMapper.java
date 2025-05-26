@@ -13,6 +13,8 @@ public interface SurveyMapper {
     public void insertInterestDetail(InterestDTO interestDTO);
 //    설문조사 전체 조회
     public List<InterestDTO> selectAllInterest(Long id);
+//    회원의 설문조사 정보 유무 체크
+    public int selectCountByMemberId(Long memberId);
 //    설문조사 상세 제거
     public void deleteInterestDetailByMemberId(Long memberId);
 //    설문조사 대분류 제거

@@ -110,8 +110,11 @@ public class FileAPI {
                     .toFile(thumbnailFile);
         }
 
+        String memberImgPath = "images/" + dataType;
+
         response.put("filePath", filePath);
         response.put("fileName", fileName);
+        response.put("memberImgPath", memberImgPath);
         response.put("message", "upload success");
 
         return ResponseEntity.ok(response);
