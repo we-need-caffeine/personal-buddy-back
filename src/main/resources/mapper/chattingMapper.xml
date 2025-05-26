@@ -7,8 +7,8 @@
     <select id="selectChatRoomIsTrue" parameterType="map" resultType="Long">
         SELECT ID
         FROM TBL_CHAT_ROOM
-        WHERE FIRST_MEMBER_ID = #{firstMemberId} AND SECOND_MEMBER_ID = #{secondMemberId}
-        OR FIRST_MEMBER_ID = #{secondMemberId} AND SECOND_MEMBER_ID = #{firstMemberId}
+        WHERE (FIRST_MEMBER_ID = #{firstMemberId} AND SECOND_MEMBER_ID = #{secondMemberId})
+        OR (FIRST_MEMBER_ID = #{secondMemberId} AND SECOND_MEMBER_ID = #{firstMemberId})
     </select>
 
 <!--  채팅방 리스트 불러오기  -->
@@ -26,41 +26,33 @@
             TM.MEMBER_NICKNAME,
             TM.MEMBER_IMG_NAME,
             TM.MEMBER_IMG_PATH,
-            CASE
-                WHEN TF.ID IS NOT NULL
-                THEN 1 ELSE 0
-            END AS IS_FOLLOWING,
-            CASE
-                WHEN TF.FOLLOW_FAVORITE = 1
-                THEN 1 ELSE 0
-            END AS IS_FAVORITE,
-            (
-                SELECT COUNT(ID)
-                FROM TBL_CHAT TC
-                WHERE TC.CHAT_ROOM_ID = TCR.ID
-                AND TC.CHAT_READING = 0
-                AND TC.CHAT_WRITER_MEMBER_ID != #{memberId}
-            ) AS UNREAD_COUNT
+        CASE WHEN TF.ID IS NOT NULL THEN 1 ELSE 0 END AS IS_FOLLOWING,
+        CASE WHEN TF.FOLLOW_FAVORITE = 1 THEN 1 ELSE 0 END AS IS_FAVOURITE,
+        (
+            SELECT COUNT(ID)
+            FROM TBL_CHAT TC
+            WHERE TC.CHAT_ROOM_ID = TCR.ID
+            AND TC.CHAT_READING = 0
+            AND TC.CHAT_WRITER_MEMBER_ID != #{memberId}
+        ) AS UNREAD_COUNT
         FROM TBL_CHAT_ROOM TCR
         JOIN TBL_MEMBER TM
-        ON (
-            (TCR.FIRST_MEMBER_ID = TM.ID AND TCR.SECOND_MEMBER_ID = #{memberId}) OR
-            (TCR.SECOND_MEMBER_ID = TM.ID AND TCR.FIRST_MEMBER_ID = #{memberId})
-        )
+        ON ((TCR.FIRST_MEMBER_ID = TM.ID AND TCR.SECOND_MEMBER_ID = #{memberId})
+        OR (TCR.SECOND_MEMBER_ID = TM.ID AND TCR.FIRST_MEMBER_ID = #{memberId}))
         LEFT JOIN TBL_FOLLOW TF
-        ON TF.FOLLOWER_MEMBER_ID = #{memberId} AND TF.FOLLOWING_MEMBER_ID = TM.ID
-        WHERE (
-            (TCR.FIRST_MEMBER_ID = #{memberId} AND TCR.FIRST_MEMBER_HIDE = 1) OR
-            (TCR.SECOND_MEMBER_ID = #{memberId} AND TCR.SECOND_MEMBER_HIDE = 1)
-        )
-        <choose>
-            <when test="filter == 'follow'">
-                AND TF.ID IS NOT NULL
-            </when>
-            <when test="filter == 'favorite'">
-                AND TF.FOLLOW_FAVORITE = 1
-            </when>
-        </choose>
+        ON TF.FOLLOWER_MEMBER_ID = TM.ID
+        AND TF.FOLLOWING_MEMBER_ID = #{memberId}
+        WHERE ((TCR.FIRST_MEMBER_ID = #{memberId} AND TCR.FIRST_MEMBER_HIDE = 1)
+        OR (TCR.SECOND_MEMBER_ID = #{memberId} AND TCR.SECOND_MEMBER_HIDE = 1))
+        <if test="searchNickname != null and searchNickname != ''">
+            AND TM.MEMBER_NICKNAME LIKE '%' || #{searchNickname} || '%'
+        </if>
+        <if test="filterType == 'follow'">
+            AND TF.ID IS NOT NULL
+        </if>
+        <if test="filterType == 'favorite'">
+            AND TF.FOLLOW_FAVORITE = 1
+        </if>
         ORDER BY TCR.CHAT_ROOM_LAST_CHAT_TIME DESC
     </select>
 
@@ -78,18 +70,33 @@
 
 <!--  채팅 내역 불러오기  -->
 <!--  페이징 처리 고려중, 아이디 혹은 시간순으로 채팅 내역을 불러오기  -->
-    <select id="selectChat" parameterType="Long" resultType="ChatVO">
-        SELECT ID, CHAT_CONTENT, CHAT_READING, CHAT_SEND_TIME, CHAT_WRITER_MEMBER_ID
-        FROM TBL_CHAT
-        WHERE CHAT_ROOM_ID = #{chatRoomId} AND CHAT_VISIBLE = 1
-        ORDER BY CHAT_SEND_TIME ASC
+    <select id="selectChat" parameterType="Long" resultType="ChatViewDTO">
+        SELECT
+            TC.ID,
+            TC.CHAT_CONTENT,
+            TC.CHAT_READING,
+            TC.CHAT_SEND_TIME,
+            TC.CHAT_WRITER_MEMBER_ID,
+            TC.CHAT_ROOM_ID,
+            TM.MEMBER_NICKNAME,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH
+        FROM TBL_CHAT TC
+        JOIN TBL_MEMBER TM
+        ON TC.CHAT_WRITER_MEMBER_ID = TM.ID
+        WHERE TC.CHAT_ROOM_ID = #{chatRoomId}
+        AND TC.CHAT_VISIBLE = 1
+        ORDER BY TC.CHAT_SEND_TIME ASC
     </select>
 
 <!--  채팅방 생성  -->
 <!--  존재 여부로 찾지 못한경우, 채팅방을 생성  -->
     <insert id="insertChatRoom" parameterType="ChatRoomVO">
-        INSERT INTO TBL_CHAT_ROOM ( ID, FIRST_MEMBER_ID, SECOND_MEMBER_ID )
-        VALUES ( SEQ_CHAT_ROOM.NEXTVAL, #{firstMemberId}, #{secondMemberId} )
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT SEQ_CHAT_ROOM.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_CHAT_ROOM (ID, FIRST_MEMBER_ID, SECOND_MEMBER_ID)
+        VALUES (#{id}, #{firstMemberId}, #{secondMemberId})
     </insert>
 
 <!--  채팅 작성  -->
@@ -105,7 +112,7 @@
         UPDATE TBL_CHAT_ROOM
         SET CHAT_ROOM_LAST_CHAT = #{chatRoomLastChat},
             CHAT_ROOM_LAST_CHAT_TIME = #{chatRoomLastChatTime}
-        WHERE ID = #{chatRoomId}
+        WHERE ID = #{id}
     </update>
 
 <!--  채팅방 나가기(숨기기)  -->
