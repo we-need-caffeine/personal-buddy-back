@@ -44,6 +44,8 @@ public class EventAPI {
 //        return eventService.getAvailableEvents();
 //    }
 
+
+
     // 이벤트 상세 조회(조회수 자동 증가)
     @Operation(summary = "이벤트 상세 조회(조회수 자동 증가)", description = "이벤트 상세 조회(조회수 자동 증가) API")
     @GetMapping("/detail/{id}")
