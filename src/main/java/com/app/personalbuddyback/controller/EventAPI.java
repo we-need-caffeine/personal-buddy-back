@@ -38,11 +38,13 @@ public class EventAPI {
     }
 
 //    // 참여 가능한 이벤트 리스트
-//    @Operation(summary = "참여 가능한 이벤트 리스트", description = "참여 가능한 이벤트 리스트 API")
-//    @GetMapping("/available")
-//    public List<EventListViewDTO> getAvailableEvents() {
-//        return eventService.getAvailableEvents();
-//    }
+    @Operation(summary = "참여 가능한 이벤트 리스트", description = "참여 가능한 이벤트 리스트 API")
+    @GetMapping("/available")
+    public List<EventListViewDTO> getAvailableEvents() {
+        return eventService.getAvailableEvents();
+    }
+
+
 
     // 이벤트 상세 조회(조회수 자동 증가)
     @Operation(summary = "이벤트 상세 조회(조회수 자동 증가)", description = "이벤트 상세 조회(조회수 자동 증가) API")
