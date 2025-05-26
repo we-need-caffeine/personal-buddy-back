@@ -21,7 +21,7 @@
         SELECT
             TCR.ID AS CHAT_ROOM_ID,
             TCR.CHAT_ROOM_LAST_CHAT,
-            TCR.CHAT_ROOM_LAST_CHAT_TIME,
+            TCR.CHAT_ROOM_LAST_CHAT_TIME AS chatRoomLastChatTime,
             TM.ID AS MEMBER_ID,
             TM.MEMBER_NICKNAME,
             TM.MEMBER_IMG_NAME,
@@ -108,11 +108,11 @@
 
 <!--  채팅방 마지막 채팅 업데이트  -->
 <!--  마지막 채팅의 시간과 기록을 채팅방 리스트에 업데이트  -->
-    <update id="updateChatRoom" parameterType="ChatRoomVO">
+    <update id="updateChatRoom" parameterType="ChatVO">
         UPDATE TBL_CHAT_ROOM
-        SET CHAT_ROOM_LAST_CHAT = #{chatRoomLastChat},
-            CHAT_ROOM_LAST_CHAT_TIME = #{chatRoomLastChatTime}
-        WHERE ID = #{id}
+        SET CHAT_ROOM_LAST_CHAT = #{chatContent},
+            CHAT_ROOM_LAST_CHAT_TIME = SYSDATE
+        WHERE ID = #{chatRoomId}
     </update>
 
 <!--  채팅방 나가기(숨기기)  -->

@@ -22,14 +22,10 @@ public class ChattingServiceImpl implements ChattingService {
 
     @Override
     public void saveChatAndUpdateChatRoomLastMessage(ChatVO chatVO) {
-        ChatRoomVO chatRoomVO = new ChatRoomVO();
-        chatRoomVO.setId(chatVO.getId());
-        chatRoomVO.setChatRoomLastChat(chatVO.getChatContent());
-        chatRoomVO.setChatRoomLastChatTime(chatVO.getChatSendTime());
         // 채팅 기록을 저장
         chattingDAO.saveChat(chatVO);
         // 채팅방의 마지막 메세지와 시간을 기록
-        chattingDAO.updateChatRoom(chatRoomVO);
+        chattingDAO.updateChatRoom(chatVO);
     }
 
     @Override
