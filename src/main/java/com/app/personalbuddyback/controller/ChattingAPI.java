@@ -2,10 +2,12 @@ package com.app.personalbuddyback.controller;
 
 import com.app.personalbuddyback.domain.ChatRoomViewDTO;
 import com.app.personalbuddyback.domain.ChatVO;
+import com.app.personalbuddyback.domain.ChatViewDTO;
 import com.app.personalbuddyback.service.ChattingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -13,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalLong;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("chats/api/*")
@@ -27,6 +29,7 @@ public class ChattingAPI {
     // 메시지 송신 및 수신하는 API
     @MessageMapping("message")
     public void receiveChatting(@Payload ChatVO chatVO) {
+        log.info("Received chatting message: {}", chatVO);
         // 채팅 기록을 저장하고 채팅방에 마지막 메세지와 시간을 기록하는 서비스
         chattingService.saveChatAndUpdateChatRoomLastMessage(chatVO);
         // 해당 채팅방 구독자에게 메시지 전송
@@ -50,9 +53,9 @@ public class ChattingAPI {
     // 해당 채팅방에서 상대가 보낸 메세지를 읽음처리하고 채팅 기록을 불러오는 API
     @Operation(summary = "채팅 기록 리스트", description = "상대가 보낸 채팅을 읽음 처리하고 채팅기록을 불러오는 API")
     @GetMapping("chat/list")
-    public List<ChatVO> getChattingLog(@RequestParam Long memberId, @RequestParam Long chatRoomId) {
+    public List<ChatViewDTO> getChattingLog(@RequestParam Long memberId, @RequestParam Long chatRoomId) {
         // 해당 채팅방에서 상대가 보낸 메세지를 읽음처리하고 채팅 기록을 불러오는 서비스
-        List<ChatVO> chats = chattingService.updateChatReadAndGetAllChat(memberId, chatRoomId);
+        List<ChatViewDTO> chats = chattingService.updateChatReadAndGetAllChat(memberId, chatRoomId);
 
         return chats;
     }

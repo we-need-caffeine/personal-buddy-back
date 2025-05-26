@@ -3,6 +3,7 @@ package com.app.personalbuddyback.repository;
 import com.app.personalbuddyback.domain.ChatRoomVO;
 import com.app.personalbuddyback.domain.ChatRoomViewDTO;
 import com.app.personalbuddyback.domain.ChatVO;
+import com.app.personalbuddyback.domain.ChatViewDTO;
 import com.app.personalbuddyback.mapper.ChattingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -29,7 +30,7 @@ public class ChattingDAO {
         return chattingMapper.selectChatMemberPosition(map);
     }
 //    채팅 내역 불러오기
-    public List<ChatVO> findChat(Long chatRoomId) {
+    public List<ChatViewDTO> findChat(Long chatRoomId) {
         return chattingMapper.selectChat(chatRoomId);
     }
 //    채팅방 생성

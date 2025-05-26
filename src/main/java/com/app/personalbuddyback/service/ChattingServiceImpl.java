@@ -3,6 +3,7 @@ package com.app.personalbuddyback.service;
 import com.app.personalbuddyback.domain.ChatRoomVO;
 import com.app.personalbuddyback.domain.ChatRoomViewDTO;
 import com.app.personalbuddyback.domain.ChatVO;
+import com.app.personalbuddyback.domain.ChatViewDTO;
 import com.app.personalbuddyback.repository.ChattingDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,8 @@ public class ChattingServiceImpl implements ChattingService {
     }
 
     @Override
-    public List<ChatVO> updateChatReadAndGetAllChat(Long memberId, Long chatRoomId) {
-        List<ChatVO> chats = new ArrayList<>();
+    public List<ChatViewDTO> updateChatReadAndGetAllChat(Long memberId, Long chatRoomId) {
+        List<ChatViewDTO> chats = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         
         map.put("memberId", memberId);

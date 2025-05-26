@@ -70,11 +70,23 @@
 
 <!--  채팅 내역 불러오기  -->
 <!--  페이징 처리 고려중, 아이디 혹은 시간순으로 채팅 내역을 불러오기  -->
-    <select id="selectChat" parameterType="Long" resultType="ChatVO">
-        SELECT ID, CHAT_CONTENT, CHAT_READING, CHAT_SEND_TIME, CHAT_WRITER_MEMBER_ID
-        FROM TBL_CHAT
-        WHERE CHAT_ROOM_ID = #{chatRoomId} AND CHAT_VISIBLE = 1
-        ORDER BY CHAT_SEND_TIME ASC
+    <select id="selectChat" parameterType="Long" resultType="ChatViewDTO">
+        SELECT
+            TC.ID,
+            TC.CHAT_CONTENT,
+            TC.CHAT_READING,
+            TC.CHAT_SEND_TIME,
+            TC.CHAT_WRITER_MEMBER_ID,
+            TC.CHAT_ROOM_ID,
+            TM.MEMBER_NICKNAME,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH
+        FROM TBL_CHAT TC
+        JOIN TBL_MEMBER TM
+        ON TC.CHAT_WRITER_MEMBER_ID = TM.ID
+        WHERE TC.CHAT_ROOM_ID = #{chatRoomId}
+        AND TC.CHAT_VISIBLE = 1
+        ORDER BY TC.CHAT_SEND_TIME ASC
     </select>
 
 <!--  채팅방 생성  -->
@@ -100,7 +112,7 @@
         UPDATE TBL_CHAT_ROOM
         SET CHAT_ROOM_LAST_CHAT = #{chatRoomLastChat},
             CHAT_ROOM_LAST_CHAT_TIME = #{chatRoomLastChatTime}
-        WHERE ID = #{chatRoomId}
+        WHERE ID = #{id}
     </update>
 
 <!--  채팅방 나가기(숨기기)  -->
