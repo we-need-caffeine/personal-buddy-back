@@ -27,6 +27,11 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    public int selectCountByMemberId(Long memberId) {
+        return surveyDAO.selectCountByMemberId(memberId);
+    }
+
+    @Override
     public void deleteInterest(Long memberId) {
         surveyDAO.deleteInterestDetail(memberId);
         surveyDAO.deleteInterest(memberId);

@@ -3,6 +3,7 @@ package com.app.personalbuddyback.mapper;
 import com.app.personalbuddyback.domain.ChatRoomVO;
 import com.app.personalbuddyback.domain.ChatRoomViewDTO;
 import com.app.personalbuddyback.domain.ChatVO;
+import com.app.personalbuddyback.domain.ChatViewDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface ChattingMapper {
 //    멤버가 채팅방의 퍼스트멤버인지, 세컨드 멤버인지 찾기
     public Optional<String> selectChatMemberPosition(Map<String, Object> map);
 //    채팅 내역 불러오기
-    public List<ChatVO> selectChat (Long chatRoomId);
+    public List<ChatViewDTO> selectChat (Long chatRoomId);
 //    채팅방 생성
     public void insertChatRoom (ChatRoomVO chatRoomVO);
 //    채팅 작성

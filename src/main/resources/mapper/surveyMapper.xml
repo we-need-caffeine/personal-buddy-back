@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.SurveyMapper">
-<!-- INSERT -->
+
+<!-- 설문조사 대분류 추가 -->
     <insert id="insertInterest" parameterType="InterestDTO">
         <selectKey keyProperty="interestId" resultType="Long" order="BEFORE">
             SELECT SEQ_INTEREST.NEXTVAL FROM DUAL
@@ -10,11 +11,13 @@
         VALUES(#{interestId}, #{interestType}, #{memberId})
     </insert>
 
+<!-- 설문조사 디테일 추가 -->
     <insert id="insertInterestDetail" parameterType="InterestDTO">
         INSERT INTO TBL_INTEREST_DETAIL
         VALUES(SEQ_INTEREST_DETAIL.NEXTVAL, #{interestDetailSection}, #{interestDetailValue}, #{interestId})
     </insert>
 
+<!-- 회원의 설문조사 정보 전체 조회 -->
     <select id="selectAll" parameterType="Long" resultType="InterestDTO">
         SELECT
             TBI.ID AS interestId,
@@ -28,24 +31,34 @@
         WHERE TBI.MEMBER_ID = #{memberId}
     </select>
 
+<!-- 신규 가입 시, 설문조사의 존재 유무 체크 -->
+    <select id="selectCountByMemberId" parameterType="Long" resultType="_int">
+        SELECT COUNT(ID)
+        FROM TBL_INTEREST
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+<!-- 설문조사 대분류 수정 -->
     <update id="updateInterest" parameterType="InterestVO">
         UPDATE TBL_INTEREST
         SET INTEREST_TYPE = #{interestType}
         WHERE ID = #{id}
     </update>
 
+<!-- 설문조사 디테일 수정 -->
     <update id="updateInterestDetail" parameterType="InterestDetailVO">
         UPDATE TBL_INTEREST_DETAIL
         SET INTEREST_DETAIL_SECTION = #{interestDetailSection}, INTEREST_DETAIL_VALUE = #{interestDetailValue}
         WHERE ID = #{id}
     </update>
 
-<!-- DELETE -->
+<!-- 설문조사 디테일 삭제 -->
     <delete id="deleteInterestDetailByMemberId" parameterType="Long">
         DELETE FROM TBL_INTEREST_DETAIL
         WHERE INTEREST_ID IN(SELECT ID FROM TBL_INTEREST WHERE MEMBER_ID = #{memberId})
     </delete>
 
+<!-- 설문조사 대분류 삭제 -->
     <delete id="deleteInterestByMemberId" parameterType="Long">
         DELETE FROM TBL_INTEREST
         WHERE MEMBER_ID = #{memberId}
