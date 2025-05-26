@@ -46,13 +46,13 @@ public class MyTreeAPI {
     }
 
     @Operation(summary = "회원의 꾸며놓은 (전시된) 성장나무 목록", description = "회원이 꾸며놓은 성장나무 아이템 목록(전시된 데이터)을 보기 위한 데이터 조회")
-    @GetMapping("/tree/list/applied/{memberId}")
+    @PostMapping("/tree/list/applied/{memberId}")
     public ResponseEntity<Map<String, Object>> getAllAppliedTrees(@PathVariable Long memberId) {
         Map<String, Object> response = new HashMap<>();
         try{
             List<TreeViewDTO> memberAppliedTrees = myTreeService.getAppliedTreeCustomizing(memberId);
             response.put("result", true);
-            response.put("trees", memberAppliedTrees);
+            response.put("memberAppliedTrees", memberAppliedTrees);
             response.put("message", "회원의 커스텀 성장나무 조회 완료");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
