@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Component
@@ -16,4 +17,7 @@ public class BoardVO {
     private Date boardContentUpdateDate;
     private String boardHashtag;
     private Long memberId;
+    // 이미지 수정용: 삭제할 이미지 이름들
+    private List<String> removedImageNames;
+
 }

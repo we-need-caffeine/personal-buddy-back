@@ -7,11 +7,11 @@ import com.app.personalbuddyback.repository.BoardDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -122,6 +122,26 @@ public class BoardServiceImpl implements BoardService {
         boardDAO.deleteImageById(id);
     }
 
+    @Override
+    public void saveBoardImage(Long boardId, MultipartFile image) {
+        if (image != null && !image.isEmpty()) {
+            String filePath = "images/board/" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+            String uuid = UUID.randomUUID().toString();
+            String fileName = uuid + "_" + image.getOriginalFilename();
+
+            BoardImgVO imgVO = new BoardImgVO();
+            imgVO.setBoardId(boardId);
+            imgVO.setBoardImgPath(filePath);
+            imgVO.setBoardImgName(fileName);
+
+            boardDAO.saveImage(imgVO);
+
+            // 실제 파일 저장 (선택적 - 파일 API가 담당한다면 생략 가능)
+            // 파일저장 로직이 이미 FileAPI에서 관리된다면 여기서는 DB 저장만 처리
+        }
+    }
+
+
     // 게시글 삭제
     @Override
     public void removeBoard(Long id) {
@@ -134,6 +154,13 @@ public class BoardServiceImpl implements BoardService {
         // 3. 게시글 삭제 (자식 다 지우고 부모 지우기)
         boardDAO.deleteBoard(id);
     }
+
+    // 게시글 이미지 파일명으로 단일 삭제
+    @Override
+    public void removeBoardImageByName(String name) {
+        boardDAO.deleteImageByName(name);
+    }
+
 
     // 게시글 조회수 1 증가
     @Override

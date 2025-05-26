@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -146,6 +147,30 @@ public class BoardAPI {
     public void updateBoard(@RequestBody BoardVO boardVO) {
         boardService.updateBoard(boardVO);
     }
+
+    @PutMapping(value = "/post/edit-with-images", consumes = "multipart/form-data")
+    public void updatePostWithImages(
+            @RequestPart("board") BoardVO boardVO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
+    ) {
+        // 1. 게시글 내용 수정
+        boardService.updateBoard(boardVO);
+
+        // 2. 삭제할 이미지가 있다면 처리
+        if (boardVO.getRemovedImageNames() != null) {
+            boardVO.getRemovedImageNames().forEach(name -> {
+                boardService.removeBoardImageByName(name);
+            });
+        }
+
+        // 3. 새 이미지 추가
+        if (images != null && !images.isEmpty()) {
+            images.forEach(image -> {
+                boardService.saveBoardImage(boardVO.getId(), image);
+            });
+        }
+    }
+
 
     // 게시글 이미지 삭제(전체)
     @Operation(summary = "게시글 이미지 전체 삭제", description = "게시글 이미지 전체 삭제 API")

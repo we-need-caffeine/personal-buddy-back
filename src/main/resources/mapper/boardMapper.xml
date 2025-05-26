@@ -259,6 +259,12 @@
         WHERE ID = #{id}
     </delete>
 
+    <!-- 파일 이름으로 게시글 이미지 삭제 -->
+    <delete id="deleteBoardImageByName" parameterType="String">
+        DELETE FROM TBL_BOARD_IMG
+        WHERE BOARD_IMG_NAME = #{boardImgName}
+    </delete>
+
     <!--    게시글 삭제-->
     <delete id="deleteBoard" parameterType="Long">
         DELETE
