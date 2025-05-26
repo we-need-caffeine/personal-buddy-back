@@ -17,6 +17,7 @@
         #{scheduleContent},
         #{scheduleStartDate},
         #{scheduleEndDate},
+        #{scheduleLocation},
         <choose>
             <when test="scheduleCreatedDate != null">#{scheduleCreatedDate}</when>
             <otherwise>SYSDATE</otherwise>
