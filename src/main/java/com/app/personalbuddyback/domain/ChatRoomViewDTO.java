@@ -10,7 +10,7 @@ import java.util.Date;
 public class ChatRoomViewDTO {
     private Long chatRoomId;
     private String chatRoomLastChat;
-    private Date chatRoomLastChatDate;
+    private Date chatRoomLastChatTime;
     private Long memberId;
     private String memberNickName;
     private String memberImgName;

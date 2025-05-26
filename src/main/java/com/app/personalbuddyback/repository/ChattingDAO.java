@@ -42,8 +42,8 @@ public class ChattingDAO {
         chattingMapper.insertChat(chatVO);
     }
 //    채팅방 마지막 채팅내역 업데이트
-    public void updateChatRoom(ChatRoomVO chatRoomVO) {
-        chattingMapper.updateChatRoom(chatRoomVO);
+    public void updateChatRoom(ChatVO ChatVO) {
+        chattingMapper.updateChatRoom(ChatVO);
     }
 //    채팅방 숨기기
     public void updateHideChatRoom (Map<String, Object> map) {
