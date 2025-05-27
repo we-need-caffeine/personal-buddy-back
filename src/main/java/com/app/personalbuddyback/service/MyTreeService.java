@@ -4,6 +4,7 @@ import com.app.personalbuddyback.domain.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface MyTreeService {
     // 멤버 - 성장나무 연결 테이블 추가 (회원 가입 시 최초 추가)
@@ -14,6 +15,12 @@ public interface MyTreeService {
 
     // 멤버의 전시된 나무 아이템 목록 조회
     public List<TreeViewDTO> getAppliedTreeCustomizing(Long memberId);
+
+    // 성장나무 수정을 위한 itemId 로 추가할 아이템의 customizingId 한 개 받기
+    public Optional<TreeViewDTO> getNotAppliedItemId(Map<String, Object> params);
+
+    // 성장나무 수정을 위한 itemId 로 제거할 아이템의 customizingId 한 개 받기
+    public Optional<TreeViewDTO> getAppliedItemId(Map<String, Object> params);
 
     // 멤버 성장나무 아이템 수정
     public void updateTreeCustomizing(TreeViewDTO TreeViewDTO);

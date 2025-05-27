@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 @Mapper
 public interface MyTreeMapper {
@@ -21,6 +22,12 @@ public interface MyTreeMapper {
     
     //멤버의 성장나무 전체 아이템 리스트 조회
     public List<TreeItemListDTO> selectAllTreeCustomizingByMemberId(Map<String, Object> params);
+
+    // 성장나무 수정을 위한 itemId 로 추가할 아이템의 customizingId 한 개 받기
+    public Optional<TreeViewDTO> selectNotAppliedTreeItemByMemberAndItemId(Map<String, Object> params);
+
+    // 성장나무 수정을 위한 itemId 로 제거할 아이템의 customizingId 한 개 받기
+    public Optional<TreeViewDTO> selectAppliedTreeItemByMemberAndItemId(Map<String, Object> params);
 
     // 멤버의 전시된 나무 아이템 목록 조회
     public List<TreeViewDTO> selectAppliedTreeCustomizingByMemberId(Long memberId);

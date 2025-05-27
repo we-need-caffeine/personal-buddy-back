@@ -29,6 +29,7 @@
 <!--    멤버의 성장나무 전체 아이템 리스트 조회     -->
     <select id="selectAllTreeCustomizingByMemberId" parameterType="map" resultType="TreeItemListDTO">
         SELECT
+            VWT.ID,
             VWT.MEMBER_ID,
             VWT.ITEM_ID,
             VWT.TREE_CUSTOMIZING_POSITION_X,
@@ -69,13 +70,14 @@
                          ITEM_IMG_NAME,
                          ITEM_SIZE_WIDTH,
                          ITEM_SIZE_HEIGHT,
-                         ROW_NUMBER() OVER (PARTITION BY MEMBER_ID, ITEM_ID ORDER BY ID) AS RN
+                         ROW_NUMBER() OVER (PARTITION BY MEMBER_ID, ITEM_ID ORDER BY ITEM_ID) AS RN
                      FROM VW_MEMBER_TREE
                  )
                 WHERE RN = 1
             ) VWT
             ON VWI.ITEM_ID = VWT.ITEM_ID
         WHERE VWT.MEMBER_ID = #{memberId}
+        ORDER BY VWI.APPLIED_COUNT DESC
         <choose>
             <when test="itemType != null and itemType == '스티커'">
                 AND VMT.ITEM_TYPE = #{itemType}
@@ -111,6 +113,82 @@
         FROM VW_MEMBER_TREE
         WHERE MEMBER_ID = #{memberId}
         AND TREE_CUSTOMIZING_APPLY = 1
+    </select>
+
+    <!--    성장나무 수정을 위한 itemId 로 추가할 아이템의 정보 받기-->
+    <select id="selectNotAppliedTreeItemByMemberAndItemId" parameterType="map" resultType="TreeViewDTO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            ITEM_ID,
+            TREE_CUSTOMIZING_ID,
+            TREE_CUSTOMIZING_POSITION_X,
+            TREE_CUSTOMIZING_POSITION_Y,
+            TREE_CUSTOMIZING_APPLY,
+            ITEM_NAME,
+            ITEM_TYPE,
+            ITEM_IMG_PATH,
+            ITEM_IMG_NAME,
+            ITEM_SIZE_WIDTH,
+            ITEM_SIZE_HEIGHT
+        FROM (
+                 SELECT
+                     ID,
+                     MEMBER_ID,
+                     ITEM_ID,
+                     TREE_CUSTOMIZING_ID,
+                     TREE_CUSTOMIZING_POSITION_X,
+                     TREE_CUSTOMIZING_POSITION_Y,
+                     TREE_CUSTOMIZING_APPLY,
+                     ITEM_NAME,
+                     ITEM_TYPE,
+                     ITEM_IMG_PATH,
+                     ITEM_IMG_NAME,
+                     ITEM_SIZE_WIDTH,
+                     ITEM_SIZE_HEIGHT,
+                     ROW_NUMBER() OVER (PARTITION BY TREE_CUSTOMIZING_APPLY ORDER BY ITEM_ID) AS RN
+                 FROM VW_MEMBER_TREE
+                 WHERE MEMBER_ID = #{memberId} AND TREE_CUSTOMIZING_APPLY = 0 AND ITEM_ID = #{itemId}
+             )
+        WHERE RN = 1
+    </select>
+
+    <!--    성장나무 수정을 위한 itemId 로 제거할 아이템의 customizingId 받기-->
+    <select id="selectAppliedTreeItemByMemberAndItemId" parameterType="map" resultType="TreeViewDTO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            ITEM_ID,
+            TREE_CUSTOMIZING_ID,
+            TREE_CUSTOMIZING_POSITION_X,
+            TREE_CUSTOMIZING_POSITION_Y,
+            TREE_CUSTOMIZING_APPLY,
+            ITEM_NAME,
+            ITEM_TYPE,
+            ITEM_IMG_PATH,
+            ITEM_IMG_NAME,
+            ITEM_SIZE_WIDTH,
+            ITEM_SIZE_HEIGHT
+        FROM (
+                 SELECT
+                     ID,
+                     MEMBER_ID,
+                     ITEM_ID,
+                     TREE_CUSTOMIZING_ID,
+                     TREE_CUSTOMIZING_POSITION_X,
+                     TREE_CUSTOMIZING_POSITION_Y,
+                     TREE_CUSTOMIZING_APPLY,
+                     ITEM_NAME,
+                     ITEM_TYPE,
+                     ITEM_IMG_PATH,
+                     ITEM_IMG_NAME,
+                     ITEM_SIZE_WIDTH,
+                     ITEM_SIZE_HEIGHT,
+                     ROW_NUMBER() OVER (PARTITION BY TREE_CUSTOMIZING_APPLY ORDER BY ITEM_ID) AS RN
+                 FROM VW_MEMBER_TREE
+                 WHERE MEMBER_ID = #{memberId} AND TREE_CUSTOMIZING_APPLY = 1 AND ITEM_ID = #{itemId}
+             )
+        WHERE RN = 1
     </select>
 
 <!--    멤버 성장나무 아이템 수정     -->
