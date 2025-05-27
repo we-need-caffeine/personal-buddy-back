@@ -21,7 +21,6 @@ public class EventAPI {
     private final EventCommentService eventCommentService;
     private final EventParticipationService eventParticipationService;
 
-
     // --------------------이벤트 리스트--------------------
     // 진행 중 이벤트 3개 (슬라이드배너)
     @Operation(summary = "진행 중 이벤트 3개 (슬라이드배너)", description = "진행 중 이벤트 3개 (슬라이드배너) API")
