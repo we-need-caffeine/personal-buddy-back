@@ -24,6 +24,7 @@ public interface EventService {
 //    // 전체 이벤트 조회 (진행중 + 커밍순)
 //    public List<EventListViewDTO> getAllEvents();
 
+
     // 이벤트 조회수 증가
     public void increaseEventViews(Long id);
 
