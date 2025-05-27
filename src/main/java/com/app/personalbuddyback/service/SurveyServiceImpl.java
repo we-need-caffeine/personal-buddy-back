@@ -18,6 +18,10 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public void insertInterest(InterestDTO interestDTO) {
         surveyDAO.insertInterest(interestDTO);
+    }
+
+    @Override
+    public void insertInterestDetail(InterestDTO interestDTO) {
         surveyDAO.insertInterestDetail(interestDTO);
     }
 

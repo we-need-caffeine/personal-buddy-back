@@ -20,8 +20,13 @@ public class SurveyAPI {
     @Operation(summary = "설문조사 작성", description = "설문조사 작성 API")
     @ApiResponse(responseCode = "200", description = "설문조사 작성 성공")
     @PostMapping("insert")
-    public void insert(@RequestBody InterestDTO interestDTO) {
-        surveyService.insertInterest(interestDTO);
+    public void insert(@RequestBody List<InterestDTO> interestDTOList) {
+
+        for (InterestDTO dto : interestDTOList) {
+            surveyService.insertInterest(dto);
+            surveyService.insertInterestDetail(dto);
+        }
+
     }
 
     @Operation(summary = "설문조사 전체 조회", description = "설문조사 전체 조회 API")
