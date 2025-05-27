@@ -85,7 +85,7 @@ public class SecurityConfig {
 //                                기존 회원의 로그인
                                         if(memberId != null && foundMemberProvider.equals(provider)){
                                             String jwtToken = jwtTokenUtil.generateToken(claims);
-                                            redirectUrl = "http://localhost:3000/?jwtToken=" + jwtToken;
+                                            redirectUrl = "http://localhost:3000/main?jwtToken=" + jwtToken;
 
 //                                기존 회원이라면 통합
                                         }else if(memberId != null && !foundMemberProvider.equals(provider)){
@@ -102,7 +102,7 @@ public class SecurityConfig {
                                                     memberVO.setMemberProvider(provider);
                                                     memberService.edit(memberVO);
                                                 });
-                                                redirectUrl = "http://localhost:3000/?jwtToken=" + jwtToken;
+                                                redirectUrl = "http://localhost:3000/main?jwtToken=" + jwtToken;
                                             }else{
 //                                        타사의 소셜로그인
                                                 redirectUrl = "http://localhost:3000/member/login?provider=" + foundMemberProvider + "&login=false";

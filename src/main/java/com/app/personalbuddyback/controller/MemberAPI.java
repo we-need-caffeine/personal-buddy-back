@@ -44,13 +44,13 @@ public class MemberAPI {
         memberVO.setMemberPassword(encodedPassword);
 
         memberService.join(memberVO);
-        Long memberId = memberVO.getId();
-        TreeVO treeVO = new TreeVO();
-
-        treeVO.setMemberId(memberId);
-
-        myTreeService.registerMemberTree(treeVO);
-        achievementService.createAchievementComplete(memberId);
+//        Long memberId = memberVO.getId();
+//        TreeVO treeVO = new TreeVO();
+//
+//        treeVO.setMemberId(memberId);
+//
+//        myTreeService.registerMemberTree(treeVO);
+//        achievementService.createAchievementComplete(memberId);
     }
 
     @Operation(summary = "이메일 중복 조회", description = "이메일 중복 조회 API")
