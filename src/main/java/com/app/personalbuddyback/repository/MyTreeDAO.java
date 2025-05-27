@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalLong;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,6 +34,16 @@ public class MyTreeDAO {
     public List<TreeItemListDTO> findAllTreeCustomizing(Map<String, Object> params){
         return myTreeMapper.selectAllTreeCustomizingByMemberId(params);
     }
+
+    // 성장나무 수정을 위한 itemId 로 추가할 아이템의 customizingId 한 개 받기
+    public Optional<TreeViewDTO> findNotAppliedItem(Map<String, Object> params){
+        return myTreeMapper.selectNotAppliedTreeItemByMemberAndItemId(params);
+    };
+
+    // 성장나무 수정을 위한 itemId 로 제거할 아이템의 customizingId 한 개 받기
+    public Optional<TreeViewDTO> findAppliedItem(Map<String, Object> params){
+        return myTreeMapper.selectAppliedTreeItemByMemberAndItemId(params);
+    };
 
     // 멤버의 전시된 나무 아이템 목록 조회
     public List<TreeViewDTO> findAppliedTreeCustomizing(Long memberId){

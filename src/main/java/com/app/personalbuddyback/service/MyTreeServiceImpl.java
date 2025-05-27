@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -32,6 +33,16 @@ public class MyTreeServiceImpl implements MyTreeService {
     @Override
     public List<TreeViewDTO> getAppliedTreeCustomizing(Long memberId) {
         return myTreeDAO.findAppliedTreeCustomizing(memberId);
+    }
+
+    @Override
+    public Optional<TreeViewDTO> getNotAppliedItemId(Map<String, Object> params){
+        return myTreeDAO.findNotAppliedItem(params);
+    }
+
+    @Override
+    public Optional<TreeViewDTO> getAppliedItemId(Map<String, Object> params){
+        return myTreeDAO.findAppliedItem(params);
     }
 
     @Override

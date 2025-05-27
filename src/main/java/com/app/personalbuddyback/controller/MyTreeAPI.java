@@ -6,19 +6,23 @@ import com.app.personalbuddyback.domain.TreeViewDTO;
 import com.app.personalbuddyback.service.MyTreeService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import retrofit2.http.HTTP;
 
+import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/my-tree/api")
+@Slf4j
 public class MyTreeAPI {
     private final MyTreeService myTreeService;
 
@@ -58,6 +62,38 @@ public class MyTreeAPI {
         } catch (Exception e) {
             response.put("result", false);
             response.put("message", "회원의 커스텀 성장나무 조회 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @Operation(summary = "성장나무 꾸미기 기능 (위치 수정 및 적용 여부 변경)", description = "회원이 꾸민 성장나무 변경사항을 적용")
+    @PostMapping("/tree/get/item-unapplied")
+    public ResponseEntity<Map<String, Object>> findUnAppliedItem(@RequestBody Map<String, Object> params) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            response.put("result", true);
+            response.put("addItem", myTreeService.getNotAppliedItemId(params));
+            response.put("message", "성장나무 변경사항 저장 완료");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("result", false);
+            response.put("message", "성장나무 변경사항 저장 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @Operation(summary = "성장나무 꾸미기 기능 (위치 수정 및 적용 여부 변경)", description = "회원이 꾸민 성장나무 변경사항을 적용")
+    @PostMapping("/tree/get/item-applied")
+    public ResponseEntity<Map<String, Object>> findAppliedItem(@RequestBody Map<String, Object> params) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            response.put("result", true);
+            response.put("removeItem", myTreeService.getAppliedItemId(params));
+            response.put("message", "성장나무 변경사항 저장 완료");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("result", false);
+            response.put("message", "성장나무 변경사항 저장 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

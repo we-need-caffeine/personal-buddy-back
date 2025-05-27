@@ -53,12 +53,12 @@ public class FileAPI {
 
     @PostMapping("/files-upload")
     public ResponseEntity<Map<String, Object>> uploadFiles(@RequestParam("imgFiles") List<MultipartFile> imgFiles, @RequestParam("dataType") String dataType) throws IOException {
-        String filePath = "C:/personalbuddy/images/" + dataType + "/" + getDatePath();
+        String basePath = "C:/personalbuddy/";
+        String filePath = "images/" + dataType + "/" + getDatePath();
         Map<String, Object> response = new HashMap<>();
-
         List<String> uuids = new ArrayList<>();
         List<String> fileNames = new ArrayList<>();
-        File file = new File(filePath);
+        File file = new File(basePath + filePath);
 
         if(!file.exists()){
             file.mkdirs();
@@ -68,11 +68,11 @@ public class FileAPI {
             uuids.add(UUID.randomUUID().toString());
 
             fileNames.add(uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename());
-            imgFiles.get(i).transferTo(new File(filePath, uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
+            imgFiles.get(i).transferTo(new File(basePath + filePath, uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
 
             // 썸네일 저장
             if(imgFiles.get(i).getContentType().startsWith("image")){
-                FileOutputStream out = new FileOutputStream(new File(filePath, "t_" + uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
+                FileOutputStream out = new FileOutputStream(new File(basePath + filePath, "t_" + uuids.get(i) + "_" + imgFiles.get(i).getOriginalFilename()));
                 Thumbnailator.createThumbnail(imgFiles.get(i).getInputStream(), out, 100, 100);
                 out.close();
             }
@@ -80,8 +80,10 @@ public class FileAPI {
         // 파일의 경로는 동일하게 사용한다
         // 다만 파일의 이름은 여러개로 정해질 수 있어 List 로 전달해야함
         response.put("filePath", filePath);
+        log.info("filePath : {}", filePath);
         response.put("fileNames", fileNames);
         response.put("message", "upload success");
+
         return ResponseEntity.ok(response);
     }
 
