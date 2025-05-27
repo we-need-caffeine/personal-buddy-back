@@ -162,6 +162,16 @@ public class BoardServiceImpl implements BoardService {
     }
 
 
+    @Override
+    public void deleteBoardImages(Long boardId, List<String> removedImageNames) {
+        if (removedImageNames == null || removedImageNames.isEmpty()) return;
+
+        for (String name : removedImageNames) {
+            // 필요시 boardId를 조건으로 걸어도 좋음 (보안 측면에서)
+            boardDAO.deleteImageByName(name);
+        }
+    }
+
     // 게시글 조회수 1 증가
     @Override
     public void increaseBoardViews(Long id) {
