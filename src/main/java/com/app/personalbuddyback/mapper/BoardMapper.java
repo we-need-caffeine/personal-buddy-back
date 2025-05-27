@@ -39,7 +39,10 @@ public interface BoardMapper {
     //    게시글 삭제
     public void deleteBoard(Long id);
 
-    void deleteBoardImageByName(String boardImgName);
+    public void deleteBoardImageByName(String boardImgName);
+
+    //    게시글 이미지 전체 조회
+    public List<BoardImgVO> selectImagesByBoardId(Long boardId);
 
     //    게시글 이미지 추가
     public void insertBoardImage(BoardImgVO boardImgVO);

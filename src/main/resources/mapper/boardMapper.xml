@@ -253,6 +253,13 @@
         WHERE BOARD_ID = #{boardId}
     </delete>
 
+<!--    해당 게시글의 모든 이미지를 조회-->
+    <select id="selectImagesByBoardId" parameterType="Long" resultType="BoardImgVO">
+        SELECT ID, BOARD_IMG_PATH, BOARD_IMG_NAME, BOARD_ID
+        FROM TBL_BOARD_IMG
+        WHERE BOARD_ID = #{boardId}
+    </select>
+
     <!--    특정 이미지 1개 삭제 -->
     <delete id="deleteBoardImageById" parameterType="Long">
         DELETE FROM TBL_BOARD_IMG

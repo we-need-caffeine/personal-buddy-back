@@ -63,6 +63,11 @@ public class BoardDAO {
         boardMapper.updateBoard(boardVO);
     }
 
+    // 게시글 이미지 전체 조회
+    public List<BoardImgVO> findBoardImagesByBoardId(Long boardId) {
+        return boardMapper.selectImagesByBoardId(boardId);
+    }
+
     // 게시글 이미지 전체 삭제
     public void deleteImages(Long boardId) {
         boardMapper.deleteBoardImages(boardId);
