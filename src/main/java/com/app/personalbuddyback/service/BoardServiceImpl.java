@@ -161,7 +161,6 @@ public class BoardServiceImpl implements BoardService {
         boardDAO.deleteImageByName(name);
     }
 
-
     @Override
     public void deleteBoardImages(Long boardId, List<String> removedImageNames) {
         if (removedImageNames == null || removedImageNames.isEmpty()) return;
