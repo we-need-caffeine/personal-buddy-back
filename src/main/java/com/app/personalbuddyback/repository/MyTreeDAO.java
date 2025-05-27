@@ -30,9 +30,19 @@ public class MyTreeDAO {
         return myTreeMapper.selectTreeIdByMemberId(memberId);
     }
 
-    // 멤버의 성장나무 전체 아이템 리스트 조회
-    public List<TreeItemListDTO> findAllTreeCustomizing(Map<String, Object> params){
-        return myTreeMapper.selectAllTreeCustomizingByMemberId(params);
+    // 멤버의 성장나무 전체 아이템 리스트 조회 (item id 별로 분류)
+    public List<TreeItemListDTO> findAllMemberItem(Map<String, Object> params){
+        return myTreeMapper.selectAllMemberItemListByMemberId(params);
+    }
+
+    // 멤버의 성장나무 커스터마이징 (customizing id 별로 분류)
+    public List<TreeViewDTO> findAllTreeCustomizing(Long memberId){
+        return myTreeMapper.selectAllTreeCustomizingByMemberId(memberId);
+    }
+
+    // 멤버의 전시된 나무 아이템 목록 조회
+    public List<TreeViewDTO> findAppliedTreeCustomizing(Long memberId){
+        return myTreeMapper.selectAppliedTreeCustomizingByMemberId(memberId);
     }
 
     // 성장나무 수정을 위한 itemId 로 추가할 아이템의 customizingId 한 개 받기
@@ -44,11 +54,6 @@ public class MyTreeDAO {
     public Optional<TreeViewDTO> findAppliedItem(Map<String, Object> params){
         return myTreeMapper.selectAppliedTreeItemByMemberAndItemId(params);
     };
-
-    // 멤버의 전시된 나무 아이템 목록 조회
-    public List<TreeViewDTO> findAppliedTreeCustomizing(Long memberId){
-        return myTreeMapper.selectAppliedTreeCustomizingByMemberId(memberId);
-    }
 
     // 멤버 성장나무 아이템 수정
     public void updateTreeCustomizing(TreeViewDTO TreeViewDTO){

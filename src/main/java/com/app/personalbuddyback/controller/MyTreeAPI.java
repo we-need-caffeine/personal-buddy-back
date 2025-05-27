@@ -32,12 +32,12 @@ public class MyTreeAPI {
         myTreeService.registerMemberTree(treeVO);
     }
 
-    @Operation(summary = "회원의 성장나무 아이템 전체 목록 조회", description = "아이템 목록으로 뿌려줄 데이터")
+    @Operation(summary = "회원의 성장나무 아이템 전체 목록(아이템 아이디별) 조회", description = "아이템 목록으로 뿌려줄 데이터")
     @PostMapping("/tree/list")
     public ResponseEntity<Map<String, Object>> getAllTrees(@RequestBody Map<String, Object> params) {
         Map<String, Object> response = new HashMap<>();
         try{
-            List<TreeItemListDTO> memberTreeItemList = myTreeService.getAllTreeCustomizing(params);
+            List<TreeItemListDTO> memberTreeItemList = myTreeService.getAllMemberItem(params);
             response.put("result", true);
             response.put("memberTreeItemList", memberTreeItemList);
             response.put("message", "회원 성장나무 아이템 조회 완료");
@@ -45,6 +45,23 @@ public class MyTreeAPI {
         } catch (Exception e) {
             response.put("result", false);
             response.put("message", "회원 성장나무 아이템 조회 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @Operation(summary = "회원의 성장나무 아이템 목록 (아이템 개별 데이터 목록)", description = "아이템 커스터마이징 적용시킬 데이터")
+    @PostMapping("/tree/customizing-list/{memberId}")
+    public ResponseEntity<Map<String, Object>> getAllTreeCustomizing(@PathVariable Long memberId) {
+        Map<String, Object> response = new HashMap<>();
+        try{
+            List<TreeViewDTO> memberCustomizingList = myTreeService.getAllTreeCustomizing(memberId);
+            response.put("result", true);
+            response.put("memberCustomizingList", memberCustomizingList);
+            response.put("message", "회원 성장나무 꾸미기 목록 조회 완료");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("result", false);
+            response.put("message", "회원 성장나무 꾸미기 목록 조회 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -100,13 +117,12 @@ public class MyTreeAPI {
 
     @Operation(summary = "성장나무 꾸미기 기능 (위치 수정 및 적용 여부 변경)", description = "회원이 꾸민 성장나무 변경사항을 적용")
     @PutMapping("/tree/edit")
-    public ResponseEntity<Map<String, Object>> editTreeCustomizing(@RequestBody List<TreeViewDTO> editingTrees) {
+    public ResponseEntity<Map<String, Object>> editTreeCustomizing(@RequestBody List<TreeViewDTO> memberCustomiziingList) {
         Map<String, Object> response = new HashMap<>();
         try {
-            for(TreeViewDTO editingTree : editingTrees){
-                myTreeService.updateTreeCustomizing(editingTree);
+            for(TreeViewDTO memberCustomizingItem : memberCustomiziingList){
+                myTreeService.updateTreeCustomizing(memberCustomizingItem);
             }
-
             response.put("result", true);
             response.put("message", "성장나무 변경사항 저장 완료");
             return ResponseEntity.ok(response);

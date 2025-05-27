@@ -20,8 +20,11 @@ public interface MyTreeMapper {
     // 멤버의 나무 아이디 조회 (멤버의 아이디를 통해서)
     public Long selectTreeIdByMemberId(Long memberId);
     
-    //멤버의 성장나무 전체 아이템 리스트 조회
-    public List<TreeItemListDTO> selectAllTreeCustomizingByMemberId(Map<String, Object> params);
+    //멤버의 성장나무 전체 아이템 리스트 조회 (item id 별로 분류)
+    public List<TreeItemListDTO> selectAllMemberItemListByMemberId(Map<String, Object> params);
+
+    // 멤버의 성장나무 커스터마이징 (customizing id 별로 분류)
+    public List<TreeViewDTO> selectAllTreeCustomizingByMemberId(Long memberId);
 
     // 성장나무 수정을 위한 itemId 로 추가할 아이템의 customizingId 한 개 받기
     public Optional<TreeViewDTO> selectNotAppliedTreeItemByMemberAndItemId(Map<String, Object> params);

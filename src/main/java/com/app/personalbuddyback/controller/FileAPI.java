@@ -132,8 +132,8 @@ public class FileAPI {
 
     @ResponseBody
     @GetMapping("/display")
-    public byte[] displayEventImg(@RequestParam("filePath") String filePath,
-                                  @RequestParam("fileName") String fileName) throws IOException {
+    public byte[] displayImg(@RequestParam("filePath") String filePath,
+                             @RequestParam("fileName") String fileName) throws IOException {
         // filePath가 절대 경로인지 확인하고 중복 방지
         Path fullPath = filePath.startsWith("C:") || filePath.startsWith("/") ?
                 Paths.get(filePath, fileName) :
