@@ -26,8 +26,8 @@
         WHERE MEMBER_ID = #{memberId}
     </select>
 
-<!--    멤버의 성장나무 전체 아이템 리스트 조회     -->
-    <select id="selectAllTreeCustomizingByMemberId" parameterType="map" resultType="TreeItemListDTO">
+<!--    멤버의 성장나무 전체 아이템 리스트 조회 (아이템 아이디 별로 분류)     -->
+    <select id="selectAllMemberItemListByMemberId" parameterType="map" resultType="TreeItemListDTO">
         SELECT
             VWT.ID,
             VWT.MEMBER_ID,
@@ -92,6 +92,26 @@
 
             </otherwise>
         </choose>
+    </select>
+
+<!--    멤버의 성장나무 전체 아이템 리스트 조회 (커스터마이징 아이디 별로 분류)      -->
+    <select id="selectAllTreeCustomizingByMemberId" parameterType="Long" resultType="TreeViewDTO">
+        SELECT
+            ID,
+            MEMBER_ID,
+            ITEM_ID,
+            TREE_CUSTOMIZING_ID,
+            TREE_CUSTOMIZING_POSITION_X,
+            TREE_CUSTOMIZING_POSITION_Y,
+            TREE_CUSTOMIZING_APPLY,
+            ITEM_NAME,
+            ITEM_TYPE,
+            ITEM_IMG_PATH,
+            ITEM_IMG_NAME,
+            ITEM_SIZE_WIDTH,
+            ITEM_SIZE_HEIGHT
+        FROM VW_MEMBER_TREE
+        WHERE MEMBER_ID = #{memberId}
     </select>
 
 <!--    멤버의 전시된 나무 아이템 목록 조회   -->

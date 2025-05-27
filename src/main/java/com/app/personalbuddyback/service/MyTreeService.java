@@ -10,8 +10,11 @@ public interface MyTreeService {
     // 멤버 - 성장나무 연결 테이블 추가 (회원 가입 시 최초 추가)
     public void registerMemberTree(TreeVO treeVO);
 
-    // 멤버의 성장나무 전체 아이템 리스트 조회
-    public List<TreeItemListDTO> getAllTreeCustomizing(Map<String, Object> params);
+    // 멤버의 성장나무 전체 아이템 리스트 조회 (item id 별로 분류)
+    public List<TreeItemListDTO> getAllMemberItem(Map<String, Object> params);
+
+    // 멤버의 성장나무 커스터마이징 (customizing id 별로 분류)
+    public List<TreeViewDTO> getAllTreeCustomizing(Long memberId);
 
     // 멤버의 전시된 나무 아이템 목록 조회
     public List<TreeViewDTO> getAppliedTreeCustomizing(Long memberId);

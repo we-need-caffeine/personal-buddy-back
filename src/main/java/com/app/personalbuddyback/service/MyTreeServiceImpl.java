@@ -26,8 +26,13 @@ public class MyTreeServiceImpl implements MyTreeService {
     }
 
     @Override
-    public List<TreeItemListDTO> getAllTreeCustomizing(Map<String, Object> params) {
-        return myTreeDAO.findAllTreeCustomizing(params);
+    public List<TreeItemListDTO> getAllMemberItem(Map<String, Object> params) {
+        return myTreeDAO.findAllMemberItem(params);
+    }
+
+    @Override
+    public List<TreeViewDTO> getAllTreeCustomizing(Long memberId) {
+        return myTreeDAO.findAllTreeCustomizing(memberId);
     }
 
     @Override
