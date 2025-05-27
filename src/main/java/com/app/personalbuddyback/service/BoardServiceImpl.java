@@ -74,6 +74,7 @@ public class BoardServiceImpl implements BoardService {
             boardViewDTO.setMemberNickName(board.getMemberNickName());
             boardViewDTO.setMemberImgPath(board.getMemberImgPath());
             boardViewDTO.setMemberImgName(board.getMemberImgName());
+            boardViewDTO.setBoardImages(boardDAO.findBoardImagesByBoardId(board.getId()));
             boardViewDTO.setBoardComments(boardCommentDAO.findComments(board.getId()));
         });
         return Optional.ofNullable(boardViewDTO);
