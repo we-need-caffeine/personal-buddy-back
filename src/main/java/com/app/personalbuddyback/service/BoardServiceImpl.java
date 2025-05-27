@@ -166,7 +166,6 @@ public class BoardServiceImpl implements BoardService {
         if (removedImageNames == null || removedImageNames.isEmpty()) return;
 
         for (String name : removedImageNames) {
-            // 필요시 boardId를 조건으로 걸어도 좋음 (보안 측면에서)
             boardDAO.deleteImageByName(name);
         }
     }
