@@ -8,6 +8,8 @@ public interface SurveyService {
 
     public void insertInterest(InterestDTO interestDTO);
 
+    public void insertInterestDetail(InterestDTO interestDTO);
+
     public List<InterestDTO> interestList(Long id);
 
     public int selectCountByMemberId(Long memberId);
