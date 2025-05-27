@@ -42,6 +42,10 @@ public interface BoardService {
     // 게시글 수정
     public void updateBoard(BoardVO boardVO);
 
+    // 게시글 이미지 다중 삭제 (파일명 리스트 기준)
+    void deleteBoardImages(Long boardId, List<String> removedImageNames);
+
+
     // 게시글 이미지 전체 삭제
     public void removeAllBoardImages(Long boardId);
 

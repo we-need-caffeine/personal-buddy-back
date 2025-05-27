@@ -153,23 +153,23 @@ public class BoardAPI {
             @RequestPart("board") BoardVO boardVO,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        // 1. 게시글 내용 수정
+        // 1. 게시글 텍스트 수정 (제목, 내용, 해시태그 등)
         boardService.updateBoard(boardVO);
 
-        // 2. 삭제할 이미지가 있다면 처리
-        if (boardVO.getRemovedImageNames() != null) {
-            boardVO.getRemovedImageNames().forEach(name -> {
-                boardService.removeBoardImageByName(name);
-            });
+        // 2. 기존 이미지 삭제 (프론트에서 삭제 요청된 이미지 이름이 VO에 포함되어 있음)
+        if (boardVO.getRemovedImageNames() != null && !boardVO.getRemovedImageNames().isEmpty()) {
+            boardService.deleteBoardImages(boardVO.getId(), boardVO.getRemovedImageNames());
         }
 
         // 3. 새 이미지 추가
         if (images != null && !images.isEmpty()) {
-            images.forEach(image -> {
-                boardService.saveBoardImage(boardVO.getId(), image);
-            });
+            images.forEach(image -> boardService.saveBoardImage(boardVO.getId(), image));
         }
     }
+
+
+
+
 
 
     // 게시글 이미지 삭제(전체)

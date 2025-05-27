@@ -82,7 +82,6 @@ public class BoardDAO {
         boardMapper.deleteBoardImageByName(name);
     }
 
-
     // 게시글 조회수 1 증가
     public void increaseView(Long id) {
         boardMapper.updateBoardViews(id);
