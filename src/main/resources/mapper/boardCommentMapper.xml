@@ -20,22 +20,21 @@
 
     <!--    내가 쓴 댓글 ( 마이페이지용) -->
     <select id="selectCommentsByMemberId" parameterType="long" resultType="BoardCommentViewDTO">
-        SELECT C.ID,
-               C.BOARD_ID,
-               C.MEMBER_ID,
-               C.BOARD_COMMENT_CONTENT,
-               C.BOARD_COMMENT_CREATE_DATE,
-               C.BOARD_COMMENT_UPDATE_DATE,
-               M.MEMBER_NICKNAME,
-               M.MEMBER_IMG_PATH,
-               M.MEMBER_IMG_NAME,
+        SELECT TBC.ID,
+               TBC.BOARD_ID,
+               TBC.MEMBER_ID,
+               TBC.BOARD_COMMENT_CONTENT,
+               TBC.BOARD_COMMENT_CREATE_DATE,
+               TBM.MEMBER_NICKNAME,
+               TBM.MEMBER_IMG_PATH,
+               TBM.MEMBER_IMG_NAME,
                (SELECT COUNT(ID)
                 FROM TBL_BOARD_COMMENT_LIKE L
-                WHERE L.BOARD_COMMENT_ID = C.ID) AS COMMENT_LIKE_COUNT
-        FROM TBL_BOARD_COMMENT C
-                 JOIN TBL_MEMBER M ON C.MEMBER_ID = M.ID
-        WHERE C.MEMBER_ID = #{memberId}
-        ORDER BY C.BOARD_COMMENT_CREATE_DATE DESC
+                WHERE L.BOARD_COMMENT_ID = TBC.ID) AS COMMENT_LIKE_COUNT
+        FROM TBL_BOARD_COMMENT TBC
+                 JOIN TBL_MEMBER TBM ON TBC.MEMBER_ID = TBM.ID
+        WHERE TBC.MEMBER_ID = #{memberId}
+        ORDER BY TBC.BOARD_COMMENT_CREATE_DATE DESC
     </select>
 
     <!--    댓글 작성-->
