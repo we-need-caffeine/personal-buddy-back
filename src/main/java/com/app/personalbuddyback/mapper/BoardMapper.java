@@ -66,4 +66,3 @@ public interface BoardMapper {
     public int checkBoardLike(BoardLikeVO boardLikeVO);
 }
 
-

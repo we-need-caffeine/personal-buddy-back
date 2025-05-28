@@ -20,4 +20,7 @@ public class BoardCommentViewDTO {
 
     // 베스트 댓글
     private int boardCommentLikeCount; // 댓글 좋아요 수
+    private Long boardId;                // 게시글 ID
+    private String boardTitle;           // 게시글 제목
+    private Date boardContentCreateDate;
 }

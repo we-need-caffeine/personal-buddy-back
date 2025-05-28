@@ -16,7 +16,7 @@ public class BoardViewDTO {
     private String boardContent; // 게시글 내용
     private String boardImgPath; // 게시글 이미지 경로
     private String boardImgName; // 게시글 이미지 이름
-    private String boardContentViews; // 게시글 조회수
+    private Long boardContentViews; // 게시글 조회수
     private Long boardLikeCount; // 게시글 좋아요
     private Date boardCreateDate; // 게시글 작성일+시간
     private int boardCommentCount; // 댓글수
