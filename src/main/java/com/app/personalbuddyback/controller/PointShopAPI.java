@@ -6,6 +6,7 @@ import com.app.personalbuddyback.service.MyTreeService;
 import com.app.personalbuddyback.service.PointShopService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/point-shop/api")
+@Slf4j
 public class PointShopAPI {
 
     private final PointShopService pointShopService;
@@ -57,9 +59,12 @@ public class PointShopAPI {
     }
 
     @Operation(summary = "개인화 된 포인트샵 조회 화면", description = "소유하고 있는 목록에 대한 내용을 포함한 포인트샵 전체 목록")
-    @GetMapping("/item/list")
+    @PostMapping("/item/list")
     public List<PointShopViewDTO> getMemberPointShopView(@RequestBody Map<String, Object> params){
-        return pointShopService.getPointShopItems(params);
+        log.info("params:{}", params);
+        List<PointShopViewDTO> items = pointShopService.getPointShopItems(params);
+        log.info("items:{}", items);
+        return items;
     }
 
     @Operation(summary = "아이템 구매", description = "사용자 아이템 구매")
