@@ -8,6 +8,7 @@ import com.app.personalbuddyback.service.PointService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -127,14 +128,11 @@ public class AchievementAPI {
     }
 
     @Operation(summary = "회원의 업적 전시 변경", description = "회원의 전시 업적 변경")
-    @PutMapping("/achievement/change-display")
-    public ResponseEntity<Map<String, Object>> changeDisplayAchievements(@RequestBody Map<String, Object> params) {
+    @PutMapping("/achievement/change-display/{memberId}")
+    public ResponseEntity<Map<String, Object>> changeDisplayAchievements(@PathVariable Long memberId, @RequestBody List<AchievementViewDTO> achievements) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            Long memberId = (Long)params.get("achievements");
-            List<AchievementViewDTO> achievements = (List<AchievementViewDTO>)params.get("achievements");
-
             for(AchievementViewDTO achievement : achievements){
                 MemberAchievementVO editAchievement = new MemberAchievementVO();
 
