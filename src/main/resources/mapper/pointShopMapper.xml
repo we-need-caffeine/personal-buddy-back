@@ -66,7 +66,7 @@
 <!--    소유하고 있는 아이템 구분할 수 있는 데이터 조회 (포인트 샵 화면)     -->
     <select id="selectPointShopItems" parameterType="map" resultType="PointShopViewDTO">
         SELECT
-            DISTINCT (TBI.ID),
+            DISTINCT TBI.ID AS ITEM_ID,
             TBI.ITEM_NAME,
             TBI.ITEM_TYPE,
             TBI.ITEM_PRICE,
@@ -80,22 +80,12 @@
             END AS ITEM_OWNED
         FROM TBL_ITEM TBI
             LEFT JOIN VW_MEMBER_TREE VMT
-            ON VMT.MEMBER_ID = #{memberID}
-            AND TBI.ID = VMT.ITEM_ID
-        <choose>
-            <when test="itemType != null and itemType == '스티커'">
-                AND VMT.ITEM_TYPE = #{itemType}
-            </when>
-            <when test="itemType != null and itemType == '나무'">
-                AND VMT.ITEM_TYPE = #{itemType}
-            </when>
-            <when test="itemType != null and itemType == '배경'">
-                AND VMT.ITEM_TYPE = #{itemType}
-            </when>
-            <otherwise>
-
-            </otherwise>
-        </choose>
+            ON TBI.ID = VMT.ITEM_ID
+            AND VMT.MEMBER_ID = #{memberId}
+        <if test="itemType != null">
+            AND VMT.ITEM_TYPE = #{itemType}
+        </if>
+        ORDER BY ITEM_OWNED, ITEM_ID
     </select>
 
 <!--    장바구니 정보 조회(장바구니 화면에 담을 정보) 아이템 개별 총합 가격      -->
