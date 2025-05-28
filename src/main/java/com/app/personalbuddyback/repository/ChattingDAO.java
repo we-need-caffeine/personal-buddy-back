@@ -21,6 +21,10 @@ public class ChattingDAO {
     public Optional<Long> findChatRoomIsTrue(Map<String, Object> map) {
         return chattingMapper.selectChatRoomIsTrue(map);
     }
+//    채팅방 정보 단일 조회
+    public Optional<ChatRoomViewDTO> findChatRoom(Map<String, Object> map) {
+        return chattingMapper.selectChatRoom(map);
+    }
 //    채팅방 리스트 불러오기
     public List<ChatRoomViewDTO> findAllChatRoom(Map<String, Object> map) {
         return chattingMapper.selectAllChatRoom(map);
@@ -32,6 +36,10 @@ public class ChattingDAO {
 //    채팅 내역 불러오기
     public List<ChatViewDTO> findChat(Long chatRoomId) {
         return chattingMapper.selectChat(chatRoomId);
+    }
+//    읽지 않은 채팅의 수 조회
+    public Optional<Integer> findAllNotReadChat(Long memberId) {
+        return chattingMapper.selectAllNotReadChat(memberId);
     }
 //    채팅방 생성
     public void saveChatRoom(ChatRoomVO chatRoomVO) {

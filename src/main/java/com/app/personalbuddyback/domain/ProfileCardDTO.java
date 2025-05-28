@@ -17,4 +17,5 @@ public class ProfileCardDTO {
     private Long followingCount;
     private int favorite;
     private int isFollow;
+    private Long memberPoint;
 }
