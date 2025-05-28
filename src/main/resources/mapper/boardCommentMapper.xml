@@ -25,7 +25,6 @@
                C.MEMBER_ID,
                C.BOARD_COMMENT_CONTENT,
                C.BOARD_COMMENT_CREATE_DATE,
-               C.BOARD_COMMENT_UPDATE_DATE,
                M.MEMBER_NICKNAME,
                M.MEMBER_IMG_PATH,
                M.MEMBER_IMG_NAME,
