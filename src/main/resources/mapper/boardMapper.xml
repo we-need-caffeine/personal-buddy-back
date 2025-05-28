@@ -110,13 +110,20 @@
 
     <!--    내가 쓴 게시글(마이페이지용) -->
     <select id="selectBoardListByMemberId" parameterType="long" resultType="BoardListViewDTO">
-        SELECT ID, BOARD_TITLE, BOARD_CONTENT_CREATE_DATE, BOARD_CONTENT_VIEWS, BOARD_HASHTAG,
-               MEMBER_NICKNAME, MEMBER_IMG_NAME, MEMBER_IMG_PATH,
-               BOARD_COMMENT_COUNT, BOARD_LIKE_COUNT, BOARD_IMG_PATH, BOARD_IMG_PATH
-        FROM VW_BOARD_LIST
-        WHERE MEMBER_ID = #{memberId}
-        ORDER BY BOARD_CONTENT_CREATE_DATE DESC
+        SELECT TBB.ID, TBB.BOARD_TITLE, TBB.BOARD_CONTENT_CREATE_DATE, TBB.BOARD_CONTENT_VIEWS, TBB.BOARD_HASHTAG,
+               TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH,
+               (
+                   SELECT COUNT(ID) FROM TBL_BOARD_COMMENT C WHERE C.BOARD_ID = TBB.ID
+               ) AS BOARD_COMMENT_COUNT,
+               (
+                   SELECT COUNT(ID) FROM TBL_BOARD_LIKE L WHERE L.BOARD_ID = TBB.ID
+               ) AS BOARD_LIKE_COUNT
+        FROM TBL_BOARD TBB
+                 JOIN TBL_MEMBER TBM ON TBB.MEMBER_ID = TBM.ID
+        WHERE TBB.MEMBER_ID = #{memberId}
+        ORDER BY TBB.BOARD_CONTENT_CREATE_DATE DESC
     </select>
+
 
     <!--    HOT게시글(좋아요 수 많은 10개만)-->
     <select id="selectHotBoardList" resultType="BoardListViewDTO">
