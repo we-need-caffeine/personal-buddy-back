@@ -92,6 +92,7 @@
             TM.MEMBER_STATUS_MESSAGE,
             TM.MEMBER_IMG_NAME,
             TM.MEMBER_IMG_PATH,
+            TM.MEMBER_POINT,
             (
                 SELECT COUNT(ID)
                 FROM TBL_FOLLOW

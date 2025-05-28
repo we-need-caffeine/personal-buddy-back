@@ -11,6 +11,24 @@
         OR (FIRST_MEMBER_ID = #{secondMemberId} AND SECOND_MEMBER_ID = #{firstMemberId})
     </select>
 
+<!--  채팅에서 필요한 채팅방 정보  -->
+    <select id="selectChatRoom" parameterType="Long" resultType="ChatRoomViewDTO">
+        SELECT
+            TR.ID AS CHAT_ROOM_ID,
+            TM.ID AS MEMBER_ID,
+            TM.MEMBER_NICKNAME,
+            TM.MEMBER_IMG_NAME,
+            TM.MEMBER_IMG_PATH
+        FROM TBL_CHAT_ROOM TR
+        JOIN TBL_MEMBER TM
+        ON TM.ID =
+        CASE
+            WHEN TR.FIRST_MEMBER_ID = #{memberId} THEN TR.SECOND_MEMBER_ID
+            WHEN TR.SECOND_MEMBER_ID = #{memberId} THEN TR.FIRST_MEMBER_ID
+        END
+        WHERE TR.ID = #{chatRoomId}
+    </select>
+
 <!--  채팅방 리스트 불러오기  -->
 <!--  - 요청자 or 수신자 중 내가 포함된 채팅방  -->
 <!--  - 숨김 상태가 아닌 방만 조회  -->
@@ -89,10 +107,22 @@
         ORDER BY TC.CHAT_SEND_TIME ASC
     </select>
 
+<!--  읽지않은 채팅의 수  -->
+    <select id="selectAllNotReadChat" parameterType="Long" resultType="Integer">
+        SELECT COUNT(TC.ID)
+        FROM TBL_CHAT TC
+        JOIN TBL_CHAT_ROOM TCR ON TC.CHAT_ROOM_ID = TCR.ID
+        WHERE TC.CHAT_READING = 0
+        AND (
+            (TCR.FIRST_MEMBER_ID = #{memberId} AND TC.CHAT_WRITER_MEMBER_ID != #{memberId}) OR
+            (TCR.SECOND_MEMBER_ID = #{memberId} AND TC.CHAT_WRITER_MEMBER_ID != #{memberId})
+        )
+    </select>
+
 <!--  채팅방 생성  -->
 <!--  존재 여부로 찾지 못한경우, 채팅방을 생성  -->
     <insert id="insertChatRoom" parameterType="ChatRoomVO">
-        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
             SELECT SEQ_CHAT_ROOM.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO TBL_CHAT_ROOM (ID, FIRST_MEMBER_ID, SECOND_MEMBER_ID)
