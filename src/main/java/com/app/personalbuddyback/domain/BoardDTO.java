@@ -24,4 +24,6 @@ public class BoardDTO {
     private String memberNickname;
     private String memberImgPath;
     private String memberImgName;
+
+    private Long boardId;         // 게시글 ID
 }

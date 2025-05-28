@@ -20,22 +20,31 @@
 
     <!--    내가 쓴 댓글 ( 마이페이지용) -->
     <select id="selectCommentsByMemberId" parameterType="long" resultType="BoardCommentViewDTO">
-        SELECT TBC.ID,
-               TBC.BOARD_ID,
-               TBC.MEMBER_ID,
-               TBC.BOARD_COMMENT_CONTENT,
-               TBC.BOARD_COMMENT_CREATE_DATE,
-               TBM.MEMBER_NICKNAME,
-               TBM.MEMBER_IMG_PATH,
-               TBM.MEMBER_IMG_NAME,
-               (SELECT COUNT(ID)
-                FROM TBL_BOARD_COMMENT_LIKE L
-                WHERE L.BOARD_COMMENT_ID = TBC.ID) AS COMMENT_LIKE_COUNT
+        SELECT
+            TBC.ID,
+            TBC.BOARD_ID,
+            TB.ID AS boardId,
+            TB.BOARD_TITLE AS boardTitle,
+            TB.BOARD_CONTENT_CREATE_DATE AS boardContentCreateDate,
+            TBC.BOARD_COMMENT_CONTENT,
+            TBC.BOARD_COMMENT_CREATE_DATE,
+            TBM.ID AS memberId,
+            TBM.MEMBER_NICKNAME,
+            TBM.MEMBER_IMG_PATH,
+            TBM.MEMBER_IMG_NAME,
+            (
+                SELECT COUNT(ID)
+                FROM TBL_BOARD_COMMENT_LIKE
+                WHERE BOARD_COMMENT_ID = TBC.ID
+            ) AS boardCommentLikeCount
         FROM TBL_BOARD_COMMENT TBC
                  JOIN TBL_MEMBER TBM ON TBC.MEMBER_ID = TBM.ID
+                 JOIN TBL_BOARD TB ON TBC.BOARD_ID = TB.ID
         WHERE TBC.MEMBER_ID = #{memberId}
         ORDER BY TBC.BOARD_COMMENT_CREATE_DATE DESC
     </select>
+
+
 
     <!--    댓글 작성-->
     <insert id="insertBoardComment" parameterType="BoardCommentVO">
