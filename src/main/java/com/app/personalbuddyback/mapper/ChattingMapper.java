@@ -15,12 +15,16 @@ public interface ChattingMapper {
 
 //    채팅방 존재 여부
     public Optional<Long> selectChatRoomIsTrue(Map<String, Object> map);
+//    채팅방 정보 단일조회
+    public Optional<ChatRoomViewDTO> selectChatRoom(Map<String, Object> map);
 //    채팅방 리스트 불러오기
     public List<ChatRoomViewDTO> selectAllChatRoom(Map<String, Object> map);
 //    멤버가 채팅방의 퍼스트멤버인지, 세컨드 멤버인지 찾기
     public Optional<String> selectChatMemberPosition(Map<String, Object> map);
 //    채팅 내역 불러오기
     public List<ChatViewDTO> selectChat (Long chatRoomId);
+//    읽지않은 채팅 수 조회
+    public Optional<Integer> selectAllNotReadChat(Long memberId);
 //    채팅방 생성
     public void insertChatRoom (ChatRoomVO chatRoomVO);
 //    채팅 작성

@@ -5,7 +5,6 @@ import com.app.personalbuddyback.domain.ChatVO;
 import com.app.personalbuddyback.domain.ChatViewDTO;
 import com.app.personalbuddyback.service.ChattingService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -33,6 +32,22 @@ public class ChattingAPI {
         chattingService.saveChatAndUpdateChatRoomLastMessage(chatVO);
         // 해당 채팅방 구독자에게 메시지 전송
         template.convertAndSend("/sub/chatroom/" + chatVO.getChatRoomId(), chatVO);
+    }
+    
+    // 채팅방 관련 동작을 잡아서 전송
+    @MessageMapping("state")
+    public void handleUserState(@Payload ChatVO chatVO) {
+        // 구독자(상대방)에게 실시간 전송
+        // ChatVO타입으로 보내지만 실질적으로 받는값은 방번호와 유저아이디
+        template.convertAndSend("/sub/state/" + chatVO.getChatRoomId(), chatVO);
+    }
+
+
+    // 읽지 않은 채팅의 수를 조회하는 API
+    @Operation(summary = "읽지 않은 채팅의 수 조회", description = "멤버의 아이디로 읽지 않은 채팅의 수를 불러오는 API")
+    @GetMapping("chat/not-read/{memberId}")
+    public Integer getAllNotReadChat (@PathVariable Long memberId) {
+        return chattingService.findAllNotReadChat(memberId).get();
     }
 
     // 채팅방 리스트를 불러오는 API
@@ -62,14 +77,12 @@ public class ChattingAPI {
     // 채팅방을 생성하는 API
     @Operation(summary = "채팅방 생성/숨김 해제", description = "채팅방이 존재하면 숨김처리를 해제하고, 존재하지 않으면 새로운 채팅방을 생성하는 API")
     @PostMapping("chat-room/register")
-    public Long createRoom(@RequestParam Long memberId, @RequestParam Long secondMemberId) {
+    public Optional<ChatRoomViewDTO> createRoom(@RequestParam Long memberId, @RequestParam Long secondMemberId) {
         // 멤버 2명의 아이디를 받아 이미 존재하는지 채팅방인지 검증 후,
         // 존재하면 멤버아이디가 해당하는 view컬럼을 1로 바꿔준다
         // 존재하지 않는다면 새로운 채팅방을 만든다
         // 로직이 끝난 후, 채팅방의 아이디를 반환한다
-        Optional<Long> chatRoomId = chattingService.saveChatRoomOrChangeViewChatRoom(memberId, secondMemberId);
-
-        return chatRoomId.get();
+        return chattingService.saveChatRoomOrChangeViewChatRoom(memberId, secondMemberId);
     }
 
     // 채팅방을 숨기는 API
