@@ -188,7 +188,6 @@ public class BoardServiceImpl implements BoardService {
         boardDAO.deleteBoard(id);
     }
 
-
     // 게시글 이미지 파일명으로 단일 삭제
     @Override
     public void removeBoardImageByName(String name) {
