@@ -148,24 +148,27 @@ public class BoardAPI {
         boardService.updateBoard(boardVO);
     }
 
+
     @PutMapping(value = "/post/edit-with-images", consumes = "multipart/form-data")
     public void updatePostWithImages(
             @RequestPart("board") BoardVO boardVO,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        // 1. 게시글 텍스트 수정 (제목, 내용, 해시태그 등)
         boardService.updateBoard(boardVO);
 
-        // 2. 기존 이미지 삭제 (프론트에서 삭제 요청된 이미지 이름이 VO에 포함되어 있음)
+        // 삭제할 이미지 이름 리스트가 있다면 삭제
         if (boardVO.getRemovedImageNames() != null && !boardVO.getRemovedImageNames().isEmpty()) {
             boardService.deleteBoardImages(boardVO.getId(), boardVO.getRemovedImageNames());
         }
 
-        // 3. 새 이미지 추가
+        // 새 이미지 추가
         if (images != null && !images.isEmpty()) {
-            images.forEach(image -> boardService.saveBoardImage(boardVO.getId(), image));
+            for (MultipartFile image : images) {
+                boardService.saveBoardImage(boardVO.getId(), image);
+            }
         }
     }
+
 
 
 

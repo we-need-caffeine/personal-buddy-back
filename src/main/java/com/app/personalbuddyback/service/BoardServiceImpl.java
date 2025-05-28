@@ -5,10 +5,14 @@ import com.app.personalbuddyback.mapper.BoardMapper;
 import com.app.personalbuddyback.repository.BoardCommentDAO;
 import com.app.personalbuddyback.repository.BoardDAO;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -126,35 +130,64 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void saveBoardImage(Long boardId, MultipartFile image) {
         if (image != null && !image.isEmpty()) {
-            String filePath = "images/board/" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            String uuid = UUID.randomUUID().toString();
-            String fileName = uuid + "_" + image.getOriginalFilename();
+            try {
+                String basePath = "C:/personalbuddy/";
+                String datePath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                String folderPath = "images/board/" + datePath;
+                File saveDir = new File(basePath + folderPath);
+                if (!saveDir.exists()) saveDir.mkdirs();
 
-            BoardImgVO imgVO = new BoardImgVO();
-            imgVO.setBoardId(boardId);
-            imgVO.setBoardImgPath(filePath);
-            imgVO.setBoardImgName(fileName);
+                String uuid = UUID.randomUUID().toString();
+                String originalName = image.getOriginalFilename();
+                String savedName = uuid + "_" + originalName;
 
-            boardDAO.saveImage(imgVO);
+                // 원본 저장
+                image.transferTo(new File(saveDir, savedName));
 
-            // 실제 파일 저장 (선택적 - 파일 API가 담당한다면 생략 가능)
-            // 파일저장 로직이 이미 FileAPI에서 관리된다면 여기서는 DB 저장만 처리
+                // 썸네일 저장
+                if (image.getContentType().startsWith("image")) {
+                    File thumbnail = new File(saveDir, "t_" + savedName);
+                    try (FileOutputStream out = new FileOutputStream(thumbnail)) {
+                        Thumbnailator.createThumbnail(image.getInputStream(), out, 100, 100);
+                    }
+                }
+
+                // DB 저장
+                BoardImgVO imgVO = new BoardImgVO();
+                imgVO.setBoardId(boardId);
+                imgVO.setBoardImgPath(folderPath);
+                imgVO.setBoardImgName(savedName);
+                boardDAO.saveImage(imgVO);
+            } catch (IOException e) {
+                e.printStackTrace(); // 예외 로그 출력
+            }
         }
     }
+
 
 
     // 게시글 삭제
     @Override
     public void removeBoard(Long id) {
-        // 1. 댓글 삭제 (만약 댓글도 FK로 연결되어 있으면)
+        // 댓글 먼저 삭제
         boardCommentDAO.deleteByBoardId(id);
 
-        // 2. 이미지 삭제
+        // 이미지 파일 및 DB 삭제
+        List<BoardImgVO> images = boardDAO.findBoardImagesByBoardId(id);
+        for (BoardImgVO img : images) {
+            String basePath = "C:/personalbuddy/";
+            File origin = new File(basePath + img.getBoardImgPath(), img.getBoardImgName());
+            File thumb = new File(basePath + img.getBoardImgPath(), "t_" + img.getBoardImgName());
+
+            if (origin.exists()) origin.delete();
+            if (thumb.exists()) thumb.delete();
+        }
         boardDAO.deleteImages(id);
 
-        // 3. 게시글 삭제 (자식 다 지우고 부모 지우기)
+        // 마지막으로 게시글 삭제
         boardDAO.deleteBoard(id);
     }
+
 
     // 게시글 이미지 파일명으로 단일 삭제
     @Override
@@ -167,9 +200,26 @@ public class BoardServiceImpl implements BoardService {
         if (removedImageNames == null || removedImageNames.isEmpty()) return;
 
         for (String name : removedImageNames) {
-            boardDAO.deleteImageByName(name);
+            boardDAO.deleteImageByName(name); // DB 삭제
+
+            // 실제 파일 삭제
+            File[] baseFolders = {
+                    new File("C:/personalbuddy/images/board/" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))), // 오늘 경로
+                    new File("C:/personalbuddy/images/board/") // 혹시 모를 이전 경로 커버
+            };
+
+            for (File folder : baseFolders) {
+                File origin = new File(folder, name);
+                File thumb = new File(folder, "t_" + name);
+
+                if (origin.exists()) origin.delete();
+                if (thumb.exists()) thumb.delete();
+            }
         }
     }
+
+
+
 
     // 게시글 조회수 1 증가
     @Override
