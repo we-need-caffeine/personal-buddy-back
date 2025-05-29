@@ -2,21 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.CalendarMapper">
 
-    <!-- 캘린더 등록 -->
     <insert id="insertCalendar" parameterType="CalendarVO">
         <selectKey keyProperty="id" resultType="long" order="BEFORE">
             SELECT SEQ_CALENDAR.NEXTVAL FROM DUAL
         </selectKey>
 
         INSERT INTO TBL_CALENDAR (
-        ID, CALENDAR_TITLE, CALENDAR_INDEX, MEMBER_ID
+        ID, CALENDAR_TITLE, MEMBER_ID, CALENDAR_INDEX
         ) VALUES (
-        #{id},
-        #{calendarTitle},
-        #{calendarIndex},
-        #{memberId}
+        #{id}, #{calendarTitle}, #{memberId}, #{calendarIndex}
         )
     </insert>
+
+    <select id="getMaxIndexByMemberId" parameterType="long" resultType="int">
+        SELECT NVL(MAX(CALENDAR_INDEX), 0)
+        FROM TBL_CALENDAR
+        WHERE MEMBER_ID = #{memberId}
+    </select>
 
     <!-- 캘린더 단일 조회(알람) -->
     <select id="selectCalendarDetailByMemberId" parameterType="Long" resultType="CalendarViewDTO">
@@ -36,7 +38,7 @@
 
     <!-- 캘린더 단일 조회 -->
     <select id="selectCalendar" parameterType="Long" resultType="CalendarVO">
-        SELECT ID, CALENDAR_TITLE, CALENDAR_INDEX, TODOLIST_ID
+        SELECT ID, CALENDAR_TITLE, CALENDAR_INDEX
         FROM TBL_CALENDAR
         WHERE ID = #{id}
     </select>
@@ -49,7 +51,7 @@
     </update>
 
     <!-- 캘린더 삭제 -->
-    <delete id="deleteCalendarById" parameterType="Long">
+    <delete id="deleteCalendar" parameterType="Long">
         DELETE FROM TBL_CALENDAR
         WHERE ID = #{id}
     </delete>

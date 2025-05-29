@@ -14,16 +14,14 @@ public interface ScheduleMemberMapper {
     // 일정 멤버 그룹 등록
     public void insertScheduleMemberGroup(ScheduleMemberGroupVO scheduleMemberGroupVO);
 
-    @Mapper
-    public interface CalendarMapper {
-        List<MemberVO> selectInvitableCalendarMembers(Long memberId,
+    // 일정 초대 가능 멤버 조회
+    public List<MemberVO> selectInvitableCalendarMembers(Long memberId,
                                                       Long calendarId);
-    }
     // 일정 그룹 멤버 등록
     public void insertScheduleMember(ScheduleMemberVO scheduleMemberVO);
 
     // 일정 그룹 멤버 전체 조회
-    public List<MemberVO> selectAllScheduleGroupMembersByScheduleMemberGroupId(Long scheduleMemberGroupId);
+    public List<MemberVO> selectAllScheduleMembersByScheduleId(Long scheduleId);
 
     // 일정 그룹 멤버 삭제
     public void deleteScheduleGroupMember(Long scheduleGroupMemberId);
@@ -32,15 +30,11 @@ public interface ScheduleMemberMapper {
     public void deleteAllScheduleGroupMembersByScheduleMemberGroupId(Long scheduleGroupMemberGroupId);
 
     // 일정 그룹 멤버 전체 삭제 By CalendarId
-    public void deleteAllScheduleGroupMembersByCalendarId(Long calendarId);
+    public void deleteAllScheduleMembersByCalendarId(Long calendarId);
 
     // 일정 그룹 멤버 전체 삭제 By ScheduleId
-    public void deleteAllScheduleGroupMembersByScheduleId(Long scheduleId);
+    public void deleteAllScheduleMembersByScheduleId(Long scheduleId);
 
-    // 일정 멤버 그룹 삭제 By CalendarId
-    public void deleteScheduleMemberGroupByCalendarId(Long calendarId);
 
-    // 일정 멤버 그룹 삭제 By ScheduleId
-    public void deleteScheduleMemberGroupByScheduleId(Long scheduleId);
 
 }
