@@ -34,7 +34,7 @@ public class CalendarServiceImpl implements CalendarService {
             calendarDTO.setId(calendar.getId());
             calendarDTO.setCalendarTitle(calendar.getCalendarTitle());
             calendarDTO.setCalendarIndex(calendar.getCalendarIndex());
-            calendarDTO.setMemberId(1L);
+            calendarDTO.setMemberId(memberId);
 //            할일 리스트
             calendarDTO.setTodoLists(todoListDAO.findAllTodoListByCalendarId(calendar.getId()));
 
@@ -42,7 +42,7 @@ public class CalendarServiceImpl implements CalendarService {
             calendarDTO.setSharedMemberLists(calendarDAO.findAllCalendarMembersByCalendarId(calendar.getId()));
 
 //            캘린더 초대 가능 멤버
-            calendarDTO.setCanInviteMemberLists(calendarDAO.findInvitableCalendarMembers(memberId,calendar.getId()));
+
 //            List 생성, 찾은 유저에 맞는 유저의 정보를 List<SchedulesDTO>로 담아서 한번에 보낸다.
 //            일정 리스트
 
@@ -66,12 +66,19 @@ public class CalendarServiceImpl implements CalendarService {
         });
 
         return calendars;
-    };
+    }
 
     // 캘린더 등록
     @Override
     public Long registerCalendar(CalendarVO calendarVO) {
-        return calendarDAO.saveCalendar(calendarVO);
+        Long calendarId = calendarDAO.saveCalendar(calendarVO);
+        CalendarMemberVO calendarMemberVO = new CalendarMemberVO();
+        calendarMemberVO.setMemberId(calendarVO.getMemberId());
+        calendarMemberVO.setCalendarId(calendarId);
+        calendarMemberVO.setCalendarMemberIsHost(1);
+        log.info("캘린더 멤버 VO: {}", calendarMemberVO);
+        calendarDAO.saveCalendarMember(calendarMemberVO);
+        return calendarId;
     }
 
     @Override
@@ -93,7 +100,11 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarDAO.findAllCalendarMembersByCalendarId(calendarId);
     }
 
-    // 캘린더 추가 가능 멤버 조회
+    @Override
+    public List<MemberVO> getInvitableCalendarMembers(Long memberId, Long calendarId) {
+        return calendarDAO.findInvitableCalendarMembers(memberId, calendarId);
+    }
+    // 캘린더 멤버 초대 조회
     @Override
     public List<MemberVO> getMutualFollowings(Long memberId) {
         return calendarDAO.findAllMutualFollowingsByMemberId(memberId);
@@ -113,11 +124,15 @@ public class CalendarServiceImpl implements CalendarService {
 
     // 캘린더 초대 승인
     @Override
-    public void approveCalendarInvite(Long calendarInviteId) {
+    public void approveCalendarInvite(Long calendarId) {
         CalendarInviteVO calendarInviteVO = new CalendarInviteVO();
-        calendarInviteVO.setId(calendarInviteId);
         calendarInviteVO.setCalendarInviteIsApproved(1);
+        calendarInviteVO.setCalendarId(calendarId);
         calendarDAO.updateCalendarInvite(calendarInviteVO);
+        CalendarMemberVO calendarMemberVO = new CalendarMemberVO();
+        calendarMemberVO.setCalendarMemberIsHost(0);
+        calendarMemberVO.setCalendarId(calendarId);
+        calendarDAO.saveCalendarMember(calendarMemberVO);
     }
 
     // 캘린더 초대 거부
@@ -151,13 +166,11 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     @Transactional
     public void deleteCalendar(Long calendarId) {
-        scheduleDAO.deleteAllScheduleGroupMembersByCalendarId(calendarId);
-        scheduleDAO.deleteScheduleMemberGroupByCalendarId(calendarId);
+        scheduleDAO.deleteAllScheduleMembersByCalendarId(calendarId);
         scheduleDAO.deleteAllSchedulesByCalendarId(calendarId);
         todoListDAO.deleteAllTodoListsByCalendarId(calendarId);
         calendarDAO.deleteAllCalendarMembersByCalendarId(calendarId);
         calendarDAO.deleteAllCalendarInvitesByCalendarId(calendarId);
         calendarDAO.deleteCalendar(calendarId);
     }
-
 }

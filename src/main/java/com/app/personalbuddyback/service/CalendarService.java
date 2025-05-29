@@ -24,6 +24,9 @@ public interface CalendarService {
     // 캘린더 멤버 조회
     public List<MemberVO> getCalendarMembers(Long calendarId);
 
+    // 캘린더 멤버 추가 초대 조회
+    public List<MemberVO> getInvitableCalendarMembers(Long memberId, Long calendarId);
+
     // 캘린더 멤버 초대 조회
     public List<MemberVO> getMutualFollowings(Long memberId);
 
@@ -34,7 +37,7 @@ public interface CalendarService {
     public Optional<CalendarVO> getCalendar(Long calendarId);
 
     // 캘린더 초대 승인
-    public void approveCalendarInvite(Long calendarInviteId);
+    public void approveCalendarInvite(Long calendarId);
 
     // 캘린더 초대 거부
     public void rejectCalendarInvite(Long calendarInviteId);

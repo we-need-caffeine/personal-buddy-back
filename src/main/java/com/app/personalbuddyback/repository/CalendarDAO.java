@@ -18,7 +18,8 @@ public class CalendarDAO {
 
     // 캘린더 등록
     public Long saveCalendar(CalendarVO calendarVO) {
-        return calendarMapper.insertCalendar(calendarVO);
+        calendarMapper.insertCalendar(calendarVO);
+        return calendarVO.getId();
     }
 
     // 캘린더 초대 그룹 등록
@@ -32,7 +33,7 @@ public class CalendarDAO {
     }
 
     // 켈린더 멤버 추가 초대 조회
-    public List<InviteMemberDTO> findInvitableCalendarMembers(Long memberId, Long calendarId) {
+    public List<MemberVO> findInvitableCalendarMembers(Long memberId, Long calendarId) {
         return calendarMemberMapper.selectInvitableCalendarMembers(memberId, calendarId);
     }
 

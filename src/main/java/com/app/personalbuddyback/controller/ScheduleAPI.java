@@ -87,7 +87,7 @@ public class ScheduleAPI {
     }
 
     @Operation(summary = "일정 삭제", description = "일정과 관련된 모든 멤버 및 그룹 정보를 포함하여 삭제하는 API")
-    @DeleteMapping("{scheduleId}")
+    @DeleteMapping("delete/{scheduleId}")
     public void deleteSchedule(@PathVariable Long scheduleId)
     {
         scheduleService.deleteSchedule(scheduleId);
@@ -103,15 +103,15 @@ public class ScheduleAPI {
 
     @Operation(summary = "공유 일정 멤버 조회", description = "공유 일정 멤버 목록을 조회할 수 있는 API")
     @Parameter(
-            name = "groupId",
-            description = "공유 멤버 그룹 ID",
+            name = "scheduleId",
+            description = "일정 Id",
             schema = @Schema(type = "number"),
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("members/{groupId}")
-    public List<MemberVO> getScheduleMembers(@PathVariable Long groupId) {
-        return scheduleService.getScheduleMembers(groupId);
+    @GetMapping("members/{scheduleId}")
+    public List<MemberVO> getScheduleMembers(@PathVariable Long scheduleId) {
+        return scheduleService.getScheduleMembers(scheduleId);
     }
 
     @Operation(summary = "추가 가능한 공유 일정 멤버 조회", description = "공유 일정에 추가 가능한 멤버 목록을 조회할 수 있는 API")
