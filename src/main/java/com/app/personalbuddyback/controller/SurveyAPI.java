@@ -32,8 +32,8 @@ public class SurveyAPI {
     @Operation(summary = "설문조사 전체 조회", description = "설문조사 전체 조회 API")
     @ApiResponse(responseCode = "200", description = "설문조사 전체 조회 성공")
     @PostMapping("list")
-    public List<InterestDTO> list(Long id) {
-        return surveyService.interestList(id);
+    public List<InterestDTO> list(Long memberId) {
+        return surveyService.interestList(memberId);
     }
 
     @Operation(summary = "회원 설문조사 여부 조회", description = "회원 설문조사 여부 조회 API")

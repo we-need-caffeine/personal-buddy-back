@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +29,15 @@ public class RecommendAPI {
     @PostMapping("list")
     public List<InterestDataVO> list() {
         return recommendService.selectAll();
+    }
+
+    @Operation(summary = "회원의 추천 데이터 전체 조회", description = "회원의 추천 데이터 전체 조회 API")
+    @ApiResponse(responseCode = "200", description = "추천 데이터 전체 조회 성공")
+    @PostMapping("recommend")
+    public List<InterestDataVO> recommend(@RequestBody Map<String, Long> request) {
+        Long memberId = request.get("memberId");
+        System.out.println("Received memberId: " + memberId);
+        return recommendService.selectInterestDataByMemberId(memberId);
     }
 
     @Operation(summary = "추천 데이터 수정", description = "추천 데이터 수정 API")
