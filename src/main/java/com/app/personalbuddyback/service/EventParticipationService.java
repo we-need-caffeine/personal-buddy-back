@@ -12,4 +12,7 @@ public interface EventParticipationService {
 
         // 기상 챌린지 시간 조건 확인
         boolean isWakeUpTime();
+
+        // 루틴 공유 이벤트 포인트 지급
+        void givePointForRoutineEvent(Long memberId, Long eventId);
 }

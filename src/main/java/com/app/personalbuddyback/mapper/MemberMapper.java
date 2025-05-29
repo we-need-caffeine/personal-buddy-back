@@ -51,4 +51,10 @@ public interface MemberMapper {
 //    회원 탈퇴
     public void delete(Long id);
 
+    // 현재 포인트 가져오기
+    int getMemberPoint(Long memberId);
+
+    // 포인트 업데이트
+    void updateMemberPoint(Long memberId, int newPoint);
+
 }

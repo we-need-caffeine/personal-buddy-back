@@ -2,6 +2,7 @@ package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.EventJoinVO;
 import com.app.personalbuddyback.mapper.EventParticipationMapper;
+import com.app.personalbuddyback.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventParticipationServiceImpl implements EventParticipationService {
 
     private final EventParticipationMapper eventParticipationMapper;
+    private final MemberMapper memberMapper;
 
     // 이벤트 참여 등록
     @Override
@@ -29,5 +31,12 @@ public class EventParticipationServiceImpl implements EventParticipationService 
     @Override
     public boolean isWakeUpTime() {
         return eventParticipationMapper.wakeUpChallengeTime() == 1;
+    }
+
+    // 루틴 이벤트 포인트 지급
+    @Override
+    public void givePointForRoutineEvent(Long memberId, Long eventId) {
+        int current = memberMapper.getMemberPoint(memberId);
+        memberMapper.updateMemberPoint(memberId, current + 1000);
     }
 }
