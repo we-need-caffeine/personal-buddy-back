@@ -110,8 +110,12 @@
 
     <!--    내가 쓴 게시글(마이페이지용) -->
     <select id="selectBoardListByMemberId" parameterType="long" resultType="BoardListViewDTO">
-        SELECT TBB.ID, TBB.BOARD_TITLE, TBB.BOARD_CONTENT_CREATE_DATE, TBB.BOARD_CONTENT_VIEWS, TBB.BOARD_HASHTAG,
-               TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH,
+        SELECT TBB.ID,
+               TBB.BOARD_TITLE,
+               TBB.BOARD_CONTENT,
+               TBB.BOARD_CONTENT_CREATE_DATE AS BOARD_CREATE_DATE,
+               TBB.BOARD_CONTENT_VIEWS, TBB.BOARD_HASHTAG,
+               TBM.ID AS MEMBER_ID, TBM.MEMBER_NICKNAME, TBM.MEMBER_IMG_NAME, TBM.MEMBER_IMG_PATH,
                (
                    SELECT COUNT(ID) FROM TBL_BOARD_COMMENT C WHERE C.BOARD_ID = TBB.ID
                ) AS BOARD_COMMENT_COUNT,
