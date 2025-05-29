@@ -23,7 +23,7 @@
     <insert id="insertCalendarMember" parameterType="CalendarMemberVO">
         INSERT INTO TBL_CALENDAR_MEMBER (ID, CALENDAR_MEMBER_IS_HOST, CALENDAR_ID, MEMBER_ID)
         VALUES (
-        SEQ_CALENDAR_MEMBER_GROUP.NEXTVAL,
+        SEQ_CALENDAR_MEMBER.NEXTVAL,
         <if test ="calendarMemberIsHost != null">#{calendarMemberIsHost}</if>,
         #{calendarId},
         #{memberId}
@@ -95,7 +95,7 @@
     <update id="updateCalendarInvite" parameterType="CalendarInviteVO">
         UPDATE TBL_CALENDAR_INVITE
         SET CALENDAR_INVITE_IS_APPROVED = #{calendarInviteIsApproved}
-        WHERE ID = #{id}
+        WHERE CALENDAR_INVITE_INVITED_MEMBER_ID = #{calendarInviteInvitedMemberId}
     </update>
 
     <!-- 캘린더 초대 삭제  -->

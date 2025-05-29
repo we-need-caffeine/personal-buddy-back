@@ -24,4 +24,5 @@ public class ScheduleViewDTO {
     private String scheduleCategoryTitle;
     private String scheduleSubCategoryTitle;
     private List<Long> memberIds;
+    private List<MemberVO> members;
 }

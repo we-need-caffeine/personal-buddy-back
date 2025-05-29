@@ -2,39 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.personalbuddyback.mapper.ScheduleMapper">
 
-    <!-- 일정 등록 -->
     <insert id="insertSchedule" parameterType="ScheduleSaveDTO">
-        <selectKey keyProperty="id" resultType="long" order="BEFORE">
-            SELECT SEQ_SCHEDULE.NEXTVAL FROM DUAL
-        </selectKey>
-        INSERT INTO TBL_SCHEDULE (
-        ID, SCHEDULE_TITLE, SCHEDULE_CONTENT, SCHEDULE_START_DATE, SCHEDULE_END_DATE,
-        SCHEDULE_CREATED_DATE, SCHEDULE_LOCATION, SCHEDULE_COLOR, SCHEDULE_CATEGORY_ID, SCHEDULE_SUBCATEGORY_ID,
-        SCHEDULE_REPEAT, CALENDAR_ID
-        ) VALUES (
-        #{id},
-        #{scheduleTitle},
-        #{scheduleContent},
-        #{scheduleStartDate},
-        #{scheduleEndDate},
-        #{scheduleLocation},
-        <choose>
-            <when test="scheduleCreatedDate != null">#{scheduleCreatedDate}</when>
-            <otherwise>SYSDATE</otherwise>
-        </choose>,
-        <choose>
-            <when test="scheduleColor != null">#{scheduleColor}</when>
-            <otherwise>'green'</otherwise>
-        </choose>,
-        #{scheduleCategoryId},
-        #{scheduleSubCategoryId},
-        <choose>
-            <when test="scheduleRepeat != null">#{scheduleRepeat}</when>
-            <otherwise>0</otherwise>
-        </choose>,
-        #{calendarId}
-        )
-    </insert>
+    <selectKey keyProperty="id" resultType="long" order="BEFORE">
+        SELECT SEQ_SCHEDULE.NEXTVAL FROM DUAL
+    </selectKey>
+    INSERT INTO TBL_SCHEDULE (
+    ID,
+    SCHEDULE_TITLE,
+    SCHEDULE_CONTENT,
+    SCHEDULE_START_DATE,
+    SCHEDULE_END_DATE,
+    SCHEDULE_CREATED_DATE,
+    SCHEDULE_LOCATION,
+    SCHEDULE_COLOR,
+    SCHEDULE_CATEGORY_ID,
+    SCHEDULE_SUBCATEGORY_ID,
+    SCHEDULE_REPEAT,
+    CALENDAR_ID
+    ) VALUES (
+    #{id},
+    #{scheduleTitle},
+    #{scheduleContent},
+    #{scheduleStartDate},
+    #{scheduleEndDate},
+    <choose>
+        <when test="scheduleCreatedDate != null">#{scheduleCreatedDate}</when>
+        <otherwise>SYSDATE</otherwise>
+    </choose>,
+    #{scheduleLocation},
+    <choose>
+        <when test="scheduleColor != null">#{scheduleColor}</when>
+        <otherwise>'green'</otherwise>
+    </choose>,
+    #{scheduleCategoryId},
+    #{scheduleSubCategoryId},
+    <choose>
+        <when test="scheduleRepeat != null">#{scheduleRepeat}</when>
+        <otherwise>0</otherwise>
+    </choose>,
+    #{calendarId}
+    )
+</insert>
+
 
     <!-- 일정 대분류 전체 조회 -->
     <select id="selectAllScheduleCategories" resultType="ScheduleCategoryVO">
@@ -57,13 +66,13 @@
         WHERE TBS.CALENDAR_ID = #{calendarId}
     </select>
 
-    <!-- 일정 단일 조회 -->
+    <!-- 일정 단일 조회  -->
     <select id="selectSchedule" parameterType="Long" resultType="ScheduleViewDTO">
         SELECT TBS.ID, TBS.SCHEDULE_TITLE, TBS.SCHEDULE_CONTENT, TBS.SCHEDULE_START_DATE, TBS.SCHEDULE_END_DATE, TBS.SCHEDULE_CREATED_DATE,
-               TBS.SCHEDULE_COLOR, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID, TBSS.SCHEDULE_SUBCATEGORY_TITLE
+               TBS.SCHEDULE_COLOR, TBS.SCHEDULE_REPEAT, TBS.CALENDAR_ID, TBSC.SCHEDULE_CATEGORY_TITLE
         FROM TBL_SCHEDULE TBS
-        JOIN TBL_SCHEDULE_SUBCATEGORY TBSS
-        ON TBS.SCHEDULE_SUBCATEGORY_ID = TBSS.ID
+                 LEFT JOIN TBL_SCHEDULE_CATEGORY TBSC
+                           ON TBS.SCHEDULE_CATEGORY_ID = TBSC.ID
         WHERE TBS.ID = #{id}
     </select>
 
@@ -76,7 +85,7 @@
     </update>
 
     <!-- 일정 삭제 -->
-    <delete id="deleteScheduleById" parameterType="Long">
+    <delete id="deleteSchedule" parameterType="Long">
         DELETE FROM TBL_SCHEDULE
         WHERE ID = #{id}
     </delete>

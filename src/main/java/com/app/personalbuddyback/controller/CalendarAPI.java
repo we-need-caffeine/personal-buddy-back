@@ -68,7 +68,7 @@ public class CalendarAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("/calendars/{calendarId}")
+    @GetMapping("/{calendarId}")
     public Optional<CalendarVO> getCalendar(@PathVariable Long calendarId) {
         return calendarService.getCalendar(calendarId);
     }
@@ -112,7 +112,7 @@ public class CalendarAPI {
         return calendarService.getCalendarMembers(calendarId);
     }
 
-    @Operation(summary = "캘린더 추가 멤버 전체 조회", description = "캘린더 추가 멤버 전체를 조회할 수 있는 API")
+    @Operation(summary = "캘린더 추가 가능 멤버 전체 조회", description = "캘린더 추가 가능 멤버 전체를 조회할 수 있는 API")
     @Parameter(
             name = "memberId",
             description = "캘린더 ID",
@@ -125,10 +125,19 @@ public class CalendarAPI {
         return calendarService.getMutualFollowings(memberId);
     }
 
+    @Operation(summary = "캘린더 초대 가능한 멤버 목록 조회", description = "상호 팔로우이며 캘린더에 아직 가입되지 않은 멤버들을 조회합니다.")
+    @GetMapping("/members/{memberId}/followings/{calendarId}")
+    public List<MemberVO> getInvitableMembers(
+            @PathVariable Long memberId,
+            @PathVariable Long calendarId
+    ) {
+        return calendarService.getInvitableCalendarMembers(memberId, calendarId);
+    }
+
     @Operation(summary = "캘린더 초대 승인", description = "캘린더 초대를 승인하는 API")
-    @PutMapping("/invites/{calendarInviteId}/approve")
-    public void approveCalendarInvite(@PathVariable Long calendarInviteId) {
-        calendarService.approveCalendarInvite(calendarInviteId);
+    @PutMapping("/invites/{calendarId}/approve")
+    public void approveCalendarInvite(@PathVariable Long calendarId) {
+        calendarService.approveCalendarInvite(calendarId);
     }
 
     @Operation(summary = "캘린더 초대 거부", description = "캘린더 초대를 거부하는 API")
