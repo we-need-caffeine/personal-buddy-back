@@ -131,23 +131,31 @@ public class BoardServiceImpl implements BoardService {
     public void saveBoardImage(Long boardId, MultipartFile image) {
         if (image != null && !image.isEmpty()) {
             try {
+                // 저장 경로 설정
                 String basePath = "C:/personalbuddy/";
                 String datePath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
                 String folderPath = "images/board/" + datePath;
                 File saveDir = new File(basePath + folderPath);
-                if (!saveDir.exists()) saveDir.mkdirs();
+                if (!saveDir.exists()) {
+                    boolean created = saveDir.mkdirs();
+                    if (!created) throw new IOException("디렉토리 생성 실패: " + saveDir.getAbsolutePath());
+                }
+
+                // 파일명 설정
+                String originalName = image.getOriginalFilename();
+                if (originalName == null) throw new IllegalArgumentException("파일 이름이 null입니다.");
 
                 String uuid = UUID.randomUUID().toString();
-                String originalName = image.getOriginalFilename();
                 String savedName = uuid + "_" + originalName;
 
-                // 원본 저장
-                image.transferTo(new File(saveDir, savedName));
+                // 실제 파일 저장
+                File savedFile = new File(saveDir, savedName);
+                image.transferTo(savedFile); // <-- 여기서 오류 나면 catch에서 잡음
 
-                // 썸네일 저장
-                if (image.getContentType().startsWith("image")) {
-                    File thumbnail = new File(saveDir, "t_" + savedName);
-                    try (FileOutputStream out = new FileOutputStream(thumbnail)) {
+                // 썸네일 생성 (이미지인 경우)
+                if (image.getContentType() != null && image.getContentType().startsWith("image")) {
+                    File thumbFile = new File(saveDir, "t_" + savedName);
+                    try (FileOutputStream out = new FileOutputStream(thumbFile)) {
                         Thumbnailator.createThumbnail(image.getInputStream(), out, 100, 100);
                     }
                 }
@@ -158,33 +166,24 @@ public class BoardServiceImpl implements BoardService {
                 imgVO.setBoardImgPath(folderPath);
                 imgVO.setBoardImgName(savedName);
                 boardDAO.saveImage(imgVO);
-            } catch (IOException e) {
-                e.printStackTrace(); // 예외 로그 출력
+
+            } catch (Exception e) {
+                e.printStackTrace(); // 로그 확인용
+                throw new RuntimeException("이미지 저장 중 오류 발생: " + e.getMessage());
             }
         }
     }
 
-
-
     // 게시글 삭제
     @Override
     public void removeBoard(Long id) {
-        // 댓글 먼저 삭제
+        // 1. 댓글 삭제 (만약 댓글도 FK로 연결되어 있으면)
         boardCommentDAO.deleteByBoardId(id);
 
-        // 이미지 파일 및 DB 삭제
-        List<BoardImgVO> images = boardDAO.findBoardImagesByBoardId(id);
-        for (BoardImgVO img : images) {
-            String basePath = "C:/personalbuddy/";
-            File origin = new File(basePath + img.getBoardImgPath(), img.getBoardImgName());
-            File thumb = new File(basePath + img.getBoardImgPath(), "t_" + img.getBoardImgName());
-
-            if (origin.exists()) origin.delete();
-            if (thumb.exists()) thumb.delete();
-        }
+        // 2. 이미지 삭제
         boardDAO.deleteImages(id);
 
-        // 마지막으로 게시글 삭제
+        // 3. 게시글 삭제 (자식 다 지우고 부모 지우기)
         boardDAO.deleteBoard(id);
     }
 
@@ -199,25 +198,20 @@ public class BoardServiceImpl implements BoardService {
         if (removedImageNames == null || removedImageNames.isEmpty()) return;
 
         for (String name : removedImageNames) {
-            boardDAO.deleteImageByName(name); // DB 삭제
+            // 1. DB 삭제
+            boardDAO.deleteImageByName(name);
+
+            // 2. 실제 파일 삭제
+            String basePath = "C:/personalbuddy/";
+            String folderPath = "images/board/"; // DB에 저장된 경로가 있다면 그걸로 대체
 
             // 실제 파일 삭제
-            File[] baseFolders = {
-                    new File("C:/personalbuddy/images/board/" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))), // 오늘 경로
-                    new File("C:/personalbuddy/images/board/") // 혹시 모를 이전 경로 커버
-            };
-
-            for (File folder : baseFolders) {
-                File origin = new File(folder, name);
-                File thumb = new File(folder, "t_" + name);
-
-                if (origin.exists()) origin.delete();
-                if (thumb.exists()) thumb.delete();
-            }
+            File original = new File(basePath + folderPath + name);
+            File thumbnail = new File(basePath + folderPath + "t_" + name);
+            if (original.exists()) original.delete();
+            if (thumbnail.exists()) thumbnail.delete();
         }
     }
-
-
 
 
     // 게시글 조회수 1 증가
