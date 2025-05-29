@@ -16,6 +16,29 @@
             )
         FROM TBL_INTEREST_DATA
     </select>
+    
+    <select id="selectInterestDataByMemberId" parameterType="Long" resultType="InterestDataVO">
+        SELECT
+            TBD.ID,
+            TBD.INTEREST_DATA_CATEGORY,
+            TBD.INTEREST_DATA_TYPE,
+            TBD.INTEREST_DATA_SECTION,
+            TBD.INTEREST_DATA_VALUE,
+            TBD.INTEREST_DATA_CONTENT,
+            TBD.INTEREST_DATA_IMG_NAME,
+            TBD.INTEREST_DATA_IMG_PATH
+        FROM
+            TBL_INTEREST_DATA TBD
+            JOIN
+            TBL_INTEREST_DETAIL TBID
+            ON TBD.INTEREST_DATA_SECTION = TBID.INTEREST_DETAIL_SECTION
+                AND TBD.INTEREST_DATA_VALUE = TBID.INTEREST_DETAIL_VALUE
+            JOIN
+            TBL_INTEREST TBI
+            ON TBID.INTEREST_ID = TBI.ID
+        WHERE
+            TBI.MEMBER_ID = #{memberId}
+    </select>
 
     <update id="update" parameterType="InterestDataVO">
         UPDATE TBL_INTEREST_DATA

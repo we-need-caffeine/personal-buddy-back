@@ -1,9 +1,6 @@
 package com.app.personalbuddyback.controller;
 
-import com.app.personalbuddyback.domain.AchievementVO;
-import com.app.personalbuddyback.domain.MemberAchievementVO;
-import com.app.personalbuddyback.domain.MemberVO;
-import com.app.personalbuddyback.domain.TreeVO;
+import com.app.personalbuddyback.domain.*;
 import com.app.personalbuddyback.service.*;
 import com.app.personalbuddyback.util.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
@@ -33,6 +30,8 @@ public class MemberAPI {
     private final PasswordEncoder passwordEncoder;
     private final MyTreeService myTreeService;
     private final AchievementService achievementService;
+    private final SurveyService surveyService;
+    private final CalendarService calendarService;
 
     @Operation(summary = "회원가입", description = "회원가입 API")
     @ApiResponse(responseCode = "200", description = "회원가입 성공")
@@ -44,7 +43,15 @@ public class MemberAPI {
         memberVO.setMemberPassword(encodedPassword);
 
         memberService.join(memberVO);
-//        Long memberId = memberVO.getId();
+        Long memberId = memberVO.getId();
+
+//        캘린더 추가
+        CalendarVO calendarVO = new CalendarVO();
+        calendarVO.setMemberId(memberId);
+        calendarVO.setCalendarIndex(1);
+        calendarVO.setCalendarTitle("퍼스널버디");
+        calendarService.registerCalendar(calendarVO);
+
 //        TreeVO treeVO = new TreeVO();
 //
 //        treeVO.setMemberId(memberId);
@@ -205,7 +212,10 @@ public class MemberAPI {
     @DeleteMapping("/withdraw")
     public ResponseEntity<Map<String, Object>> withdraw(@RequestParam Long memberId) {
         Map<String, Object> response = new HashMap<>();
+
+        surveyService.deleteInterest(memberId);
         memberService.withdraw(memberId);
+
 
         response.put("message", "회원 탈퇴 완료");
 

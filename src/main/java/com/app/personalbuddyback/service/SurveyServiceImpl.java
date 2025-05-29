@@ -26,8 +26,8 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public List<InterestDTO> interestList(Long id) {
-        return surveyDAO.selectAllInterest(id);
+    public List<InterestDTO> interestList(Long memberId) {
+        return surveyDAO.selectAllInterest(memberId);
     }
 
     @Override

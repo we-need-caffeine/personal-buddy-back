@@ -14,6 +14,9 @@ public interface RecommendMapper {
 //    추천 데이터 전체 조회
     public List<InterestDataVO> selectAll();
 
+//    회원의 추천 데이터 전체 조회
+    public List<InterestDataVO> selectInterestDataByMemberId(Long memberId);
+
 //    추천 데이터 수정
     public void update(InterestDataVO interestDataVO);
 

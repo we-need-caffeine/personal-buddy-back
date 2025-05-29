@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -53,16 +54,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // 일정 멤버 조회
     @Override
-    public List<MemberVO> getScheduleMembers(Long scheduleMemberGroupId) {
-        return scheduleDAO.findAllScheduleGroupMembersByScheduleMemberGroupId(scheduleMemberGroupId);
+    public List<MemberVO> getScheduleMembers(Long scheduleId) {
+        return scheduleDAO.findAllScheduleMembersByScheduleId(scheduleId);
     }
 
     // 추가 가능한 공유 일정 멤버 조회
     @Override
     @Transactional
-    public List<MemberVO> getAvailableScheduleMembers(Long calendarId, Long scheduleMemberGroupId) {
+    public List<MemberVO> getAvailableScheduleMembers(Long calendarId, Long scheduleId) {
         List<MemberVO> calendarMembers = calendarDAO.findAllCalendarMembersByCalendarId(calendarId);
-        List<MemberVO> scheduleMembers = scheduleDAO.findAllScheduleGroupMembersByScheduleMemberGroupId(scheduleMemberGroupId);
+        List<MemberVO> scheduleMembers = scheduleDAO.findAllScheduleMembersByScheduleId(scheduleId);
 
         return calendarMembers.stream()
                 .filter(calendarMember -> {
@@ -87,7 +88,19 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 일정 단일 조회
     @Override
     public Optional<ScheduleViewDTO> getSchedule(Long scheduleId) {
-        return scheduleDAO.findSchedule(scheduleId);
+        Optional<ScheduleViewDTO> optional = scheduleDAO.findSchedule(scheduleId);
+
+        if (optional.isPresent()) {
+            ScheduleViewDTO scheduleViewDTO = optional.get();
+
+            List<MemberVO> members = scheduleDAO.findAllScheduleMembersByScheduleId(scheduleId);
+            scheduleViewDTO.setMembers(members);
+
+
+            return Optional.of(scheduleViewDTO); // 다시 감싸서 반환
+        }
+
+        return Optional.empty(); // 없으면 빈 Optional 반환
     }
 
     @Override
@@ -129,15 +142,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 일정 멤버 추방
     @Override
     public void expelScheduleMember(Long ScheduleGroupMemberId) {
-        scheduleDAO.deleteScheduleGroupMember(ScheduleGroupMemberId);
+        scheduleDAO.deleteScheduleMember(ScheduleGroupMemberId);
     }
 
     // 일정 삭제
     @Override
     @Transactional
     public void deleteSchedule(Long scheduleId) {
-        scheduleDAO.deleteAllScheduleGroupMembersByScheduleId(scheduleId);
-        scheduleDAO.deleteScheduleMemberGroupByScheduleId(scheduleId);
+        scheduleDAO.deleteAllScheduleMembersByScheduleId(scheduleId);
         scheduleDAO.deleteSchedule(scheduleId);
     }
 }

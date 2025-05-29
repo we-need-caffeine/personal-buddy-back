@@ -31,10 +31,11 @@ public class ScheduleDAO {
         scheduleMemberMapper.insertScheduleMember(scheduleMemberVO);
     }
 
-    // 일정 전체 조회 By MemberId
+    // 일정 전체 조회 By CalendarId
     public List<ScheduleVO> findAllSchedulesByCalendarId(Long calendarId) {
         return scheduleMapper.selectAllSchedulesByCalendarId(calendarId);
     }
+
 
     // 일정 단일 조회
     public Optional<ScheduleViewDTO> findSchedule(Long scheduleId) {
@@ -42,8 +43,8 @@ public class ScheduleDAO {
     }
 
     // 일정 그룹 멤버 전체 조회 By ScheduleMemberGroupId
-    public List<MemberVO> findAllScheduleGroupMembersByScheduleMemberGroupId(Long scheduleMemberGroupId) {
-        return scheduleMemberMapper.selectAllScheduleGroupMembersByScheduleMemberGroupId(scheduleMemberGroupId);
+    public List<MemberVO> findAllScheduleMembersByScheduleId(Long scheduleMemberId) {
+        return scheduleMemberMapper.selectAllScheduleMembersByScheduleId(scheduleMemberId);
     };
 
     // 일정 대분류 전체 조회
@@ -61,23 +62,13 @@ public class ScheduleDAO {
     }
 
     // 일정 그룹 멤버 삭제
-    public void deleteScheduleGroupMember(Long scheduleGroupMemberId) {
-        scheduleMemberMapper.deleteScheduleGroupMember(scheduleGroupMemberId);
-    }
-
-    // 일정 그룹 멤버 전체 삭제 By ScheduleMemberGroupId
-    public void deleteAllScheduleGroupMembersByScheduleMemberGroupId(Long scheduleGroupMemberGroupId) {
-        scheduleMemberMapper.deleteAllScheduleGroupMembersByScheduleMemberGroupId(scheduleGroupMemberGroupId);
+    public void deleteScheduleMember(Long scheduleMemberId) {
+        scheduleMemberMapper.deleteScheduleGroupMember(scheduleMemberId);
     }
 
     // 일정 그룹 멤버 전체 삭제 By CalendarId
-    public void deleteAllScheduleGroupMembersByCalendarId(Long calendarId) {
-        scheduleMemberMapper.deleteAllScheduleGroupMembersByCalendarId(calendarId);
-    }
-
-    // 일정 멤버 그룹 삭제 By CalendarId
-    public void deleteScheduleMemberGroupByCalendarId(Long calendarId) {
-        scheduleMemberMapper.deleteScheduleMemberGroupByCalendarId(calendarId);
+    public void deleteAllScheduleMembersByCalendarId(Long calendarId) {
+        scheduleMemberMapper.deleteAllScheduleMembersByCalendarId(calendarId);
     }
 
     // 일정 전체 삭제 By CalendarId
@@ -86,13 +77,8 @@ public class ScheduleDAO {
     }
 
     // 일정 그룹 멤버 삭제 By ScheduleId
-    public void deleteAllScheduleGroupMembersByScheduleId(Long scheduleId) {
-        scheduleMemberMapper.deleteAllScheduleGroupMembersByScheduleId(scheduleId);
-    }
-
-    // 일정 멤버 그룹 삭제 By ScheduleId
-    public void deleteScheduleMemberGroupByScheduleId(Long scheduleId) {
-        scheduleMemberMapper.deleteScheduleMemberGroupByScheduleId(scheduleId);
+    public void deleteAllScheduleMembersByScheduleId(Long scheduleId) {
+        scheduleMemberMapper.deleteAllScheduleMembersByScheduleId(scheduleId);
     }
 
     // 일정 삭제

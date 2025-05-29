@@ -21,8 +21,8 @@ public class SurveyDAO {
         surveyMapper.insertInterestDetail(interestDTO);
     }
 
-    public List<InterestDTO> selectAllInterest(Long id) {
-        return surveyMapper.selectAllInterest(id);
+    public List<InterestDTO> selectAllInterest(Long memberId) {
+        return surveyMapper.selectAll(memberId);
     }
 
     public int selectCountByMemberId(Long memberId) { return surveyMapper.selectCountByMemberId(memberId); }

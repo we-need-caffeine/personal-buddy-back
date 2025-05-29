@@ -19,7 +19,7 @@ public interface CalendarMemberMapper {
     public void insertCalendarMember(CalendarMemberVO calendarMemberVO);
 
     // 캘린더 멤버 추가 초대 조회
-    public List<InviteMemberDTO> selectInvitableCalendarMembers( Long memberId, Long calendarId);
+    public List<MemberVO> selectInvitableCalendarMembers( Long memberId, Long calendarId);
 
     // 캘린더 멤버 초대 조회
     public List<MemberVO> selectAllMutualFollowingsByMemberId(Long memberId);
