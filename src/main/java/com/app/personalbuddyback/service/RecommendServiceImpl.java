@@ -25,7 +25,14 @@ public class RecommendServiceImpl implements RecommendService {
         return recommendDAO.selectAll();
     }
 
-//    추천 데이터 수정
+//    회원의 추천 데이터 전체 조회
+
+    @Override
+    public List<InterestDataVO> selectInterestDataByMemberId(Long memberId) {
+        return recommendDAO.selectInterestDataByMemberId(memberId);
+    }
+
+    //    추천 데이터 수정
     @Override
     public void edit(InterestDataVO interestDataVO) {
         recommendDAO.update(interestDataVO);

@@ -23,6 +23,11 @@ public class RecommendDAO {
         return recommendMapper.selectAll();
     }
 
+//    회원의 추천 데이터 전체 조회
+    public List<InterestDataVO> selectInterestDataByMemberId(Long memberId) {
+        return recommendMapper.selectInterestDataByMemberId(memberId);
+    }
+
 //    추천 데이터 수정
     public void update(InterestDataVO interestDataVO) {
         recommendMapper.update(interestDataVO);
