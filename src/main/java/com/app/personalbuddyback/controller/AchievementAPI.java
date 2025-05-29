@@ -6,7 +6,9 @@ import com.app.personalbuddyback.service.AchievementServiceImpl;
 import com.app.personalbuddyback.service.MemberService;
 import com.app.personalbuddyback.service.PointService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import retrofit2.http.Path;
 
 import javax.swing.text.html.Option;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -68,7 +67,8 @@ public class AchievementAPI {
 
     @Operation(summary = "회원의 업적 완료 카운트 증가 및 완료 테이블에 추가", description = "")
     @PutMapping("/achievement/achievement-complete/edit")
-    public ResponseEntity achievementCompleteEdit(@RequestBody Map<String, Objects> editData) {
+    public ResponseEntity<Map<String, Object>> achievementCompleteEdit(@RequestBody Map<String, Objects> editData) {
+        Map<String, Object> response = new HashMap<>();
         try {
             Long memberId = Long.valueOf(editData.get("memberId").toString());
             String achievementScheduleCategory = editData.get("scheduleCategory").toString();
@@ -116,11 +116,44 @@ public class AchievementAPI {
                     memberService.edit(memberVO);
                 }
             }
-            return ResponseEntity.ok("업적 완료 회수 처리 완료");
-
+            response.put("result", true);
+            response.put("message", "업적 완료 회수 처리 완료");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업적 완료 처리 실패: " + e.getMessage());
+            response.put("result", false);
+            response.put("message", "업적 완료 회수 처리 실패");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "회원의 업적 전시 변경", description = "회원의 전시 업적 변경")
+    @PutMapping("/achievement/change-display/{memberId}")
+    public ResponseEntity<Map<String, Object>> changeDisplayAchievements(@PathVariable Long memberId, @RequestBody List<AchievementViewDTO> achievements) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            for(AchievementViewDTO achievement : achievements){
+                MemberAchievementVO editAchievement = new MemberAchievementVO();
+
+                editAchievement.setId(achievement.getId());
+                editAchievement.setMemberAchievementDisplay(achievement.getMemberAchievementDisplay());
+                editAchievement.setMemberId(memberId);
+                editAchievement.setAchievementCompleteId(achievement.getAchievementCompleteId());
+
+                achievementService.changeAchievementDisplay(editAchievement);
+            }
+
+            response.put("result", true);
+            response.put("message", "전시 업적 변경 완료");
+        } catch (Exception e){
+            response.put("result", false);
+            response.put("message", "전시 업적 변경 실패");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "업적 삭제", description = "관리자용 업적 삭제")

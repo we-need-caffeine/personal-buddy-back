@@ -15,7 +15,9 @@ public interface ChattingService {
 //    채팅방 리스트를 불러오는 서비스
     public List<ChatRoomViewDTO> findAllChatRoomByMemberIdAndFilter(Long memberId, String filterType, String searchNickname);
 //    채팅방의 존재 여부를 검증하고, 원래 존재하던 채팅방의 숨김 여부를 제거하거나 새로운 채팅방을 만드는 서비스
-    public Optional<Long> saveChatRoomOrChangeViewChatRoom(Long memberId, Long secondMemberId);
+    public Optional<ChatRoomViewDTO> saveChatRoomOrChangeViewChatRoom(Long memberId, Long secondMemberId);
+//    읽지않은 채팅의 수를 조회하는 서비스
+    public Optional<Integer> findAllNotReadChat(Long memberId);
 //    해당하는 채팅방에서 멤버의 포지션을 찾고, 해당하는 view 포지션을 hide 상태로 바꾸는 서비스
     public void updateChangeHideByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
 //    내가 보낸 메세지를 모든 유저에게서 숨김처리하는 서비스

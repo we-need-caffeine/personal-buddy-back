@@ -57,7 +57,7 @@ public class ChattingServiceImpl implements ChattingService {
     }
 
     @Override
-    public Optional<Long> saveChatRoomOrChangeViewChatRoom(Long memberId, Long secondMemberId) {
+    public Optional<ChatRoomViewDTO> saveChatRoomOrChangeViewChatRoom(Long memberId, Long secondMemberId) {
         Map<String, Object> membersMap = new HashMap<>();
         Map<String, Object> findMemberPositionInfo = new HashMap<>();
         Map<String, Object> changeViewInfo = new HashMap<>();
@@ -65,49 +65,51 @@ public class ChattingServiceImpl implements ChattingService {
         membersMap.put("firstMemberId", memberId);
         membersMap.put("secondMemberId", secondMemberId);
 
-        // 이미 존재하는 채팅방이면 Optional<Long>로 반환 (존재하지 않으면 Optional.empty())
+        // 이미 존재하는 채팅방이면 view로 변환후 정보 반환
         Optional<Long> chatRoomId = chattingDAO.findChatRoomIsTrue(membersMap);
 
         if (chatRoomId.isPresent()) {
-            // 채팅방이 존재하면 숨김여부 해제
             Long roomId = chatRoomId.get();
-
             findMemberPositionInfo.put("chatRoomId", roomId);
             findMemberPositionInfo.put("memberId", memberId);
 
-            String memberPosition = String.valueOf(chattingDAO.findChatMemberPosition(findMemberPositionInfo));
-            changeViewInfo.put("position", memberPosition);
+            Optional<String> memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionInfo);
+            changeViewInfo.put("position", memberPosition.get());
             changeViewInfo.put("chatRoomId", roomId);
 
             chattingDAO.updateViewChatRoom(changeViewInfo);
 
-            return chatRoomId; // 이미 존재하는 방의 id 반환
+            return chattingDAO.findChatRoom(findMemberPositionInfo);
         } else {
-            // 새로운 채팅방 생성
+            // 새로운 채팅방 생성 후 반환
             ChatRoomVO chatRoomVO = new ChatRoomVO();
             chatRoomVO.setFirstMemberId(memberId);
             chatRoomVO.setSecondMemberId(secondMemberId);
 
             chattingDAO.saveChatRoom(chatRoomVO);
 
-            // insert 후 id를 Optional로 감싸서 반환
-            return Optional.of(chatRoomVO.getId());
+            findMemberPositionInfo.put("memberId", memberId);
+            findMemberPositionInfo.put("chatRoomId", chatRoomVO.getId());
+            return chattingDAO.findChatRoom(findMemberPositionInfo);
         }
+    }
+
+    @Override
+    public Optional<Integer> findAllNotReadChat(Long memberId) {
+        return chattingDAO.findAllNotReadChat(memberId);
     }
 
     @Override
     public void updateChangeHideByChatRoomIdAndMemberId(Long chatRoomId, Long memberId) {
         Map<String, Object> findMemberPositionInfo = new HashMap<>();
         Map<String, Object> hideChattinginfo = new HashMap<>();
-        String memberPosition = null;
 
         findMemberPositionInfo.put("chatRoomId", chatRoomId);
         findMemberPositionInfo.put("memberId", memberId);
         
         // 멤버의 포지션
-        memberPosition = String.valueOf(chattingDAO.findChatMemberPosition(findMemberPositionInfo));
-
-        hideChattinginfo.put("position", memberPosition);
+        Optional<String> memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionInfo);
+        hideChattinginfo.put("position", memberPosition.get());
         hideChattinginfo.put("chatRoomId", chatRoomId);
 
         // 해당 채팅방의 멤버 포지션에 해당하는 view값을 숨긴다.
