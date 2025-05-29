@@ -5,10 +5,14 @@ import com.app.personalbuddyback.mapper.BoardMapper;
 import com.app.personalbuddyback.repository.BoardCommentDAO;
 import com.app.personalbuddyback.repository.BoardDAO;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -126,22 +130,49 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void saveBoardImage(Long boardId, MultipartFile image) {
         if (image != null && !image.isEmpty()) {
-            String filePath = "images/board/" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            String uuid = UUID.randomUUID().toString();
-            String fileName = uuid + "_" + image.getOriginalFilename();
+            try {
+                // 저장 경로 설정
+                String basePath = "C:/personalbuddy/";
+                String datePath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                String folderPath = "images/board/" + datePath;
+                File saveDir = new File(basePath + folderPath);
+                if (!saveDir.exists()) {
+                    boolean created = saveDir.mkdirs();
+                    if (!created) throw new IOException("디렉토리 생성 실패: " + saveDir.getAbsolutePath());
+                }
 
-            BoardImgVO imgVO = new BoardImgVO();
-            imgVO.setBoardId(boardId);
-            imgVO.setBoardImgPath(filePath);
-            imgVO.setBoardImgName(fileName);
+                // 파일명 설정
+                String originalName = image.getOriginalFilename();
+                if (originalName == null) throw new IllegalArgumentException("파일 이름이 null입니다.");
 
-            boardDAO.saveImage(imgVO);
+                String uuid = UUID.randomUUID().toString();
+                String savedName = uuid + "_" + originalName;
 
-            // 실제 파일 저장 (선택적 - 파일 API가 담당한다면 생략 가능)
-            // 파일저장 로직이 이미 FileAPI에서 관리된다면 여기서는 DB 저장만 처리
+                // 실제 파일 저장
+                File savedFile = new File(saveDir, savedName);
+                image.transferTo(savedFile); // <-- 여기서 오류 나면 catch에서 잡음
+
+                // 썸네일 생성 (이미지인 경우)
+                if (image.getContentType() != null && image.getContentType().startsWith("image")) {
+                    File thumbFile = new File(saveDir, "t_" + savedName);
+                    try (FileOutputStream out = new FileOutputStream(thumbFile)) {
+                        Thumbnailator.createThumbnail(image.getInputStream(), out, 100, 100);
+                    }
+                }
+
+                // DB 저장
+                BoardImgVO imgVO = new BoardImgVO();
+                imgVO.setBoardId(boardId);
+                imgVO.setBoardImgPath(folderPath);
+                imgVO.setBoardImgName(savedName);
+                boardDAO.saveImage(imgVO);
+
+            } catch (Exception e) {
+                e.printStackTrace(); // 로그 확인용
+                throw new RuntimeException("이미지 저장 중 오류 발생: " + e.getMessage());
+            }
         }
     }
-
 
     // 게시글 삭제
     @Override
@@ -167,9 +198,21 @@ public class BoardServiceImpl implements BoardService {
         if (removedImageNames == null || removedImageNames.isEmpty()) return;
 
         for (String name : removedImageNames) {
+            // 1. DB 삭제
             boardDAO.deleteImageByName(name);
+
+            // 2. 실제 파일 삭제
+            String basePath = "C:/personalbuddy/";
+            String folderPath = "images/board/"; // DB에 저장된 경로가 있다면 그걸로 대체
+
+            // 실제 파일 삭제
+            File original = new File(basePath + folderPath + name);
+            File thumbnail = new File(basePath + folderPath + "t_" + name);
+            if (original.exists()) original.delete();
+            if (thumbnail.exists()) thumbnail.delete();
         }
     }
+
 
     // 게시글 조회수 1 증가
     @Override

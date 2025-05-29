@@ -30,6 +30,12 @@ public interface EventCommentService {
     // 댓글 좋아요 수
     public int getEventCommentLikeCount(Long eventCommentId);
 
+    // 댓글 수정
+    public void updateEventComment(EventCommentVO commentVO);
+
+    // 댓글 삭제
+    public void deleteEventComment(Long id);
+
     // 힐링데이 베스트 댓글 (좋아요 순 상위 3개)
     public List<EventCommentViewDTO> getBestComments(Long eventId);
 

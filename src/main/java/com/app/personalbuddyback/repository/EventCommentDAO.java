@@ -45,6 +45,12 @@ public class EventCommentDAO {
         return eventCommentMapper.isEventCommentLiked(likeVO) > 0;
     }
 
+    // 댓글 수정
+    public void updateEventComment(EventCommentVO commentVO) {}
+
+    // 댓글 삭제
+    public void deleteEventComment(Long id) {}
+
     // 댓글 좋아요 수 조회
     public int countCommentLikes(Long commentId) {
         return eventCommentMapper.countEventCommentLike(commentId);
