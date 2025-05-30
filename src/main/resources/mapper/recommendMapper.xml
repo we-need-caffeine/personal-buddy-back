@@ -26,7 +26,8 @@
             TBD.INTEREST_DATA_VALUE,
             TBD.INTEREST_DATA_CONTENT,
             TBD.INTEREST_DATA_IMG_NAME,
-            TBD.INTEREST_DATA_IMG_PATH
+            TBD.INTEREST_DATA_IMG_PATH,
+            TBD.INTEREST_DATA_LINK
         FROM
             TBL_INTEREST_DATA TBD
             JOIN
