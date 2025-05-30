@@ -239,7 +239,11 @@ public class EventAPI {
         return ResponseEntity.ok().body("포인트 지급 완료");
     }
 
-
+    // 힐링데이 이벤트 포인트 지급
+    @PostMapping("/comment/reward-best/{eventId}")
+    public void rewardBestComments(@PathVariable Long eventId) {
+        eventService.rewardTop3HealingComments(eventId);
+    }
 
 
 }

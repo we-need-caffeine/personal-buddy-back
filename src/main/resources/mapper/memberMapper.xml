@@ -141,9 +141,14 @@
     </select>
 
 <!--    포인트 업데이트-->
-    <update id="updateMemberPoint" parameterType="map">
+<!--    <update id="updateMemberPoint" parameterType="map">-->
+<!--        UPDATE TBL_MEMBER-->
+<!--        SET MEMBER_POINT = #{newPoint}-->
+<!--        WHERE ID = #{memberId}-->
+<!--    </update>-->
+    <update id="updateMemberPoint">
         UPDATE TBL_MEMBER
-        SET MEMBER_POINT = #{newPoint}
+        SET MEMBER_POINT = NVL(MEMBER_POINT, 0) + #{newPoint}
         WHERE ID = #{memberId}
     </update>
 

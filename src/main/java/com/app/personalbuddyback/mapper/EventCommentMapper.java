@@ -36,5 +36,9 @@ public interface EventCommentMapper {
     public List<EventCommentViewDTO> selectBestComments(Long eventId);
 
     // 루틴 공유 조건 만족 댓글
-    List<EventCommentViewDTO> selectRoutineComments(Long eventId);
+    public List<EventCommentViewDTO> selectRoutineComments(Long eventId);
+
+//    <!-- 힐링데이: 좋아요 기준 Top 3 memberId 추출 -->
+    public List<Long> selectTop3MemberIdsByLikes(Long eventId);
+
 }

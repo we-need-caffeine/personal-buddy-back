@@ -54,6 +54,23 @@
                    END FROM DUAL
     </select>
 
+    <!-- 힐링데이: 좋아요 기준 Top 3 memberId 추출 -->
+    <select id="selectTop3MemberIdsByLikes" parameterType="long" resultType="long">
+        SELECT MEMBER_ID
+        FROM (
+        SELECT TEC.MEMBER_ID
+        FROM TBL_EVENT_COMMENT TEC
+        WHERE TEC.EVENT_ID = #{eventId}
+        ORDER BY (
+        SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE L
+        WHERE L.EVENT_COMMENT_ID = TEC.ID
+        ) DESC,
+        TEC.EVENT_COMMENT_CREATE_DATE ASC
+        )
+        WHERE ROWNUM &lt;= 3
+    </select>
+
+
     <!-- 유저가 댓글을 작성했는지 확인 (중복 방지용) -->
     <select id="userCommented" parameterType="EventCommentVO" resultType="int">
         SELECT COUNT(ID)

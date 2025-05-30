@@ -49,4 +49,8 @@ public interface EventService {
     // 이벤트 삭제
     void deleteEvent(Long id);
 
+    // 힐링데이: 좋아요 Top 3 댓글 작성자에게 포인트 지급
+    void rewardTop3HealingComments(Long eventId);
+
+
 }
