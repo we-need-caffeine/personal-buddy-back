@@ -119,10 +119,7 @@ public class BoardAPI {
     //  게시글과 이미지들을 함께 등록 (트랜잭션 처리)
     @Operation(summary = "게시글+이미지 등록", description = "게시글+이미지 등록 API")
     @ApiResponse(responseCode = "200", description = "게시글+이미지 등록 성공")
-//    @PostMapping("/image-with-write")
-//    public void writeBoardImageWithWrite(@RequestBody List<BoardImgVO> boardImgVO, @RequestBody BoardVO boardVO) {
-//        boardService.writeBoardWithImages(boardVO, boardImgVO);
-//    }
+
     @PostMapping(value = "/image-with-write", consumes = "multipart/form-data")
     public ResponseEntity<?> writeBoardImageWithWrite(
             @RequestPart("board") BoardVO boardVO,
