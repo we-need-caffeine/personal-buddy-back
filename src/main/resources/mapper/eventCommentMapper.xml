@@ -137,5 +137,4 @@
               AND TEC.EVENT_COMMENT_DESCRIPTION LIKE '%루틴%'
              )
     </select>
-
 </mapper>
