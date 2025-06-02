@@ -11,4 +11,10 @@ public class InviteMemberDTO {
     private String memberImgPath;
     private String memberImgName;
     private String inviteStatus;
+    private String calendarTitle;
+
+    private Long calendarInviteInvitedMemberId;
+    private Long calendarInviteHostId;
+    private Integer calendarInviteIsApproved;
+    private Long calendarId;
 }

@@ -16,17 +16,20 @@ public class TodoListServiceImpl implements TodoListService {
 
     private final TodoListDAO todoListDAO;
 
+    // 투두리스트 등록
     @Override
     public Long registerTodoList(ToDoListVO toDoListVO) {
 
         return todoListDAO.saveTodoList(toDoListVO);
     }
 
-    // 투두리스트 전체 등록
+    // 투두리스트 전체 조회
     @Override
     public List<ToDoListVO> getTodoLists(Long calendarId) {
         return todoListDAO.findAllTodoListByCalendarId(calendarId);
     }
+
+
 
     @Override
     public void modifyTodoList(ToDoListVO toDoListVO) {

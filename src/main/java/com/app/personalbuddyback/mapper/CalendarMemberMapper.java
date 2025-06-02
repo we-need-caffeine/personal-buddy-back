@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface CalendarMemberMapper {
@@ -19,13 +20,19 @@ public interface CalendarMemberMapper {
     public void insertCalendarMember(CalendarMemberVO calendarMemberVO);
 
     // 캘린더 멤버 추가 초대 조회
-    public List<MemberVO> selectInvitableCalendarMembers( Long memberId, Long calendarId);
+    public List<InviteMemberDTO> selectInvitableCalendarMembers( Long memberId, Long calendarId);
 
     // 캘린더 멤버 초대 조회
     public List<MemberVO> selectAllMutualFollowingsByMemberId(Long memberId);
 
     // 캘린더 멤버 전체 조회
     public List<MemberVO> selectAllCalendarMembersByCalendarId(Long calendarId);
+
+    // 캘린더 초대 이력 조회
+    public List<InviteMemberDTO> selectInvitedMembersByMemberId(Long memberId);
+
+    // 랠린더 단일 초대 조회
+    public Optional<InviteMemberDTO> selectInviteInfoByByCalendarIdAndHostId(Long calendarId, Long hostId);
 
     // 캘린더 초대 승인 여부 수정
     public void updateCalendarInvite(CalendarInviteVO calendarInviteVO);
@@ -37,5 +44,8 @@ public interface CalendarMemberMapper {
     public void deleteAllCalendarInvitesByCalendarId(Long calendarId);
 
     // 캘린더 멤버 삭제
-    public void deleteCalendarMember(Long calendarMemberId);
+    public void deleteCalendarMemberByMemberId(Long memberId, Long calendarId);
+
+    // 캘린더 초대 멤버 삭제
+    public void deleteCalendarInviteMemberByMemberId(Long memberId, Long calendarId);
 }

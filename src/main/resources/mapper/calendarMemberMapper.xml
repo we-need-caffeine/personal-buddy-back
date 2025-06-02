@@ -44,8 +44,7 @@
         )
     </select>
 
-    <!-- 켈린더 멤버 추가 초대 조회 -->
-    <select id="selectInvitableCalendarMembers" parameterType="map" resultType="MemberVO">
+    <select id="selectInvitableCalendarMembers" parameterType="map" resultType="InviteMemberDTO">
         SELECT
             TBM.ID AS MEMBER_ID,
             TBM.MEMBER_NAME,
@@ -53,7 +52,7 @@
             TBM.MEMBER_IMG_NAME,
             CASE
                 WHEN TBCI.CALENDAR_INVITE_IS_APPROVED = 0 THEN '초대대기중'
-                ELSE NULL
+                ELSE '초대'
                 END AS INVITE_STATUS
         FROM TBL_MEMBER TBM
 
@@ -66,29 +65,68 @@
                       ON F2.FOLLOWER_MEMBER_ID = TBM.ID
                           AND F2.FOLLOWING_MEMBER_ID = #{memberId}
 
-            -- 초대 여부
+            -- 캘린더 멤버 LEFT JOIN
+                 LEFT JOIN TBL_CALENDAR_MEMBER TBCM
+                           ON TBCM.CALENDAR_ID = #{calendarId}
+                               AND TBCM.MEMBER_ID = TBM.ID
+
+            -- 초대 여부 LEFT JOIN
                  LEFT JOIN TBL_CALENDAR_INVITE TBCI
                            ON TBCI.CALENDAR_ID = #{calendarId}
                                AND TBCI.CALENDAR_INVITE_INVITED_MEMBER_ID = TBM.ID
 
-        -- 이미 멤버인 사람은 제외
-        WHERE TBM.ID NOT IN (
-            SELECT MEMBER_ID
-            FROM TBL_CALENDAR_MEMBER
-            WHERE CALENDAR_ID = #{calendarId}
-        )
-          -- 자기 자신 제외
-          AND TBM.ID != #{memberId}
+        -- 자기 자신 제외 + 이미 참여중 멤버 제외
+        WHERE TBM.ID != #{memberId}
+          AND TBCM.MEMBER_ID IS NULL
     </select>
+
 
     <!-- 캘린더 멤버 전체 조회 -->
     <select id = "selectAllCalendarMembersByCalendarId" parameterType="Long" resultType="MemberVO">
-        SELECT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH, TBM.MEMBER_IMG_NAME
+        SELECT DISTINCT TBM.ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH, TBM.MEMBER_IMG_NAME
         FROM TBL_CALENDAR_MEMBER TBCM
                  JOIN TBL_MEMBER TBM
                       ON TBCM.MEMBER_ID = TBM.ID
         WHERE CALENDAR_ID = #{calendarId}
         AND TBCM.CALENDAR_MEMBER_IS_HOST = 0
+    </select>
+
+
+    <select id="selectInvitedMembersByMemberId"
+            parameterType="Long"
+            resultType="InviteMemberDTO">
+        SELECT
+            TBCI.ID,
+            TBCI.CALENDAR_ID,
+            TBCI.CALENDAR_INVITE_HOST_ID,
+            TBM.MEMBER_NAME,
+            TBC.CALENDAR_TITLE,
+            TBCI.CALENDAR_INVITE_IS_APPROVED
+        FROM
+            TBL_CALENDAR_INVITE TBCI
+                JOIN TBL_MEMBER TBM
+                     ON TBCI.CALENDAR_INVITE_HOST_ID = TBM.ID
+                JOIN TBL_CALENDAR TBC
+                     ON TBCI.CALENDAR_ID = TBC.ID
+        WHERE
+            TBCI.CALENDAR_INVITE_INVITED_MEMBER_ID = #{memberId}
+          AND TBCI.CALENDAR_INVITE_IS_APPROVED = 0
+    </select>
+
+    <!-- 켈린더 단일 초대 조회 -->
+    <select id="selectInviteInfoByCalendarIdAndHostId" parameterType="map" resultType="InviteMemberDTO">
+        SELECT
+            TBM.MEMBER_NAME,
+            CAL.CALENDAR_TITLE
+        FROM
+            TBL_CALENDAR_INVITE TBCI
+                JOIN TBL_MEMBER TBM
+                     ON TBCI.CALENDAR_INVITE_HOST_ID = TBM.ID
+                JOIN TBL_CALENDAR CAL
+                     ON TBCI.CALENDAR_ID = CAL.ID
+        WHERE
+            TBCI.CALENDAR_ID = #{calendarId}
+          AND TBCI.CALENDAR_INVITE_HOST_ID = #{calendarInviteHostId}
     </select>
 
     <!-- 초대 승인 여부 업데이트 -->
@@ -99,15 +137,17 @@
     </update>
 
     <!-- 캘린더 초대 삭제  -->
-    <delete id="deleteCalendarInviteMember" parameterType="Long">
+    <delete id="deleteCalendarInviteMemberByMemberId" parameterType="Long">
         DELETE FROM TBL_CALENDAR_INVITE
-        WHERE ID = #{id}
+        WHERE CALENDAR_INVITE_INVITED_MEMBER_ID = #{memberId}
+            AND CALENDAR_ID = #{calendarId}
     </delete>
 
     <!-- 캘린더 멤버 삭제 -->
-    <delete id="deleteCalendarMember" parameterType="Long">
+    <delete id="deleteCalendarMemberByMemberId" parameterType="Long">
         DELETE FROM TBL_CALENDAR_MEMBER
-        WHERE ID = #{id}
+        WHERE MEMBER_ID = #{memberId}
+            AND CALENDAR_ID = #{calendarId}
     </delete>
 
     <!-- 캘린더 멤버 삭제 By CalendarId -->
