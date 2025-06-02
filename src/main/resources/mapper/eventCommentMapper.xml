@@ -4,17 +4,21 @@
 
     <!-- 게시글 전체 댓글 목록 -->
     <select id="selectEventCommentsByEventId" parameterType="map" resultType="EventCommentViewDTO">
-        SELECT TBE.ID, TBE.EVENT_COMMENT_DESCRIPTION,
-        TO_CHAR(TBE.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
-        TBM.MEMBER_NICKNAME AS COMMENTER_NICKNAME,
-        (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TBE.ID) AS LIKE_COUNT
+        SELECT TBE.ID,
+        TBE.EVENT_COMMENT_DESCRIPTION,
+        TO_CHAR(TBE.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS EVENT_COMMENT_CREATE_DATE,
+        TBE.MEMBER_ID,
+        TBM.MEMBER_NICKNAME AS MEMBER_NICK_NAME,
+        TBM.MEMBER_IMG_PATH,
+        TBM.MEMBER_IMG_NAME,
+        (SELECT COUNT(*) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TBE.ID) AS EVENT_COMMENT_LIKE_COUNT
         FROM TBL_EVENT_COMMENT TBE
         JOIN TBL_MEMBER TBM ON TBE.MEMBER_ID = TBM.ID
         WHERE TBE.EVENT_ID = #{eventId}
         ORDER BY
         <choose>
             <when test="sort == 'like'">
-                (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TBE.ID) DESC
+                EVENT_COMMENT_LIKE_COUNT DESC
             </when>
             <otherwise>
                 TBE.EVENT_COMMENT_CREATE_DATE DESC
@@ -22,11 +26,25 @@
         </choose>
     </select>
 
+
     <!-- 댓글 작성 -->
     <insert id="insertEventComment" parameterType="EventCommentVO">
         INSERT INTO TBL_EVENT_COMMENT (ID, EVENT_COMMENT_DESCRIPTION, EVENT_COMMENT_CREATE_DATE, EVENT_ID, MEMBER_ID)
         VALUES (SEQ_EVENT_COMMENT.NEXTVAL, #{eventCommentDescription}, SYSDATE, #{eventId}, #{memberId})
     </insert>
+
+<!--    댓글 수정-->
+    <update id="updateEventComment" parameterType="EventCommentVO">
+        UPDATE TBL_EVENT_COMMENT
+        SET EVENT_COMMENT_DESCRIPTION = #{eventCommentDescription}
+        WHERE ID = #{id}
+    </update>
+
+<!--    댓글 삭제-->
+    <delete id="deleteEventComment" parameterType="long">
+        DELETE FROM TBL_EVENT_COMMENT
+        WHERE ID = #{id}
+    </delete>
 
     <!-- 기상 챌린지: 05:00~06:00 사이 -->
     <select id="wakeUpChallengeTime" resultType="int">
@@ -35,6 +53,23 @@
                    ELSE 0
                    END FROM DUAL
     </select>
+
+    <!-- 힐링데이: 좋아요 기준 Top 3 memberId 추출 -->
+    <select id="selectTop3MemberIdsByLikes" parameterType="long" resultType="long">
+        SELECT MEMBER_ID
+        FROM (
+        SELECT TEC.MEMBER_ID
+        FROM TBL_EVENT_COMMENT TEC
+        WHERE TEC.EVENT_ID = #{eventId}
+        ORDER BY (
+        SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE L
+        WHERE L.EVENT_COMMENT_ID = TEC.ID
+        ) DESC,
+        TEC.EVENT_COMMENT_CREATE_DATE ASC
+        )
+        WHERE ROWNUM &lt;= 3
+    </select>
+
 
     <!-- 유저가 댓글을 작성했는지 확인 (중복 방지용) -->
     <select id="userCommented" parameterType="EventCommentVO" resultType="int">
@@ -71,20 +106,21 @@
 
     <!-- 힐링데이: 좋아요 Top 3 베스트 댓글 (작성일 빠른 순) -->
     <select id="selectBestComments" parameterType="long" resultType="EventCommentViewDTO">
-        SELECT ID, EVENT_COMMENT_DESCRIPTION, COMMENTER_NICKNAME, CREATED_DATE, LIKE_COUNT
-        FROM (
-        SELECT TEC.ID,
-        TEC.EVENT_COMMENT_DESCRIPTION,
-        TMN.MEMBER_NICKNAME AS COMMENTER_NICKNAME,
-        TO_CHAR(TEC.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
-        (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TEC.ID) AS LIKE_COUNT
+        SELECT
+            TEC.ID,
+            TEC.EVENT_COMMENT_DESCRIPTION,
+            TO_CHAR(TEC.EVENT_COMMENT_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS EVENT_COMMENT_CREATE_DATE,
+            TMN.MEMBER_NICKNAME AS MEMBER_NICK_NAME,
+            TMN.MEMBER_IMG_PATH AS MEMBER_IMG_PATH,
+            TMN.MEMBER_IMG_NAME AS MEMBER_IMG_NAME,
+            (SELECT COUNT(ID) FROM TBL_EVENT_COMMENT_LIKE WHERE EVENT_COMMENT_ID = TEC.ID) AS EVENT_COMMENT_LIKE_COUNT
         FROM TBL_EVENT_COMMENT TEC
-        JOIN TBL_MEMBER TMN ON TEC.MEMBER_ID = TMN.ID
+                 JOIN TBL_MEMBER TMN ON TEC.MEMBER_ID = TMN.ID
         WHERE TEC.EVENT_ID = #{eventId}
-        ORDER BY LIKE_COUNT DESC, TEC.EVENT_COMMENT_CREATE_DATE
-        )
-        WHERE ROWNUM &lt;= 3
+        ORDER BY EVENT_COMMENT_LIKE_COUNT DESC, TEC.EVENT_COMMENT_CREATE_DATE
+            FETCH FIRST 3 ROWS ONLY
     </select>
+
 
     <!-- 루틴 공유 이벤트: 20자 이상 + "루틴" 포함 댓글 -->
     <select id="selectRoutineComments" parameterType="long" resultType="EventCommentViewDTO">
@@ -102,5 +138,4 @@
               AND TEC.EVENT_COMMENT_DESCRIPTION LIKE '%루틴%'
              )
     </select>
-
 </mapper>

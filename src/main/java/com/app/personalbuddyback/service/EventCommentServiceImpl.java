@@ -62,6 +62,18 @@ public class EventCommentServiceImpl implements EventCommentService {
         return eventCommentDAO.countCommentLikes(eventCommentId);
     }
 
+    // 댓글 수정
+    @Override
+    public void updateEventComment(EventCommentVO eventCommentVO) {
+        eventCommentDAO.saveEventComment(eventCommentVO);
+    }
+
+    // 댓글 삭제
+    @Override
+    public void deleteEventComment(Long id) {
+        eventCommentDAO.deleteEventComment(id);
+    }
+
     // 힐링데이 이벤트: 좋아요 Top 3 베스트 댓글 (작성일 빠른 순)
     @Override
     public List<EventCommentViewDTO> getBestComments(Long eventId) {

@@ -14,5 +14,6 @@ public class InterestDataVO {
     private String interestDataContent;
     private String interestDataImgName;
     private String interestDataImgPath;
+    private String interestDataLink;
     private Long interestDetailId;
 }

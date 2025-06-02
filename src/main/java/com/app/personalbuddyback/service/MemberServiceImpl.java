@@ -53,8 +53,11 @@ public class MemberServiceImpl implements MemberService {
 
         if (foundMember.isEmpty()) return null;
 
-//        if (!passwordEncoder.matches(memberVO.getMemberPassword(), foundMember.get().getMemberPassword())) {
-//            return null;
+//        String provider = foundMember.get().getMemberProvider();
+//        if ("local".equals(provider)) {
+//            if (!passwordEncoder.matches(memberVO.getMemberPassword(), foundMember.get().getMemberPassword())) {
+//                return null;
+//            }
 //        }
 
         return foundMember.get().getId();

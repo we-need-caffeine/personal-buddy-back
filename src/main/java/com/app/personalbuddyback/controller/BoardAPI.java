@@ -119,10 +119,7 @@ public class BoardAPI {
     //  게시글과 이미지들을 함께 등록 (트랜잭션 처리)
     @Operation(summary = "게시글+이미지 등록", description = "게시글+이미지 등록 API")
     @ApiResponse(responseCode = "200", description = "게시글+이미지 등록 성공")
-//    @PostMapping("/image-with-write")
-//    public void writeBoardImageWithWrite(@RequestBody List<BoardImgVO> boardImgVO, @RequestBody BoardVO boardVO) {
-//        boardService.writeBoardWithImages(boardVO, boardImgVO);
-//    }
+
     @PostMapping(value = "/image-with-write", consumes = "multipart/form-data")
     public ResponseEntity<?> writeBoardImageWithWrite(
             @RequestPart("board") BoardVO boardVO,
@@ -148,24 +145,27 @@ public class BoardAPI {
         boardService.updateBoard(boardVO);
     }
 
+
     @PutMapping(value = "/post/edit-with-images", consumes = "multipart/form-data")
     public void updatePostWithImages(
             @RequestPart("board") BoardVO boardVO,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
-        // 1. 게시글 텍스트 수정 (제목, 내용, 해시태그 등)
         boardService.updateBoard(boardVO);
 
-        // 2. 기존 이미지 삭제 (프론트에서 삭제 요청된 이미지 이름이 VO에 포함되어 있음)
+        // 삭제할 이미지 이름 리스트가 있다면 삭제
         if (boardVO.getRemovedImageNames() != null && !boardVO.getRemovedImageNames().isEmpty()) {
             boardService.deleteBoardImages(boardVO.getId(), boardVO.getRemovedImageNames());
         }
 
-        // 3. 새 이미지 추가
+        // 새 이미지 추가
         if (images != null && !images.isEmpty()) {
-            images.forEach(image -> boardService.saveBoardImage(boardVO.getId(), image));
+            for (MultipartFile image : images) {
+                boardService.saveBoardImage(boardVO.getId(), image);
+            }
         }
     }
+
 
 
 

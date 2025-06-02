@@ -135,4 +135,21 @@
         WHERE ID = #{id}
     </delete>
 
+<!--    현재 포인트 가져오기-->
+    <select id="getMemberPoint" parameterType="long" resultType="int">
+        SELECT MEMBER_POINT FROM TBL_MEMBER WHERE ID = #{memberId}
+    </select>
+
+<!--    포인트 업데이트-->
+<!--    <update id="updateMemberPoint" parameterType="map">-->
+<!--        UPDATE TBL_MEMBER-->
+<!--        SET MEMBER_POINT = #{newPoint}-->
+<!--        WHERE ID = #{memberId}-->
+<!--    </update>-->
+    <update id="updateMemberPoint">
+        UPDATE TBL_MEMBER
+        SET MEMBER_POINT = NVL(MEMBER_POINT, 0) + #{newPoint}
+        WHERE ID = #{memberId}
+    </update>
+
 </mapper>

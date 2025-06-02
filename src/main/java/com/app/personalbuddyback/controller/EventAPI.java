@@ -7,8 +7,13 @@ import com.app.personalbuddyback.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +84,32 @@ public class EventAPI {
     @GetMapping("/like-count/{eventId}")
     public int getEventLikeCount(@PathVariable Long eventId) {
         return eventService.getEventLikeCount(eventId);
+    }
+
+    // 모닝 이벤트 오전 6시까지 남은 시간 반환하기
+    @Operation(summary = "오전 6시까지 남은 시간 카운팅", description = "오전 6시가지 남은 시간 반환 API(서버 시간 기준)")
+    @GetMapping("/routine/time-left")
+    public Map<String, Object> getTimeUntilSixAM() {
+        Map<String, Object> response = new HashMap<>();
+
+        // 현재 시간
+        LocalDateTime now = LocalDateTime.now();
+
+        // 오늘 오전 6시
+        LocalDateTime sixAM = now.toLocalDate().atTime(6, 0);
+
+        // 이미 지났으면 다음 날 오전 6시로 설정
+        if (now.isAfter(sixAM)) {
+            sixAM = sixAM.plusDays(1);
+        }
+
+        // 시간 차 계산
+        Duration duration = Duration.between(now, sixAM);
+        long secondsLeft = duration.getSeconds();
+
+        // 응답에 담기
+        response.put("secondsLeft", secondsLeft);
+        return response;
     }
 
     // --------------------이벤트 댓글--------------------
@@ -181,5 +212,38 @@ public class EventAPI {
     public void deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
     }
+
+    // 댓글 수정
+    @Operation(summary = "댓글 수정", description = "이벤트 댓글 수정 API")
+    @PutMapping("/comment/edit")
+    public void editComment(@RequestBody EventCommentVO commentVO) {
+        eventCommentService.updateEventComment(commentVO);
+    }
+
+    // 댓글 삭제
+    @Operation(summary = "댓글 삭제", description = "이벤트 댓글 삭제 API")
+    @DeleteMapping("/comment/delete/{id}")
+    public void deleteComment(@PathVariable Long id) {
+        eventCommentService.deleteEventComment(id);
+    }
+
+    @Operation(summary = "루틴 이벤트 포인트 지급", description = "댓글 조건 만족 시 포인트 지급 API")
+    @PostMapping("/comment/reward")
+    public ResponseEntity<?> rewardPointForRoutine(@RequestBody Map<String, Object> payload) {
+        Long memberId = Long.valueOf(payload.get("memberId").toString());
+        Long eventId = Long.valueOf(payload.get("eventId").toString());
+
+        // 포인트 지급 처리
+        eventParticipationService.givePointForRoutineEvent(memberId, eventId);
+
+        return ResponseEntity.ok().body("포인트 지급 완료");
+    }
+
+    // 힐링데이 이벤트 포인트 지급
+    @PostMapping("/comment/reward-best/{eventId}")
+    public void rewardBestComments(@PathVariable Long eventId) {
+        eventService.rewardTop3HealingComments(eventId);
+    }
+
 
 }

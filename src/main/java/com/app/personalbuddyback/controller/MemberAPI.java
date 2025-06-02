@@ -28,8 +28,6 @@ public class MemberAPI {
     private final MemberService memberService;
     private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
-    private final MyTreeService myTreeService;
-    private final AchievementService achievementService;
     private final SurveyService surveyService;
     private final CalendarService calendarService;
 
@@ -38,9 +36,11 @@ public class MemberAPI {
     @PostMapping("join")
     public void join(@RequestBody MemberVO memberVO) {
         String password = memberVO.getMemberPassword();
-        String encodedPassword = passwordEncoder.encode(password);
 
-        memberVO.setMemberPassword(encodedPassword);
+        if (password != null && !password.isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(password);
+            memberVO.setMemberPassword(encodedPassword);
+        }
 
         memberService.join(memberVO);
         Long memberId = memberVO.getId();
@@ -51,13 +51,6 @@ public class MemberAPI {
         calendarVO.setCalendarIndex(1);
         calendarVO.setCalendarTitle("퍼스널버디");
         calendarService.registerCalendar(calendarVO);
-
-//        TreeVO treeVO = new TreeVO();
-//
-//        treeVO.setMemberId(memberId);
-//
-//        myTreeService.registerMemberTree(treeVO);
-//        achievementService.createAchievementComplete(memberId);
     }
 
     @Operation(summary = "이메일 중복 조회", description = "이메일 중복 조회 API")

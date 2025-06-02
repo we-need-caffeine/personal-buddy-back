@@ -13,4 +13,7 @@ public class EventCommentVO {
     private Date eventCommentCreateDate;
     private Long eventId;
     private Long memberId;
+    private String memberNickName;
+    private String memberImgPath;
+    private String eventCommentCreateDateString;
 }

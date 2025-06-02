@@ -1,6 +1,8 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.*;
+import com.app.personalbuddyback.mapper.EventCommentMapper;
+import com.app.personalbuddyback.mapper.MemberMapper;
 import com.app.personalbuddyback.repository.EventDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,12 @@ import java.util.Optional;
 public class EventServiceImpl implements EventService {
 
     private final EventDAO eventDAO;
+
+    @Autowired
+    private final EventCommentMapper eventCommentMapper;
+
+    @Autowired
+    private final MemberMapper memberMapper;
 
     // 진행 중 이벤트 3개 조회
     @Override
@@ -93,5 +101,21 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteEvent(Long id) {
         eventDAO.delete(id);
+    }
+
+    // 힐링데이 이벤트
+    @Override
+    public void rewardTop3HealingComments(Long eventId) {
+        // 좋아요 TOP 3 멤버 ID 추출
+        List<Long> top3MemberIds = eventCommentMapper.selectTop3MemberIdsByLikes(eventId);
+
+        // 각 멤버에게 포인트 800점 지급 (누적 방식)
+        for (Long memberId : top3MemberIds) {
+            // 현재 포인트 조회
+            int currentPoint = memberMapper.getMemberPoint(memberId);
+
+            // 새 포인트 계산 후 업데이트
+            memberMapper.updateMemberPoint(memberId, currentPoint + 800);
+        }
     }
 }

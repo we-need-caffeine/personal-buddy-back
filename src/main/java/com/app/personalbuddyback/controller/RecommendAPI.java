@@ -36,7 +36,6 @@ public class RecommendAPI {
     @PostMapping("recommend")
     public List<InterestDataVO> recommend(@RequestBody Map<String, Long> request) {
         Long memberId = request.get("memberId");
-        System.out.println("Received memberId: " + memberId);
         return recommendService.selectInterestDataByMemberId(memberId);
     }
 
