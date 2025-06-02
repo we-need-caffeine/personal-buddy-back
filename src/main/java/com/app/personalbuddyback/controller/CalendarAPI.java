@@ -125,9 +125,22 @@ public class CalendarAPI {
         return calendarService.getMutualFollowings(memberId);
     }
 
+    @Operation(summary = "내 초대 이력 전체 조회", description = "나에게 온 초대을 조회할 수 있는 API")
+    @GetMapping("invites/{memberId}")
+    public List<InviteMemberDTO> getMyInvites(@PathVariable Long memberId) {
+        return calendarService.getMyInvites(memberId);
+    }
+
+    @Operation(summary = "단일 초대 조회", description = "초대 정보를 조회할 수 있는 API")
+    @GetMapping("invites/{calendarId}/{hostId}")
+    public Optional<InviteMemberDTO> getInviteInfo(@PathVariable Long calendarId, @PathVariable Long hostId) {
+        return calendarService.getInviteInfo(calendarId, hostId);
+    }
+
+
     @Operation(summary = "캘린더 초대 가능한 멤버 목록 조회", description = "상호 팔로우이며 캘린더에 아직 가입되지 않은 멤버들을 조회합니다.")
-    @GetMapping("/members/{memberId}/followings/{calendarId}")
-    public List<MemberVO> getInvitableMembers(
+    @GetMapping("members/{memberId}/followings/{calendarId}")
+    public List<InviteMemberDTO> getInvitableMembers(
             @PathVariable Long memberId,
             @PathVariable Long calendarId
     ) {
@@ -135,27 +148,27 @@ public class CalendarAPI {
     }
 
     @Operation(summary = "캘린더 초대 승인", description = "캘린더 초대를 승인하는 API")
-    @PutMapping("/invites/{calendarId}/approve")
-    public void approveCalendarInvite(@PathVariable Long calendarId) {
-        calendarService.approveCalendarInvite(calendarId);
+    @PutMapping("invites/{calendarId}/members/{memberId}/approve")
+    public void approveCalendarInvite(@PathVariable Long calendarId, @PathVariable Long memberId) {
+        calendarService.approveCalendarInvite(calendarId, memberId);
     }
 
     @Operation(summary = "캘린더 초대 거부", description = "캘린더 초대를 거부하는 API")
-    @PutMapping("/invites/{calendarInviteId}/reject")
+    @PutMapping("invites/{calendarInviteId}/reject")
     public void rejectCalendarInvite(@PathVariable Long calendarInviteId) {
         calendarService.rejectCalendarInvite(calendarInviteId);
     }
 
     @Operation(summary = "캘린더 초대 취소", description = "보낸 초대를 취소하는 API")
-    @DeleteMapping("/invites/{calendarInviteId}")
-    public void cancelCalendarInvite(@PathVariable Long calendarInviteId) {
-        calendarService.cancelCalendarInvite(calendarInviteId);
+    @DeleteMapping("/cancel/members/{memberId}/calendars/{calendarId}")
+    public void cancelCalendarInvite(@PathVariable Long memberId, @PathVariable Long calendarId) {
+        calendarService.cancelCalendarInvite(memberId,calendarId);
     }
 
     @Operation(summary = "캘린더 멤버 추방", description = "캘린더에서 특정 멤버를 추방하는 API")
-    @DeleteMapping("/members/{calendarGroupMemberId}")
-    public void expelCalendarMember(@PathVariable Long calendarGroupMemberId) {
-        calendarService.expelCalendarMember(calendarGroupMemberId);
+    @DeleteMapping("/remove/members/{memberId}/calendars/{calendarId}")
+    public void expelCalendarMember(@PathVariable Long memberId, @PathVariable Long calendarId) {
+        calendarService.expelCalendarMember(memberId, calendarId);
     }
 
 }
