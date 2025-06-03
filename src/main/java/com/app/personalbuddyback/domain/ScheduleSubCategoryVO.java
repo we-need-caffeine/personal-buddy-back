@@ -7,5 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduleSubCategoryVO {
         private Long id;
+        private Long scheduleCategoryId;
         private String scheduleSubCategoryTitle;
 }

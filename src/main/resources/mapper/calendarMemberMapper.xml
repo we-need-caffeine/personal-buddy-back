@@ -56,16 +56,7 @@
                 END AS INVITE_STATUS
         FROM TBL_MEMBER TBM
 
-                 -- 상호 팔로우
-                 JOIN TBL_FOLLOW F1
-                      ON F1.FOLLOWING_MEMBER_ID = TBM.ID
-                          AND F1.FOLLOWER_MEMBER_ID = #{memberId}
-
-                 JOIN TBL_FOLLOW F2
-                      ON F2.FOLLOWER_MEMBER_ID = TBM.ID
-                          AND F2.FOLLOWING_MEMBER_ID = #{memberId}
-
-            -- 캘린더 멤버 LEFT JOIN
+                 -- 캘린더 멤버 LEFT JOIN
                  LEFT JOIN TBL_CALENDAR_MEMBER TBCM
                            ON TBCM.CALENDAR_ID = #{calendarId}
                                AND TBCM.MEMBER_ID = TBM.ID
@@ -75,11 +66,21 @@
                            ON TBCI.CALENDAR_ID = #{calendarId}
                                AND TBCI.CALENDAR_INVITE_INVITED_MEMBER_ID = TBM.ID
 
-        -- 자기 자신 제외 + 이미 참여중 멤버 제외
         WHERE TBM.ID != #{memberId}
           AND TBCM.MEMBER_ID IS NULL
+          AND EXISTS (
+            SELECT 1
+            FROM TBL_FOLLOW F1
+            WHERE F1.FOLLOWING_MEMBER_ID = TBM.ID
+          AND F1.FOLLOWER_MEMBER_ID = #{memberId}
+            )
+          AND EXISTS (
+            SELECT 1
+            FROM TBL_FOLLOW F2
+            WHERE F2.FOLLOWER_MEMBER_ID = TBM.ID
+          AND F2.FOLLOWING_MEMBER_ID = #{memberId}
+            )
     </select>
-
 
     <!-- 캘린더 멤버 전체 조회 -->
     <select id = "selectAllCalendarMembersByCalendarId" parameterType="Long" resultType="MemberVO">
@@ -91,7 +92,7 @@
         AND TBCM.CALENDAR_MEMBER_IS_HOST = 0
     </select>
 
-
+    <!-- 캘린더 초대 멤버 전체 조회 -->
     <select id="selectInvitedMembersByMemberId"
             parameterType="Long"
             resultType="InviteMemberDTO">
@@ -137,14 +138,14 @@
     </update>
 
     <!-- 캘린더 초대 삭제  -->
-    <delete id="deleteCalendarInviteMemberByMemberId" parameterType="Long">
+    <delete id="deleteCalendarInviteMemberByCalendarIdAndMemberId" parameterType="Long">
         DELETE FROM TBL_CALENDAR_INVITE
         WHERE CALENDAR_INVITE_INVITED_MEMBER_ID = #{memberId}
             AND CALENDAR_ID = #{calendarId}
     </delete>
 
     <!-- 캘린더 멤버 삭제 -->
-    <delete id="deleteCalendarMemberByMemberId" parameterType="Long">
+    <delete id="deleteCalendarMemberByCalendarIdAndMemberId" parameterType="Long">
         DELETE FROM TBL_CALENDAR_MEMBER
         WHERE MEMBER_ID = #{memberId}
             AND CALENDAR_ID = #{calendarId}
