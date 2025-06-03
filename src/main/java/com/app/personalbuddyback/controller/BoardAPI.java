@@ -166,12 +166,6 @@ public class BoardAPI {
         }
     }
 
-
-
-
-
-
-
     // 게시글 이미지 삭제(전체)
     @Operation(summary = "게시글 이미지 전체 삭제", description = "게시글 이미지 전체 삭제 API")
     @ApiResponse(responseCode = "200", description = "게시글 이미지 전체 삭제 성공")
