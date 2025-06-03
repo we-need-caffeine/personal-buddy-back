@@ -27,7 +27,7 @@ public class CalendarAPI {
     private final CalendarService calendarService;
 
     //    캘린더 일정 데이터 전체 조회
-    @PostMapping("/members/calendars")
+    @PostMapping("members/calendars")
     public ResponseEntity<Map<String, Object>> getCalendarsAll(
             @RequestBody Long memberId
     ) {
@@ -38,7 +38,7 @@ public class CalendarAPI {
 
     // ---------------------------- [캘린더] ----------------------------
 
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<Map<String, Object>> registerCalendar(@RequestBody CalendarVO calendarVO) {
         log.info("calendarVO = {}", calendarVO);
         Long calendarId = calendarService.registerCalendar(calendarVO); // 등록 후 ID 리턴
@@ -55,7 +55,7 @@ public class CalendarAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("/members/{memberId}/calendars")
+    @GetMapping("members/{memberId}/calendars")
     public List<CalendarVO> getCalendars(@PathVariable Long memberId) {
         return calendarService.getCalendars(memberId);
     }
@@ -68,19 +68,19 @@ public class CalendarAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("/{calendarId}")
+    @GetMapping("{calendarId}")
     public Optional<CalendarVO> getCalendar(@PathVariable Long calendarId) {
         return calendarService.getCalendar(calendarId);
     }
 
     @Operation(summary = "캘린더 수정", description = "기존 캘린더 정보를 수정하는 API")
-    @PutMapping("/update")
+    @PutMapping("update")
     public void modifyCalendar(@RequestBody CalendarVO calendarVO) {
         calendarService.modifyCalendar(calendarVO);
     }
 
     @Operation(summary = "캘린더 삭제", description = "캘린더와 연관된 모든 데이터를 포함하여 삭제하는 API")
-    @DeleteMapping("/delete/{calendarId}")
+    @DeleteMapping("delete/{calendarId}")
     public void deleteCalendar(@PathVariable Long calendarId) {
         calendarService.deleteCalendar(calendarId);
     }
@@ -88,13 +88,20 @@ public class CalendarAPI {
     // ---------------------------- [캘린더 멤버] ----------------------------
 
     @Operation(summary = "캘린더 초대", description = "공유 캘린더에 초대할 수 있는 API")
-    @PostMapping("/invites")
+    @PostMapping("invites")
     public void inviteCalendar(@RequestBody List<CalendarInviteVO> calendarInviteList) {
         calendarService.inviteCalendar(calendarInviteList); // 리스트 전달
     }
 
+    @Operation(summary = "캘린더 초대", description = "공유 캘린더에 초대할 수 있는 API")
+    @PostMapping("members/invites/")
+    public void inviteCalendar(@RequestBody CalendarInviteVO calendarInviteMember) {
+        calendarService.inviteCalendarMember(calendarInviteMember); // 리스트 전달
+    }
+
+
     @Operation(summary = "캘린더 멤버 등록", description = "공유 캘린더 멤버에 등록할 수 있는 API")
-    @PostMapping("/members")
+    @PostMapping("members")
     public void addCalendarMember(@RequestBody CalendarMemberVO calendarMemberVO) {
         calendarService.addCalendarMember(calendarMemberVO);
     }
@@ -107,7 +114,7 @@ public class CalendarAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("/members/{calendarId}")
+    @GetMapping("members/{calendarId}")
     public List<MemberVO> getCalendarMembers(@PathVariable Long calendarId) {
         return calendarService.getCalendarMembers(calendarId);
     }
@@ -120,7 +127,7 @@ public class CalendarAPI {
             in = ParameterIn.PATH,
             required = true
     )
-    @GetMapping("/members/{memberId}/followings")
+    @GetMapping("members/{memberId}/followings")
     public List<MemberVO> getMutualFollowings(@PathVariable Long memberId) {
         return calendarService.getMutualFollowings(memberId);
     }
@@ -153,20 +160,14 @@ public class CalendarAPI {
         calendarService.approveCalendarInvite(calendarId, memberId);
     }
 
-    @Operation(summary = "캘린더 초대 거부", description = "캘린더 초대를 거부하는 API")
-    @PutMapping("invites/{calendarInviteId}/reject")
-    public void rejectCalendarInvite(@PathVariable Long calendarInviteId) {
-        calendarService.rejectCalendarInvite(calendarInviteId);
-    }
-
     @Operation(summary = "캘린더 초대 취소", description = "보낸 초대를 취소하는 API")
-    @DeleteMapping("/cancel/members/{memberId}/calendars/{calendarId}")
+    @DeleteMapping("invites/members/{memberId}/calendars/{calendarId}/cancel")
     public void cancelCalendarInvite(@PathVariable Long memberId, @PathVariable Long calendarId) {
         calendarService.cancelCalendarInvite(memberId,calendarId);
     }
 
     @Operation(summary = "캘린더 멤버 추방", description = "캘린더에서 특정 멤버를 추방하는 API")
-    @DeleteMapping("/remove/members/{memberId}/calendars/{calendarId}")
+    @DeleteMapping("remove/members/{memberId}/calendars/{calendarId}")
     public void expelCalendarMember(@PathVariable Long memberId, @PathVariable Long calendarId) {
         calendarService.expelCalendarMember(memberId, calendarId);
     }
