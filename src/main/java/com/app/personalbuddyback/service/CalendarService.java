@@ -17,6 +17,7 @@ public interface CalendarService {
     // 캘린더 초대
     public void inviteCalendar(List<CalendarInviteVO> invites);
 
+    public void inviteCalendarMember(CalendarInviteVO inviteMember);
     // 캘린더 멤버 등록
     public void addCalendarMember(CalendarMemberVO calendarMemberVO);
 
@@ -43,8 +44,6 @@ public interface CalendarService {
     // 캘린더 초대 승인
     public void approveCalendarInvite(Long calendarId, Long memberId);
 
-    // 캘린더 초대 거부
-    public void rejectCalendarInvite(Long calendarInviteId);
 
     // 캘린더 수정
     public void modifyCalendar(CalendarVO calendarVO);

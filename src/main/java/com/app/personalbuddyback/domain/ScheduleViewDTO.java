@@ -16,11 +16,10 @@ public class ScheduleViewDTO {
     private Date scheduleEndDate;
     private Date scheduleCreatedDate;
     private String scheduleColor;
-    private String scheduleCategory;
     private Integer scheduleRepeat;
     private Long calendarId;
     private Long scheduleMemberGroupId;
-
+    private String scheduleLocation;
     private String scheduleCategoryTitle;
     private String scheduleSubCategoryTitle;
     private List<Long> memberIds;

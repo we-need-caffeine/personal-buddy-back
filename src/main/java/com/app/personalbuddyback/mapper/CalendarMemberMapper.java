@@ -44,8 +44,8 @@ public interface CalendarMemberMapper {
     public void deleteAllCalendarInvitesByCalendarId(Long calendarId);
 
     // 캘린더 멤버 삭제
-    public void deleteCalendarMemberByMemberId(Long memberId, Long calendarId);
+    public void deleteCalendarMemberByCalendarIdAndMemberId(Long memberId, Long calendarId);
 
     // 캘린더 초대 멤버 삭제
-    public void deleteCalendarInviteMemberByMemberId(Long memberId, Long calendarId);
+    public void deleteCalendarInviteMemberByCalendarIdAndMemberId(Long memberId, Long calendarId);
 }
