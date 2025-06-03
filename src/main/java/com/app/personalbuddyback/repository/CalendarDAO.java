@@ -77,16 +77,16 @@ public class CalendarDAO {
     }
 
     // 캘린더 초대 멤버 삭제
-    public void deleteCalendarInviteMemberByMemberId(Long memberId, Long calendarId) {
-        calendarMemberMapper.deleteCalendarInviteMemberByMemberId(memberId, calendarId);
+    public void deleteCalendarInviteMemberByCalendarIdAndMemberId(Long memberId, Long calendarId) {
+        calendarMemberMapper.deleteCalendarInviteMemberByCalendarIdAndMemberId(memberId, calendarId);
     }
 
     // 캘린더 그룹 멤버 삭제
-    public void deleteCalendarMemberByMemberId(Long memberId, Long calendarId) {
-        calendarMemberMapper.deleteCalendarMemberByMemberId(memberId, calendarId);
+    public void deleteCalendarMemberByCalendarIdAndMemberId(Long memberId, Long calendarId) {
+        calendarMemberMapper.deleteCalendarMemberByCalendarIdAndMemberId(memberId, calendarId);
     }
 
-    // 유저 그룹 삭제
+    // 캘린더 멤버 전체 삭제
     public void deleteAllCalendarMembersByCalendarId(Long calendarId) {
         calendarMemberMapper.deleteAllCalendarMembersByCalendarId(calendarId);
     }

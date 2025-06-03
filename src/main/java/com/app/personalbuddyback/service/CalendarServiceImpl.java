@@ -80,11 +80,19 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarId;
     }
 
+    // 캘린더 등록 멤버 초대
     @Override
     public void inviteCalendar(List<CalendarInviteVO> invites) {
         for (CalendarInviteVO invite : invites) {
             calendarDAO.saveCalendarInvite(invite);  // 단건 mapper 반복 호출
         }
+    }
+
+    // 캘린더 멤더 단일 초대
+    @Override
+    public void inviteCalendarMember(CalendarInviteVO inviteMember) {
+            calendarDAO.saveCalendarInvite(inviteMember);
+
     }
 
     // 공유 캘린더 멤버 등록
@@ -133,6 +141,7 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarDAO.selectInviteInfoByCalendarIdAndHostId(calendarId, hostId);
     }
 
+    // 캘린더 초대 승인
     @Override
     public void approveCalendarInvite(Long calendarId, Long memberId) {
         CalendarInviteVO calendarInviteVO = new CalendarInviteVO();
@@ -148,12 +157,6 @@ public class CalendarServiceImpl implements CalendarService {
         calendarDAO.saveCalendarMember(calendarMemberVO);
     }
 
-    // 캘린더 초대 거부
-    @Override
-    public void rejectCalendarInvite(Long calendarInviteId) {
-        CalendarInviteVO calendarInviteVO = new CalendarInviteVO();
-
-    }
 
     // 캘린더 수정
     @Override
@@ -164,14 +167,14 @@ public class CalendarServiceImpl implements CalendarService {
     // 공유 캘린더 초대 취소
     @Override
     public void cancelCalendarInvite(Long memberId, Long calendarId) {
-        calendarDAO.deleteCalendarInviteMemberByMemberId(memberId, calendarId);
+        calendarDAO.deleteCalendarInviteMemberByCalendarIdAndMemberId(memberId, calendarId);
     }
 
     // 공유 캘린더 추방
     @Override
     public void expelCalendarMember(Long memberId, Long calendarId) {
-        calendarDAO.deleteCalendarMemberByMemberId(memberId, calendarId);
-        calendarDAO.deleteCalendarInviteMemberByMemberId(memberId, calendarId);
+        calendarDAO.deleteCalendarMemberByCalendarIdAndMemberId(memberId, calendarId);
+        calendarDAO.deleteCalendarInviteMemberByCalendarIdAndMemberId(memberId, calendarId);
     }
 
     // 캘린더 삭제
