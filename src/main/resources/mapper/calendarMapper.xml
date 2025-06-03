@@ -31,9 +31,14 @@
 
     <!-- 캘린더 전체 조회 -->
     <select id="selectAllCalendarsByMemberId" parameterType="Long" resultType="CalendarVO">
-        SELECT ID, CALENDAR_TITLE, CALENDAR_INDEX, MEMBER_ID
-        FROM TBL_CALENDAR
-        WHERE MEMBER_ID = #{memberId}
+        SELECT TBC.ID,
+               TBC.CALENDAR_TITLE,
+               TBC.CALENDAR_INDEX,
+               TBC.MEMBER_ID
+        FROM TBL_CALENDAR TBC
+                 JOIN TBL_CALENDAR_MEMBER TBCM
+                      ON TBC.ID = TBCM.CALENDAR_ID
+        WHERE TBCM.MEMBER_ID = #{memberId}
     </select>
 
     <!-- 캘린더 단일 조회 -->

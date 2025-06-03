@@ -21,8 +21,6 @@ public interface CalendarMapper {
     //  캘린더 수정
     public void updateCalendar(CalendarVO calendarVO);
 
-    // 캘린더 초대 삭제
-    public void deleteCalendarInvite(Long calendarInviteId);
 
     // 캘린더 삭제
     public void deleteCalendar(Long calendarId);

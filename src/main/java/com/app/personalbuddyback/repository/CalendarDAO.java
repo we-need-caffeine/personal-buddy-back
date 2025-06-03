@@ -33,7 +33,7 @@ public class CalendarDAO {
     }
 
     // 켈린더 멤버 추가 초대 조회
-    public List<MemberVO> findInvitableCalendarMembers(Long memberId, Long calendarId) {
+    public List<InviteMemberDTO> findInvitableCalendarMembers(Long memberId, Long calendarId) {
         return calendarMemberMapper.selectInvitableCalendarMembers(memberId, calendarId);
     }
 
@@ -56,6 +56,16 @@ public class CalendarDAO {
         return calendarMemberMapper.selectAllCalendarMembersByCalendarId(calendarId);
     }
 
+    // 캘린더 초대 이력 조회
+    public List<InviteMemberDTO> selectInviteMembersByMemberId(Long memberId) {
+        return calendarMemberMapper.selectInvitedMembersByMemberId(memberId);
+    }
+
+    // 캘린더 단일 초대 조회
+    public Optional<InviteMemberDTO> selectInviteInfoByCalendarIdAndHostId(Long calendarId, Long hostId) {
+        return calendarMemberMapper.selectInviteInfoByByCalendarIdAndHostId(calendarId, hostId);
+    }
+
     // 캘린더 초대 승인 여부 업데이트
     public void updateCalendarInvite(CalendarInviteVO calendarInviteVO) {
         calendarMemberMapper.updateCalendarInvite(calendarInviteVO);
@@ -66,14 +76,14 @@ public class CalendarDAO {
         calendarMapper.updateCalendar(calendarVO);
     }
 
-    // 캘린더 초대 그룹 멤버 삭제
-    public void deleteCalendarInvite(Long calendarInviteId) {
-        calendarMapper.deleteCalendarInvite(calendarInviteId);
+    // 캘린더 초대 멤버 삭제
+    public void deleteCalendarInviteMemberByMemberId(Long memberId, Long calendarId) {
+        calendarMemberMapper.deleteCalendarInviteMemberByMemberId(memberId, calendarId);
     }
 
     // 캘린더 그룹 멤버 삭제
-    public void deleteCalendarMember(Long calendarGroupMemberId) {
-        calendarMemberMapper.deleteCalendarMember(calendarGroupMemberId);
+    public void deleteCalendarMemberByMemberId(Long memberId, Long calendarId) {
+        calendarMemberMapper.deleteCalendarMemberByMemberId(memberId, calendarId);
     }
 
     // 유저 그룹 삭제
