@@ -97,10 +97,10 @@
             TBI.ITEM_NAME AS ITEM_NAME,
             TBI.ITEM_IMG_NAME AS ITEM_IMG_NAME,
             TBI.ITEM_IMG_PATH AS ITEM_IMG_PATH,
-            TBC.CART_ITEM_COUNT AS BUY_ITEM_COUNT,
+            TBC.BUY_ITEM_COUNT AS BUY_ITEM_COUNT,
             TBI.ITEM_TYPE AS ITEM_TYPE,
             TBI.ITEM_PRICE AS ITEM_PRICE,
-            (TBI.ITEM_PRICE * TBC.CART_ITEM_COUNT) AS TOTAL_PRICE
+            (TBI.ITEM_PRICE * TBC.BUY_ITEM_COUNT) AS TOTAL_PRICE
         FROM TBL_CART TBC
             JOIN TBL_ITEM TBI
             ON TBC.ITEM_ID = TBI.ID
@@ -108,7 +108,7 @@
     </select>
 
     <select id="selectCartItemById" parameterType="Long" resultType="CartVO">
-        SELECT ID, ITEM_ID, MEMBER_ID, CART_ITEM_COUNT
+        SELECT ID, ITEM_ID, MEMBER_ID, BUY_ITEM_COUNT
         FROM TBL_CART
         WHERE ID = #{id}
     </select>
@@ -131,8 +131,8 @@
 <!--    장바구니 아이템 변경 (수량만, 장바구니 제거는 삭제를 통해 제거)     -->
     <update id="updateCartItem" parameterType="CartVO">
         UPDATE TBL_CART
-        SET CART_ITEM_COUNT = #{cartItemCount}
-        WHERE ID = #{id}
+        SET BUY_ITEM_COUNT = #{buyItemCount}
+        WHERE ITEM_ID = #{itemId} AND MEMBER_ID = #{memberId}
     </update>
 
 <!--    아이템 삭제(관리자)     -->
