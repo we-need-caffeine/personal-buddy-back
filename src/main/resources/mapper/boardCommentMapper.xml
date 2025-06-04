@@ -76,12 +76,22 @@
     </delete>
 
     <!--    댓글 좋아요-->
+<!--    <insert id="insertBoardCommentLike" parameterType="BoardCommentLikeVO">-->
+<!--        INSERT INTO TBL_BOARD_COMMENT_LIKE(-->
+<!--            ID, BOARD_COMMENT_LIKE_CREATE_DATE, MEMBER_ID, BOARD_COMMENT_ID-->
+<!--        ) VALUES (-->
+<!--            SEQ_BOARD_COMMENT_LIKE.NEXTVAL, SYSDATE, #{memberId}, #{boardCommentId}-->
+<!--        )-->
+<!--    </insert>-->
+    
+    <!-- 댓글 좋아요 (중복 방지용 MERGE) -->
     <insert id="insertBoardCommentLike" parameterType="BoardCommentLikeVO">
-        INSERT INTO TBL_BOARD_COMMENT_LIKE(
-            ID, BOARD_COMMENT_LIKE_CREATE_DATE, MEMBER_ID, BOARD_COMMENT_ID
-        ) VALUES (
-            SEQ_BOARD_COMMENT_LIKE.NEXTVAL, SYSDATE, #{memberId}, #{boardCommentId}
-        )
+        MERGE INTO TBL_BOARD_COMMENT_LIKE target
+            USING (SELECT #{memberId} AS MEMBER_ID, #{boardCommentId} AS BOARD_COMMENT_ID FROM dual) src
+            ON (target.MEMBER_ID = src.MEMBER_ID AND target.BOARD_COMMENT_ID = src.BOARD_COMMENT_ID)
+            WHEN NOT MATCHED THEN
+                INSERT (ID, BOARD_COMMENT_LIKE_CREATE_DATE, MEMBER_ID, BOARD_COMMENT_ID)
+                    VALUES (SEQ_BOARD_COMMENT_LIKE.NEXTVAL, SYSDATE, src.MEMBER_ID, src.BOARD_COMMENT_ID)
     </insert>
 
     <!--    댓글 좋아요 취소-->
