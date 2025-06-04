@@ -32,9 +32,12 @@ public class PointShopServiceImpl implements PointShopService {
 
     @Override
     public void buyItem(List<BuyingItemDTO> buyingItemDTOList, boolean deleteCart , int totalPrice) {
+        log.info("buyingItemDTOList{}", buyingItemDTOList);
+        log.info("deleteCart{}", deleteCart);
         Long memberId = buyingItemDTOList.get(0).getMemberId();
+        log.info("memberId{}", memberId);
         Long treeId = myTreeDAO.findTreeIdByMemberId(memberId);
-
+        log.info("treeId{}", treeId);
         for (BuyingItemDTO buyingItemDTO : buyingItemDTOList) {
             Long itemId = buyingItemDTO.getItemId();
             int buyItemCount = buyingItemDTO.getBuyItemCount();

@@ -26,7 +26,7 @@
 <!--    장바구니 담기(추가)     -->
     <insert id="insertCart" parameterType="CartVO">
         INSERT INTO TBL_CART
-        VALUES(SEQ_CART.NEXTVAL, #{cartItemCount}, #{memberId}, #{itemId})
+        VALUES(SEQ_CART.NEXTVAL, #{buyItemCount}, #{memberId}, #{itemId})
     </insert>
 
 <!--    아이템 목록 SELECT   -->
@@ -98,7 +98,7 @@
             TBI.ITEM_IMG_NAME AS ITEM_IMG_NAME,
             TBI.ITEM_IMG_PATH AS ITEM_IMG_PATH,
             TBC.CART_ITEM_COUNT AS BUY_ITEM_COUNT,
-            TBI.ITEM_TYPE AS ITME_TYPE,
+            TBI.ITEM_TYPE AS ITEM_TYPE,
             TBI.ITEM_PRICE AS ITEM_PRICE,
             (TBI.ITEM_PRICE * TBC.CART_ITEM_COUNT) AS TOTAL_PRICE
         FROM TBL_CART TBC

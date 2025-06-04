@@ -20,8 +20,8 @@
         )
     </insert>
 
-    <select id="selectTreeIdByMemberId" parameterType="Long">
-        SELECT TREE_ID
+    <select id="selectTreeIdByMemberId" parameterType="Long" resultType="Long">
+        SELECT ID
         FROM TBL_TREE
         WHERE MEMBER_ID = #{memberId}
     </select>

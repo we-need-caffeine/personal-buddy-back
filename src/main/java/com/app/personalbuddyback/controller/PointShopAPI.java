@@ -17,6 +17,7 @@ import retrofit2.http.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,17 +70,22 @@ public class PointShopAPI {
 
     @Operation(summary = "아이템 구매", description = "사용자 아이템 구매")
     @PostMapping("/item/buy")
-    public ResponseEntity<Map<String, Object>> buyItem(Map<String, Object> params) {
+    public ResponseEntity<Map<String, Object>> buyItem(@RequestBody BuyingItemRequestDTO request) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<BuyingItemDTO> buyingItems = (List<BuyingItemDTO>) params.get("buyingItems");
+            int totalPrice = (int) request.getTotalPrice();
+            boolean deleteCart = request.isDeleteCart();
+            List<BuyingItemDTO> buyingItems = request.getBuyingItems();
+
+            log.info("buyingItems:{}", buyingItems);
+            log.info("totalPrice:{}", totalPrice);
+            log.info("deleteCart:{}", deleteCart);
 
             Long memberId = buyingItems.get(0).getMemberId();
             int memberPoint = memberService.getMemberInfoById(memberId).get().getMemberPoint();
-            boolean deleteCart = (boolean) params.get("deleteCart");
-            // boolean deleteCart = buyingItems.get(0).getId() != null;
 
-            int totalPrice = (int) params.get("totalPrice");
+            log.info("memberPoint:{}", memberPoint);
+            log.info("memberId:{}", memberId);
 
             if(memberPoint < totalPrice){
                 response.put("result", false);
