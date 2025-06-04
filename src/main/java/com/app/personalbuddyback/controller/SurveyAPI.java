@@ -19,8 +19,12 @@ public class SurveyAPI {
 
     @Operation(summary = "설문조사 작성", description = "설문조사 작성 API")
     @ApiResponse(responseCode = "200", description = "설문조사 작성 성공")
-    @PostMapping("insert")
-    public void insert(@RequestBody List<InterestDTO> interestDTOList) {
+    @PostMapping("insert/{memberId}")
+    public void insert(@PathVariable Long memberId, @RequestBody List<InterestDTO> interestDTOList) {
+
+        if (memberId != null) {
+            surveyService.deleteInterest(memberId);
+        }
 
         for (InterestDTO dto : interestDTOList) {
             surveyService.insertInterest(dto);
