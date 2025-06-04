@@ -62,9 +62,7 @@ public class PointShopAPI {
     @Operation(summary = "개인화 된 포인트샵 조회 화면", description = "소유하고 있는 목록에 대한 내용을 포함한 포인트샵 전체 목록")
     @PostMapping("/item/list")
     public List<PointShopViewDTO> getMemberPointShopView(@RequestBody Map<String, Object> params){
-        log.info("params:{}", params);
         List<PointShopViewDTO> items = pointShopService.getPointShopItems(params);
-        log.info("items:{}", items);
         return items;
     }
 
@@ -77,15 +75,8 @@ public class PointShopAPI {
             boolean deleteCart = request.isDeleteCart();
             List<BuyingItemDTO> buyingItems = request.getBuyingItems();
 
-            log.info("buyingItems:{}", buyingItems);
-            log.info("totalPrice:{}", totalPrice);
-            log.info("deleteCart:{}", deleteCart);
-
             Long memberId = buyingItems.get(0).getMemberId();
             int memberPoint = memberService.getMemberInfoById(memberId).get().getMemberPoint();
-
-            log.info("memberPoint:{}", memberPoint);
-            log.info("memberId:{}", memberId);
 
             if(memberPoint < totalPrice){
                 response.put("result", false);
@@ -114,7 +105,7 @@ public class PointShopAPI {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             response.put("result", false);
-            response.put("message", "장바구니 추가 실패");
+            response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

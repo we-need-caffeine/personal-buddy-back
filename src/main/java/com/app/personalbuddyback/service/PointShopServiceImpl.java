@@ -32,12 +32,8 @@ public class PointShopServiceImpl implements PointShopService {
 
     @Override
     public void buyItem(List<BuyingItemDTO> buyingItemDTOList, boolean deleteCart , int totalPrice) {
-        log.info("buyingItemDTOList{}", buyingItemDTOList);
-        log.info("deleteCart{}", deleteCart);
         Long memberId = buyingItemDTOList.get(0).getMemberId();
-        log.info("memberId{}", memberId);
         Long treeId = myTreeDAO.findTreeIdByMemberId(memberId);
-        log.info("treeId{}", treeId);
         for (BuyingItemDTO buyingItemDTO : buyingItemDTOList) {
             Long itemId = buyingItemDTO.getItemId();
             int buyItemCount = buyingItemDTO.getBuyItemCount();
@@ -54,10 +50,14 @@ public class PointShopServiceImpl implements PointShopService {
                 myTreeDAO.saveTreeCustomizing(treeCustomizingVO);
             }
             pointShopDAO.saveBuyItem(buyItemVO);
+
+            if(deleteCart){
+                pointShopDAO.deleteCartItem(buyingItemDTO.getId());
+            }
         }
         MemberPointLogVO memberPointLogVO = new MemberPointLogVO();
         memberPointLogVO.setMemberId(memberId);
-        memberPointLogVO.setMemberPointChangeAmount(totalPrice);
+        memberPointLogVO.setMemberPointChangeAmount(-totalPrice);
         memberPointLogVO.setMemberPointChangeDate(new Date());
         memberPointLogVO.setMemberPointReason("아이템 구매");
 
@@ -70,24 +70,43 @@ public class PointShopServiceImpl implements PointShopService {
         member.setMemberPoint(member.getMemberPoint() - totalPrice);
         memberDAO.update(member);
 
-        if(deleteCart){
-            pointShopDAO.deleteAllCartItems(memberId);
-        }
     }
 
     @Override
     public void addCart(List<BuyingItemDTO> buyingItemDTOList) {
-        for(BuyingItemDTO buyingItemDTO : buyingItemDTOList){
-            int buyItemCount = buyingItemDTO.getBuyItemCount();
-            Long memberId = buyingItemDTO.getMemberId();
+        Long memberId = buyingItemDTOList.get(0).getMemberId();
+
+        // 기존 장바구니 목록 조회
+        List<BuyingItemDTO> cartItems = pointShopDAO.findAllCartItems(memberId);
+
+        for (BuyingItemDTO buyingItemDTO : buyingItemDTOList) {
             Long itemId = buyingItemDTO.getItemId();
+            int buyItemCount = buyingItemDTO.getBuyItemCount();
 
-            CartVO cartVO = new CartVO();
-            cartVO.setMemberId(memberId);
-            cartVO.setItemId(itemId);
-            cartVO.setBuyItemCount(buyItemCount);
+            // 기존 장바구니에 같은 아이템이 있는지 확인
+            Optional<BuyingItemDTO> existingCartItem = cartItems.stream()
+                    .filter(item -> item.getItemId().equals(itemId))
+                    .findFirst();
 
-            pointShopDAO.saveCart(cartVO);
+            if (existingCartItem.isPresent()) {
+                // 이미 있으면 → 기존 개수 + 현재 개수로 update
+                int newCount = existingCartItem.get().getBuyItemCount() + buyItemCount;
+
+                CartVO cartVO = new CartVO();
+                cartVO.setMemberId(memberId);
+                cartVO.setItemId(itemId);
+                cartVO.setBuyItemCount(newCount);
+
+                pointShopDAO.updateCartItem(cartVO);
+            } else {
+                // 없으면 → 신규 insert
+                CartVO cartVO = new CartVO();
+                cartVO.setMemberId(memberId);
+                cartVO.setItemId(itemId);
+                cartVO.setBuyItemCount(buyItemCount);
+
+                pointShopDAO.saveCart(cartVO);
+            }
         }
     }
 
