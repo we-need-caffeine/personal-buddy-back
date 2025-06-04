@@ -79,9 +79,18 @@
     </select>
 
     <!-- 댓글 좋아요 추가 -->
+<!--    <insert id="insertEventCommentLike" parameterType="EventCommentLikeVO">-->
+<!--        INSERT INTO TBL_EVENT_COMMENT_LIKE (ID, EVENT_COMMENT_LIKE_CREATE_DATE, EVENT_COMMENT_ID, MEMBER_ID)-->
+<!--        VALUES (SEQ_EVENT_COMMENT_LIKE.NEXTVAL, SYSDATE, #{eventCommentId}, #{memberId})-->
+<!--    </insert>-->
+    <!-- 댓글 좋아요 추가 (중복 방지용 MERGE) -->
     <insert id="insertEventCommentLike" parameterType="EventCommentLikeVO">
-        INSERT INTO TBL_EVENT_COMMENT_LIKE (ID, EVENT_COMMENT_LIKE_CREATE_DATE, EVENT_COMMENT_ID, MEMBER_ID)
-        VALUES (SEQ_EVENT_COMMENT_LIKE.NEXTVAL, SYSDATE, #{eventCommentId}, #{memberId})
+        MERGE INTO TBL_EVENT_COMMENT_LIKE target
+            USING (SELECT #{eventCommentId} AS EVENT_COMMENT_ID, #{memberId} AS MEMBER_ID FROM dual) src
+            ON (target.EVENT_COMMENT_ID = src.EVENT_COMMENT_ID AND target.MEMBER_ID = src.MEMBER_ID)
+            WHEN NOT MATCHED THEN
+                INSERT (ID, EVENT_COMMENT_LIKE_CREATE_DATE, EVENT_COMMENT_ID, MEMBER_ID)
+                    VALUES (SEQ_EVENT_COMMENT_LIKE.NEXTVAL, SYSDATE, src.EVENT_COMMENT_ID, src.MEMBER_ID)
     </insert>
 
     <!-- 댓글 좋아요 취소 -->
