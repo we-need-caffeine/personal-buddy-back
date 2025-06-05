@@ -51,9 +51,14 @@ public class CalendarDAO {
         return calendarMapper.selectAllCalendarsByMemberId(memberId);
     }
 
-    // 캘린더 멤버 그룹 조회
+    // 캘린더 멤버 전체 조회
     public List<MemberVO> findAllCalendarMembersByCalendarId(Long calendarId) {
         return calendarMemberMapper.selectAllCalendarMembersByCalendarId(calendarId);
+    }
+
+    // 캘린더 멤버 전체 조회
+    public List<InviteMemberDTO> findAllMembersByCalendarId(Long calendarId) {
+        return calendarMemberMapper.selectAllMembersByCalendarId(calendarId);
     }
 
     // 캘린더 초대 이력 조회
