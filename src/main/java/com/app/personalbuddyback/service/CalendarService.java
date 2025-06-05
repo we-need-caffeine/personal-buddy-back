@@ -1,6 +1,7 @@
 package com.app.personalbuddyback.service;
 
 import com.app.personalbuddyback.domain.*;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public interface CalendarService {
 
     // 캘린더 멤버 조회
     public List<MemberVO> getCalendarMembers(Long calendarId);
+
+    // 캘린더 멤버 전체 조회
+    public List<InviteMemberDTO> getMembers(Long calendarId);
 
     // 캘린더 멤버 추가 초대 조회
     public List<InviteMemberDTO> getInvitableCalendarMembers(Long memberId, Long calendarId);

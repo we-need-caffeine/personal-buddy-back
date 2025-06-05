@@ -13,6 +13,7 @@ public class InviteMemberDTO {
     private String inviteStatus;
     private String calendarTitle;
 
+    private Long calendarMemberIsHost;
     private Long calendarInviteInvitedMemberId;
     private Long calendarInviteHostId;
     private Integer calendarInviteIsApproved;

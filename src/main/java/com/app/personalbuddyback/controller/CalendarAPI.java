@@ -119,6 +119,19 @@ public class CalendarAPI {
         return calendarService.getCalendarMembers(calendarId);
     }
 
+    @Operation(summary = "캘린더 멤버 전체 조회", description = "캘린더 멤버 전체를 조회할 수 있는 API")
+    @Parameter(
+            name = "calendarId",
+            description = "캘린더 ID",
+            schema = @Schema(type = "number"),
+            in = ParameterIn.PATH,
+            required = true
+    )
+    @GetMapping("members/calendars/{calendarId}")
+    public List<InviteMemberDTO> getMembers(@PathVariable Long calendarId) {
+        return calendarService.getMembers(calendarId);
+    }
+
     @Operation(summary = "캘린더 추가 가능 멤버 전체 조회", description = "캘린더 추가 가능 멤버 전체를 조회할 수 있는 API")
     @Parameter(
             name = "memberId",

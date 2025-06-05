@@ -28,6 +28,9 @@ public interface CalendarMemberMapper {
     // 캘린더 멤버 전체 조회
     public List<MemberVO> selectAllCalendarMembersByCalendarId(Long calendarId);
 
+    // 캘린더 멤버 전체 조회
+    public List<InviteMemberDTO> selectAllMembersByCalendarId(Long calendarId);
+
     // 캘린더 초대 이력 조회
     public List<InviteMemberDTO> selectInvitedMembersByMemberId(Long memberId);
 
