@@ -110,6 +110,10 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
+    public List<InviteMemberDTO> getMembers(Long calendarId){
+        return calendarDAO.findAllMembersByCalendarId(calendarId);
+    }
+    @Override
     public List<InviteMemberDTO> getInvitableCalendarMembers(Long memberId, Long calendarId) {
         return calendarDAO.findInvitableCalendarMembers(memberId, calendarId);
     }
