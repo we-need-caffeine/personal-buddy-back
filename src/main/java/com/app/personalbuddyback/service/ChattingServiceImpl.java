@@ -30,56 +30,53 @@ public class ChattingServiceImpl implements ChattingService {
 
     @Override
     public List<ChatViewDTO> updateChatReadAndGetAllChat(Long memberId, Long chatRoomId) {
-        List<ChatViewDTO> chats = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        
-        map.put("memberId", memberId);
-        map.put("chatRoomId", chatRoomId);
+        Map<String, Object> param = new HashMap<>();
+
+        param.put("memberId", memberId);
+        param.put("chatRoomId", chatRoomId);
         
         // 상대가 보낸 채팅 기록을 읽음 처리
-        chattingDAO.updateChatRead(map);
+        chattingDAO.updateChatRead(param);
         // 채팅방의 채팅기록
-        chats = chattingDAO.findChat(chatRoomId);
+        List<ChatViewDTO> chats = chattingDAO.findChat(chatRoomId);
         return chats;
     }
 
     @Override
     public List<ChatRoomViewDTO> findAllChatRoomByMemberIdAndFilter(Long memberId, String filterType, String searchNickname) {
-        List<ChatRoomViewDTO> chatRooms = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        map.put("memberId", memberId);
-        map.put("searchNickname", searchNickname);
-        map.put("filterType", filterType);
+        Map<String, Object> param = new HashMap<>();
+        param.put("memberId", memberId);
+        param.put("searchNickname", searchNickname);
+        param.put("filterType", filterType);
 
-        chatRooms = chattingDAO.findAllChatRoom(map);
-
+        List<ChatRoomViewDTO> chatRooms = chattingDAO.findAllChatRoom(param);
         return chatRooms;
     }
 
     @Override
     public Optional<ChatRoomViewDTO> saveChatRoomOrChangeViewChatRoom(Long memberId, Long secondMemberId) {
-        Map<String, Object> membersMap = new HashMap<>();
-        Map<String, Object> findMemberPositionInfo = new HashMap<>();
-        Map<String, Object> changeViewInfo = new HashMap<>();
+        Map<String, Object> memberParam = new HashMap<>();
+        Map<String, Object> findMemberPositionParam = new HashMap<>();
+        Map<String, Object> viewChatRoomParam = new HashMap<>();
 
-        membersMap.put("firstMemberId", memberId);
-        membersMap.put("secondMemberId", secondMemberId);
+        memberParam.put("firstMemberId", memberId);
+        memberParam.put("secondMemberId", secondMemberId);
 
         // 이미 존재하는 채팅방이면 view로 변환후 정보 반환
-        Optional<Long> chatRoomId = chattingDAO.findChatRoomIsTrue(membersMap);
+        Optional<Long> chatRoomId = chattingDAO.findChatRoomIsTrue(memberParam);
 
         if (chatRoomId.isPresent()) {
             Long roomId = chatRoomId.get();
-            findMemberPositionInfo.put("chatRoomId", roomId);
-            findMemberPositionInfo.put("memberId", memberId);
+            findMemberPositionParam.put("chatRoomId", roomId);
+            findMemberPositionParam.put("memberId", memberId);
 
-            Optional<String> memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionInfo);
-            changeViewInfo.put("position", memberPosition.get());
-            changeViewInfo.put("chatRoomId", roomId);
+            Optional<String> memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionParam);
+            viewChatRoomParam.put("position", memberPosition.get());
+            viewChatRoomParam.put("chatRoomId", roomId);
 
-            chattingDAO.updateViewChatRoom(changeViewInfo);
+            chattingDAO.updateViewChatRoom(viewChatRoomParam);
 
-            return chattingDAO.findChatRoom(findMemberPositionInfo);
+            return chattingDAO.findChatRoom(findMemberPositionParam);
         } else {
             // 새로운 채팅방 생성 후 반환
             ChatRoomVO chatRoomVO = new ChatRoomVO();
@@ -88,9 +85,9 @@ public class ChattingServiceImpl implements ChattingService {
 
             chattingDAO.saveChatRoom(chatRoomVO);
 
-            findMemberPositionInfo.put("memberId", memberId);
-            findMemberPositionInfo.put("chatRoomId", chatRoomVO.getId());
-            return chattingDAO.findChatRoom(findMemberPositionInfo);
+            findMemberPositionParam.put("memberId", memberId);
+            findMemberPositionParam.put("chatRoomId", chatRoomVO.getId());
+            return chattingDAO.findChatRoom(findMemberPositionParam);
         }
     }
 
@@ -101,26 +98,26 @@ public class ChattingServiceImpl implements ChattingService {
 
     @Override
     public void updateChangeHideByChatRoomIdAndMemberId(Long chatRoomId, Long memberId) {
-        Map<String, Object> findMemberPositionInfo = new HashMap<>();
-        Map<String, Object> hideChattinginfo = new HashMap<>();
+        Map<String, Object> findMemberPositionParam = new HashMap<>();
+        Map<String, Object> hideChatRoomParam = new HashMap<>();
 
-        findMemberPositionInfo.put("chatRoomId", chatRoomId);
-        findMemberPositionInfo.put("memberId", memberId);
+        findMemberPositionParam.put("chatRoomId", chatRoomId);
+        findMemberPositionParam.put("memberId", memberId);
         
         // 멤버의 포지션
-        Optional<String> memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionInfo);
-        hideChattinginfo.put("position", memberPosition.get());
-        hideChattinginfo.put("chatRoomId", chatRoomId);
+        Optional<String> memberPosition = chattingDAO.findChatMemberPosition(findMemberPositionParam);
+        hideChatRoomParam.put("position", memberPosition.get());
+        hideChatRoomParam.put("chatRoomId", chatRoomId);
 
         // 해당 채팅방의 멤버 포지션에 해당하는 view값을 숨긴다.
-        chattingDAO.updateHideChatRoom(hideChattinginfo);
+        chattingDAO.updateHideChatRoom(hideChatRoomParam);
     }
 
     @Override
     public void updateHideChatByChatIdAndMemberId(Long chatId, Long memberId) {
-        Map<String, Object> changeHideChatInfo = new HashMap<>();
-        changeHideChatInfo.put("chatId", chatId);
-        changeHideChatInfo.put("memberId", memberId);
-        chattingDAO.updateHideChat(changeHideChatInfo);
+        Map<String, Object> hideChatParam = new HashMap<>();
+        hideChatParam.put("chatId", chatId);
+        hideChatParam.put("memberId", memberId);
+        chattingDAO.updateHideChat(hideChatParam);
     }
 }
