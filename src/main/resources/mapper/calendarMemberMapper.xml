@@ -89,7 +89,16 @@
                  JOIN TBL_MEMBER TBM
                       ON TBCM.MEMBER_ID = TBM.ID
         WHERE CALENDAR_ID = #{calendarId}
-        AND TBCM.CALENDAR_MEMBER_IS_HOST = 0
+        AND CALENDAR_MEMBER_IS_HOST =0
+    </select>
+
+    <!-- 캘린더 멤버 전체 조회 -->
+    <select id = "selectAllMembersByCalendarId" parameterType="Long" resultType="InviteMemberDTO">
+        SELECT DISTINCT TBM.ID AS MEMBER_ID, TBM.MEMBER_NAME, TBM.MEMBER_IMG_PATH, TBM.MEMBER_IMG_NAME,TBCM.CALENDAR_MEMBER_IS_HOST
+        FROM TBL_CALENDAR_MEMBER TBCM
+                 JOIN TBL_MEMBER TBM
+                      ON TBCM.MEMBER_ID = TBM.ID
+        WHERE CALENDAR_ID = #{calendarId}
     </select>
 
     <!-- 캘린더 초대 멤버 전체 조회 -->

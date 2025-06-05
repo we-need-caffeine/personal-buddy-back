@@ -71,12 +71,14 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public Long registerCalendar(CalendarVO calendarVO) {
         Long calendarId = calendarDAO.saveCalendar(calendarVO);
+        Long memberId = calendarVO.getMemberId();
         CalendarMemberVO calendarMemberVO = new CalendarMemberVO();
-        calendarMemberVO.setMemberId(calendarVO.getMemberId());
+        calendarMemberVO.setMemberId(memberId);
         calendarMemberVO.setCalendarId(calendarId);
         calendarMemberVO.setCalendarMemberIsHost(1);
         log.info("캘린더 멤버 VO: {}", calendarMemberVO);
         calendarDAO.saveCalendarMember(calendarMemberVO);
+
         return calendarId;
     }
 
@@ -107,6 +109,10 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarDAO.findAllCalendarMembersByCalendarId(calendarId);
     }
 
+    @Override
+    public List<InviteMemberDTO> getMembers(Long calendarId){
+        return calendarDAO.findAllMembersByCalendarId(calendarId);
+    }
     @Override
     public List<InviteMemberDTO> getInvitableCalendarMembers(Long memberId, Long calendarId) {
         return calendarDAO.findInvitableCalendarMembers(memberId, calendarId);
